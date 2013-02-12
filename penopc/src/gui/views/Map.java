@@ -1,0 +1,82 @@
+package gui.views;
+
+import gui.tools.DrawCanvas;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
+
+import robot.Robot;
+
+public class Map extends JFrame {
+
+	private JPanel contentPane;
+	private Component canvas;
+	private Robot robot;
+	
+	private Timer timer = new Timer(500, new ActionListener() {
+	    public void actionPerformed(ActionEvent evt) {
+	    	if (robot != null) {
+				Thread thread = new Thread(new Runnable() {
+					public void run() {
+						try {
+						robot.updatePosition();
+						canvas.update(canvas.getGraphics());
+						}
+						catch (NullPointerException e) {
+							
+						}
+					}
+				});
+				thread.start();
+	    	}
+	    }    
+	});
+	
+	/**
+	 * Create the frame.
+	 */
+	public Map(Robot robot) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				timer.stop();
+			}
+		});
+		this.robot = robot;
+		initComponents();
+		createEvents();
+		this.setVisible(true);
+		timer.start();
+	}
+	
+	private void initComponents(){
+		setTitle("Map");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(610, 5, 700, 700);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		
+		canvas = new DrawCanvas(robot);
+		canvas.setBackground(new Color(160, 82, 45));
+		canvas.setBounds(1062, 290, 265, 241);
+		contentPane.add(canvas);
+	}
+	
+	private void createEvents(){
+		
+	}
+
+}
