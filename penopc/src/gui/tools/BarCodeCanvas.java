@@ -10,6 +10,10 @@ import field.Barcode;
 //Tekent de barcode van de huidige tegel.
 public class BarCodeCanvas extends Canvas{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Robot robot;
 	private Barcode barcode;
 	private int height;

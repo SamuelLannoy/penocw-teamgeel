@@ -10,8 +10,6 @@ import java.util.Queue;
 
 import javax.swing.Timer;
 
-import lejos.robotics.navigation.Move.MoveType;
-
 import field.*;
 import field.fromfile.FieldFactory;
 

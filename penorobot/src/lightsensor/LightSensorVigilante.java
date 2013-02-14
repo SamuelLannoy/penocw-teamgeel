@@ -1,6 +1,5 @@
 package lightsensor;
 
-import barcode.Barcode;
 import robot.Robot;
 import communication.Buffer;
 
@@ -10,9 +9,9 @@ public class LightSensorVigilante extends Thread {
 		
 	}
 	
-	private static boolean pause=false;
-	private static boolean onlyLines=false;
-	//private static boolean noLines=false;
+	private static boolean pause = false;
+	private static boolean onlyLines = false;
+	//private static boolean noLines = false;
 	
 	/**
 	 * Pause the lightsensor

@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import robot.Robot;
 
 //Tekent de rotatierichting van de rotor.
+@SuppressWarnings("serial")
 public class RotorCanvas extends Canvas{
 	
 	private Robot robot;

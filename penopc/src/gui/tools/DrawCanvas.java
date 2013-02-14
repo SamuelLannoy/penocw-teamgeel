@@ -7,12 +7,8 @@ import field.Position;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.*;
 import java.util.List;
 
-import javax.swing.JPanel;
 
 /*
  * Custom canvas klasse om de map van het doolhof
@@ -20,6 +16,10 @@ import javax.swing.JPanel;
  */
 public class DrawCanvas extends Canvas{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Robot robot;
 	private Field field;
 	private int tileSize;

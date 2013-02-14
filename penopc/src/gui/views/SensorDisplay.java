@@ -2,9 +2,7 @@ package gui.views;
 
 import gui.tools.PlotCanvas;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,7 +18,6 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.awt.Canvas;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +28,10 @@ import java.awt.event.WindowEvent;
 
 public class SensorDisplay extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Robot robot;
 	private List<Integer> plotList = Collections.synchronizedList(new ArrayList<Integer>());
