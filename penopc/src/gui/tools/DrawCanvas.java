@@ -121,6 +121,7 @@ public class DrawCanvas extends Canvas{
 		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
 		double[] xs = robot.getCornersX();
 		double[] ys = robot.getCornersY();
+		robot.test();
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
