@@ -6,10 +6,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import communication.Status;
+
 import field.*;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.SensorBuffer;
 
 public class Explorer {
 	
@@ -17,7 +20,7 @@ public class Explorer {
 	
 	public static void explore(final Robot robot) {
 		// TODO: set on center tile
-		/*if (!robot.isSim()) {
+		if (!robot.isSim()) {
 			robot.setOnCenterTile();
 			try {
 				Thread.sleep(1000);
@@ -30,7 +33,7 @@ public class Explorer {
 			waitTillRobotStops(robot, 1000);
 			DebugBuffer.addInfo("resetting pos");
 			robot.zeroPos();
-		}*/
+		}
 		
 		Field field = robot.getField();
 		LinkedList<ExploreNode> toExplore = new LinkedList<ExploreNode>();
@@ -103,7 +106,7 @@ public class Explorer {
 				DebugBuffer.addInfo("barcode detected!");
 			}*/
 			if (correct || wrong || robot.isScanning()) {
-				DebugBuffer.addInfo("barcode detected!");
+				//DebugBuffer.addInfo("barcode detected!");
 				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
 				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
@@ -153,7 +156,6 @@ public class Explorer {
 					}
 					/*correct = robot.hasCorrectBarcode();
 					wrong = robot.hasWrongBarcode();*/
-		
 				}
 				
 				Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
@@ -161,8 +163,6 @@ public class Explorer {
 				if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
 					toExplore.add(newNode);
 				}
-//				robot.scanSonar();
-				
 			} else {
 
 				Direction dirx = Direction.fromAngle(robot.getPosition().getRotation() + 180);
