@@ -640,8 +640,8 @@ public class Robot {
 	public double[][] getCorners() {
 		double[][] arr = new double[4][2];
 		
-		double tx = 0;//getPosition().getPosX();
-		double ty = 0;//getPosition().getPosY();
+		double tx = getPosition().getPosX();
+		double ty = getPosition().getPosY();
 		double ta = -getPosition().getRotation() * Math.PI / 180;
 		
 		
