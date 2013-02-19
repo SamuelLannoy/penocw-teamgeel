@@ -170,7 +170,7 @@ public class DrawCanvas extends Canvas{
 						
 					}
 				}
-				// check oriëntatie barcode
+				// check oriï¿½ntatie barcode
 				if (dir2 == Direction.TOP || dir2 == Direction.BOTTOM){
 					// platte barcode ---
 					g.setColor(Color.BLACK);
