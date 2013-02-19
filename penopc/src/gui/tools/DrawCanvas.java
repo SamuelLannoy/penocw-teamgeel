@@ -125,8 +125,8 @@ public class DrawCanvas extends Canvas{
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
-			drawXs[i] = (int)((startX + (10*xs[i]) + (x * scale)));
-			drawYs[i] = (int)((startY - (10*ys[i]) - (y * scale)));
+			drawXs[i] = (int)((startX + (xs[i]) + (x * scale)));
+			drawYs[i] = (int)((startY - (ys[i]) - (y * scale)));
 		}
 		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
