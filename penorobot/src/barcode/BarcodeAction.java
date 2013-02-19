@@ -58,4 +58,18 @@ public class BarcodeAction {
 		setAction(Action.REMEMBER_FINISH);
 	}
 	
+	public static void pickupobject(){
+		Robot.getInstance().travel(800, false);
+		Robot.getInstance().travel(-100, false);
+		Robot.getInstance().rotateLeft(180, false);
+		Robot.getInstance().travel(600,false);
+	}
+	
+	public static void seesaw(){
+		Robot.getInstance().setTravelSpeed(250);
+		Robot.getInstance().travel(900,false);
+		Button.waitForAnyEvent(1000);
+		Robot.getInstance().travel(300,false);
+	}
+	
 }
