@@ -28,7 +28,8 @@ public class Robot {
 	private Tile currTile;
 	private Tile startTile;
 	private Tile endTile;
-	
+	private boolean hasBall = false;
+
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
 	}
@@ -209,6 +210,14 @@ public class Robot {
 	
 	public boolean isMoving() {
 		return robotConn.isMoving();
+	}
+	
+	public boolean hasBall() {
+		return hasBall;
+	}
+
+	public void setHasBall(boolean hasBall) {
+		this.hasBall = hasBall;
 	}
 	
 	/**
@@ -640,14 +649,14 @@ public class Robot {
 		arr[0][0] = tx + ( width * Math.cos(ta + Math.PI) + length * Math.sin(ta + Math.PI)); 
 		arr[0][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
 		//right upper
-		arr[1][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
-		arr[1][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		arr[1][0] = tx + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		arr[1][1] = ty + ( width * Math.cos(ta)  + length * Math.sin(ta));
 		//left lower
-		arr[2][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
+		arr[2][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta));
 		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
 		//right lower
-		arr[3][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
-		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		arr[3][0] = tx + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2));
+		arr[3][1] = ty + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI));  
 		
 		
 		
