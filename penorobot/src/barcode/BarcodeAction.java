@@ -1,7 +1,5 @@
 package barcode;
 
-import java.io.File;
-
 import communication.Buffer;
 
 import lejos.nxt.Button;
@@ -33,26 +31,7 @@ public class BarcodeAction {
 	}
 	
 	public static void playMusic() {
-		/*Sound.buzz();
-		Button.waitForAnyPress(3200);*/
-		// Super Mario Bros Theme Song
-		//TODO test super_mario.wav
-		File file = new File("super_mario.wav");
-		int ret = lejos.nxt.Sound.playSample(file,3000);
-		Buffer.addDebug("music returned: " + ret);
-//		Sound.playNote(Sound.XYLOPHONE, 330, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 330, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 330, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 262, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 330, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 392, 1600);
-//		Button.waitForAnyPress(800);
-//		Sound.playNote(Sound.XYLOPHONE, 392, 1600);
+		Sound.buzz();
 	}
 	
 	public static void waitFiveSeconds() {

@@ -6,13 +6,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import communication.Status;
-
 import field.*;
 
 import robot.DebugBuffer;
 import robot.Robot;
-import robot.SensorBuffer;
 
 public class Explorer {
 	

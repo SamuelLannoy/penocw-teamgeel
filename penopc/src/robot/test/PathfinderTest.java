@@ -1,9 +1,5 @@
 package robot.test;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

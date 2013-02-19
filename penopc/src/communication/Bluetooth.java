@@ -1,6 +1,5 @@
 package communication;
 
-import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import robot.DebugBuffer;
-import robot.Robot;
 import robot.SensorBuffer;
 
 import lejos.pc.comm.*;

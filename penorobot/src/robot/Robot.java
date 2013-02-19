@@ -1,8 +1,5 @@
 package robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import barcode.Barcode;
 
 import communication.Buffer;
@@ -10,11 +7,7 @@ import communication.PilotController;
 
 import ultrasonicsensor.UltrasonicSensor;
 import lejos.nxt.*;
-import lejos.robotics.RegulatedMotor;
-import lejos.robotics.RegulatedMotorListener;
-import lejos.robotics.navigation.DifferentialPilot;
 import lightsensor.Color;
-import touchsensor.*;
 import touchsensor.TouchSensor;
 import lightsensor.*;
 import lightsensor.LightSensor;
@@ -399,7 +392,6 @@ public class Robot {
 				LightSensorVigilante.scanBarcodesAndLines();
 		}
 	
-		
 		private boolean noLines;
 
 		public boolean isNoLines() {

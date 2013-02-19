@@ -1,11 +1,9 @@
 package gui.tools;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -14,6 +12,10 @@ import javax.swing.JPanel;
  * Plot de gegeven data in een grafiek.
  */
 public class PlotCanvas extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<Integer> data;
 	private final int PAD = 20;
 	

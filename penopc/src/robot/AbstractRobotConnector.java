@@ -4,7 +4,6 @@ import java.util.List;
 
 import exception.CommunicationException;
 import field.Border;
-import field.Field;
 
 public interface AbstractRobotConnector {
 	

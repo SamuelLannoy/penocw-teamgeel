@@ -90,9 +90,6 @@ public class PilotController {
 			public void run() {
 				while(true){
 					Buffer.setTouched(TouchSensor.getInstance().isPressed());
-//					if(TouchSensor.getInstance().isPressed()){
-//						Encoding.STOPMOVING.execute(0, 0, false);
-//					}
 					try {
 						Thread.sleep(TIME_OUT);
 					} catch (InterruptedException e) {
@@ -294,15 +291,12 @@ public class PilotController {
 			lightSensorVigilante.wait();
 		} catch (InterruptedException e) {
 			System.out.println("waitexception");
-			//e.printStackTrace();
 		}
-		//lightSensorVigilante.pause();
 	}
 	
 	public void restartLightSensorVigilante() {
 		lightSensorVigilante.notify();
 		System.out.println("restartvigilante");
-		//lightSensorVigilante.resume();
 	}
 	   
 	 

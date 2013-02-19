@@ -1,8 +1,5 @@
 package gui.views;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -29,6 +26,10 @@ import robot.Robot;
 
 public class Advanced extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JRadioButton enable_button_controls;
 	private JButton btn_90_left;

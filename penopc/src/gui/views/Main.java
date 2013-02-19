@@ -1,76 +1,46 @@
 package gui.views;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JToolBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JTextPane;
-import javax.swing.border.TitledBorder;
-import javax.swing.JTextArea;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JScrollPane;
-import javax.swing.JLayeredPane;
-import javax.swing.JLabel;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-import javax.swing.JToggleButton;
-
-import communication.Bluetooth;
-import communication.CommandEncoder;
-import communication.Encoding;
-
-import exception.CommunicationException;
-
-import robot.*;
-import robot.Position;
-import simulator.lightsensor.LightSensor;
-import simulator.touchsensor.TouchSensor;
-import simulator.ultrasonicsensor.UltrasonicSensor;
-import field.*;
-import gui.tools.BarCodeCanvas;
-import gui.tools.DrawCanvas;
-import gui.tools.PlotCanvas;
-import gui.tools.RotorCanvas;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.FlowLayout;
-import java.awt.Canvas;
-import java.io.EOFException;
-import java.io.FileNotFoundException;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JCheckBox;
-import java.awt.Label;
-import java.awt.Button;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 
+import robot.DebugBuffer;
+import robot.Robot;
+import robot.SensorBuffer;
+
+import communication.Bluetooth;
+
+import exception.CommunicationException;
+import field.Barcode;
+import gui.tools.BarCodeCanvas;
+import gui.tools.DrawCanvas;
+import gui.tools.PlotCanvas;
+
+@SuppressWarnings("serial")
 public class Main extends JFrame {
 
 	private JPanel contentPane;
 	private JTextArea debugwindow;
 	
 	private Robot robot;
-	private Field field;
 	private Timer simulatorTimer;
 	private Timer robotGuiTimer;
 	private Timer robotReceiveTimer;

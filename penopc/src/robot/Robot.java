@@ -1,14 +1,11 @@
 package robot;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.VirtualRobotConnector;
 
-import communication.Bluetooth;
 import exception.CommunicationException;
 import field.Barcode;
 import field.Border;
@@ -18,7 +15,6 @@ import field.PanelBorder;
 import field.Tile;
 import field.UnsureBorder;
 import field.WhiteBorder;
-import field.fromfile.FieldFactory;
 
 /**
  * @author  Samuel
