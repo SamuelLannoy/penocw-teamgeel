@@ -7,6 +7,7 @@ import field.Position;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.util.List;
 
 
@@ -58,6 +59,7 @@ public class DrawCanvas extends Canvas{
 			paintTiles(g);
 			paintBorders(g);
 			paintPos(g);
+			paintObjects(g);
 			shortestPath(g);
 		}
 	}
@@ -101,7 +103,7 @@ public class DrawCanvas extends Canvas{
 		barEnd = barStart + (7 * bar);
 	}
 	
-	// Tekent de huidige positie op de map.
+	// Tekent de huidige positie op de map. De robot als driehoek.
 	private void paintPos(Graphics g){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
@@ -115,16 +117,22 @@ public class DrawCanvas extends Canvas{
 			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
 		}**/
-		int x = (int) robot.getPosition().getPosX() + robot.getCurrTile().getPosition().getX() * 40;
-		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
-		
-		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
+		//int x = (int) robot.getPosition().getPosX() + robot.getCurrTile().getPosition().getX() * 40;
+		//int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
+		int[] xs = robot.getCornersX();
+		int[] ys = robot.getCornersY();
+		for (int i = 0; i < 3; i++){
+			xs[i] = (int)(xs[i] * scale);
+			ys[i] = (int)(ys[i] * scale);
+		}
+		//double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/
+		Polygon robotSurface = new Polygon(xs, ys, 4);
 		g.setColor(Color.GREEN);
-		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
-		g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
+		//g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
+		g.fillPolygon(robotSurface);
 		g.setColor(Color.BLACK);
 		
 	}
@@ -270,6 +278,11 @@ public class DrawCanvas extends Canvas{
 				}
 			}
 		}
+	}
+	
+	// tekent de balletjes in het doolhof
+	private void paintObjects(Graphics g){
+		
 	}
 	
 	private void shortestPath(Graphics g){
