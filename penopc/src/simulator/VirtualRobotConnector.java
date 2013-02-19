@@ -68,12 +68,12 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		//right upper
 		arr[1][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
 		arr[1][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
-		//left lower
-		arr[2][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
+		//left lower 
+		arr[2][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
 		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
 		//right lower
-		arr[3][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
-		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		arr[3][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
+		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2));
 		
 		
 		
