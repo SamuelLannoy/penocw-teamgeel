@@ -145,7 +145,8 @@ public class Main extends JFrame {
 	private Thread messagethread = new Thread(new Runnable() {
 		public void run() {
 			try {
-				Messenger.receivePush("testGeel");
+				Messenger.connect();
+				Messenger.send("Dit is een test");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
