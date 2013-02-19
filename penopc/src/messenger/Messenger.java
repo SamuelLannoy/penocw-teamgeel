@@ -24,7 +24,7 @@ public class Messenger {
 		props.setContentType("text/plain");
 		props.setDeliveryMode(1);
 		
-		channel.basicPublish(Config.EXCHANGE_NAME, Config.LAUNCH_ROUTING_KEY, 
+		channel.basicPublish(Config.EXCHANGE_NAME, Config.ROUTING_KEY, 
 				props, message.getBytes());
 	}
 	
