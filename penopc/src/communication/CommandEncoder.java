@@ -117,6 +117,7 @@ public class CommandEncoder implements AbstractRobotConnector {
 		return Status.isFinishTile();
 	}
 	
+	//scanning a barcode
 	@Override
 	public boolean isScanning() {
 		return Status.isScanning();

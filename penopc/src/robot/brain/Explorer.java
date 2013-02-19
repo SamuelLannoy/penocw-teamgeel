@@ -103,7 +103,7 @@ public class Explorer {
 				DebugBuffer.addInfo("barcode detected!");
 			}*/
 			if (correct || wrong || robot.isScanning()) {
-				//DebugBuffer.addInfo("barcode detected!");
+				DebugBuffer.addInfo("barcode detected!");
 				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
 				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
@@ -153,6 +153,7 @@ public class Explorer {
 					}
 					/*correct = robot.hasCorrectBarcode();
 					wrong = robot.hasWrongBarcode();*/
+		
 				}
 				
 				Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
@@ -160,6 +161,8 @@ public class Explorer {
 				if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
 					toExplore.add(newNode);
 				}
+//				robot.scanSonar();
+				
 			} else {
 
 				Direction dirx = Direction.fromAngle(robot.getPosition().getRotation() + 180);

@@ -210,6 +210,9 @@ public class Robot {
 		return robotConn.isMoving();
 	}
 	
+	/**
+	 * @return if the robot is scanning a barcode
+	 */
 	public boolean isScanning() {
 		return robotConn.isScanning();
 	}
