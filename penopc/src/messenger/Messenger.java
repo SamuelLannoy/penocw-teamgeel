@@ -7,18 +7,18 @@ import com.rabbitmq.client.*;
 
 public class Messenger {
 	
-	Connection conn = null;
-	Channel channel = null;
-	AMQP.Queue.DeclareOk queue = null;
+	private static Connection conn = null;
+	private static Channel channel = null;
+	private static AMQP.Queue.DeclareOk queue = null;
 	
-	public void connect() throws IOException {
+	public static void connect() throws IOException {
 		conn = RabbitMQ.createConnection();
 		channel = RabbitMQ.createChannel(conn);
 		queue = channel.queueDeclare();
 	}
 	
 	// TODO: foutafhandeling hier of ergens anders?
-	public void send(String message) throws IOException {
+	public static void send(String message) throws IOException {
 		AMQP.BasicProperties props = new AMQP.BasicProperties();
 		props.setTimestamp(new Date());
 		props.setContentType("text/plain");
@@ -28,13 +28,13 @@ public class Messenger {
 				props, message.getBytes());
 	}
 	
-	public String receiveTimer(String key) throws IOException {				
+	public static String receiveTimer(String key) throws IOException {				
 		// TODO: implementeren (of zelfs niet indien niet nodig)
 		
 		return null;
 	}
 	
-	public void receivePush(String key) throws IOException {
+	public static void receivePush(String key) throws IOException {
 		// bind the queue to all routing keys that match the given key
 		channel.queueBind(queue.getQueue(), Config.EXCHANGE_NAME, key);
 				

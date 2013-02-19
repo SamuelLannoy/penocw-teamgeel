@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,8 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+
+import messenger.Messenger;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -139,6 +142,17 @@ public class Main extends JFrame {
 		}
 	});
 	
+	private Thread messagethread = new Thread(new Runnable() {
+		public void run() {
+			try {
+				Messenger.receivePush("testGeel");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	});
+	
 	private Thread sensorthread = new Thread(new Runnable() {
 		public void run() {
 			sensorTimer = new Timer(100, new ActionListener() {
@@ -250,6 +264,7 @@ public class Main extends JFrame {
 		mapthread.start();
 		sensorthread.start();
 		debugthread.start();
+		messagethread.start();
 	}
 	private void initComponents(){
 		this.setFocusable(true);
