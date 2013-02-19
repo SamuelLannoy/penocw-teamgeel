@@ -161,8 +161,8 @@ public class Robot {
 	}
 	
 	public void setOnCenterTile(){
-		//robotConn.setOnCenterTile(this);
-		test();
+		robotConn.setOnCenterTile(this);
+		//test();
 	}
 	
 	public void newTileScan() {
