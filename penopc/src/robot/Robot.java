@@ -161,7 +161,8 @@ public class Robot {
 	}
 	
 	public void setOnCenterTile(){
-		robotConn.setOnCenterTile(this);
+		//robotConn.setOnCenterTile(this);
+		test();
 	}
 	
 	public void newTileScan() {
@@ -622,6 +623,69 @@ public class Robot {
 	
 	public double getSimAngle() {
 		return ((VirtualRobotConnector)robotConn).getTRotation() * Math.PI / 180;
+	}
+	
+	private double width = 2;
+	private double length = 2;
+	
+	public double[][] getCorners() {
+		double[][] arr = new double[4][2];
+		
+		double tx = getPosition().getPosX();
+		double ty = getPosition().getPosY();
+		double ta = -getPosition().getRotation() * Math.PI / 180;
+		
+		
+		//left upper
+		arr[0][0] = tx + ( width * Math.cos(ta + Math.PI) + length * Math.sin(ta + Math.PI)); 
+		arr[0][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		//right upper
+		arr[1][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
+		arr[1][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		//left lower
+		arr[2][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
+		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		//right lower
+		arr[3][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
+		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		
+		
+		
+		return arr;
+	}
+	
+	public double[] getCornersX() {
+		double[] xarr = new double[4];
+		
+		double[][] arr = getCorners();
+		
+		xarr[0] = arr[0][0];
+		xarr[1] = arr[1][0];
+		xarr[2] = arr[2][0];
+		xarr[3] = arr[3][0];
+		
+		return xarr;
+	}
+	
+	public double[] getCornersY() {
+		double[] yarr = new double[4];
+		
+		double[][] arr = getCorners();
+		
+		yarr[0] = arr[0][1];
+		yarr[1] = arr[1][1];
+		yarr[2] = arr[2][1];
+		yarr[3] = arr[3][1];
+		
+		return yarr;
+	}
+	
+	public void test() {
+		double[][] corners = ((VirtualRobotConnector)robotConn).getCorners();
+		System.out.println("corners: x1:" + corners[0][0] + " y1: " + corners[0][1]
+				 + " x2: " + corners[1][0] + " y2: " + corners[1][1]
+						 + " x3: " + corners[2][0] + " y3: " + corners[2][1]
+								 + " x4: " + corners[3][0] + " y4: " + corners[3][1]);
 	}
 
 	public void addAction(int action) {

@@ -7,6 +7,7 @@ import field.Position;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.util.List;
 
 
@@ -58,6 +59,7 @@ public class DrawCanvas extends Canvas{
 			paintTiles(g);
 			paintBorders(g);
 			paintPos(g);
+			paintObjects(g);
 			shortestPath(g);
 		}
 	}
@@ -101,7 +103,7 @@ public class DrawCanvas extends Canvas{
 		barEnd = barStart + (7 * bar);
 	}
 	
-	// Tekent de huidige positie op de map.
+	// Tekent de huidige positie op de map. De robot als driehoek.
 	private void paintPos(Graphics g){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
@@ -117,16 +119,28 @@ public class DrawCanvas extends Canvas{
 		}**/
 		int x = (int) robot.getPosition().getPosX() + robot.getCurrTile().getPosition().getX() * 40;
 		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
-		
+		double[] xs = robot.getCornersX();
+		double[] ys = robot.getCornersY();
+		int[] drawXs = new int[4];
+		int[] drawYs = new int[4];
+		for (int i = 0; i < 4; i++){
+			drawXs[i] = (int)((xs[i] + robot.getCurrTile().getPosition().getX() * 40)* scale);
+			drawYs[i] = (int)((ys[i] + robot.getCurrTile().getPosition().getY() * 40)* scale);
+		}
 		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/
+		Polygon robotSurface = new Polygon(drawXs, drawYs, 4);
 		g.setColor(Color.GREEN);
-		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
-		g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
+		g.fillPolygon(robotSurface);
+		// robot heeft object bij.
+		if (robot.hasObject()){
+			g.setColor(Color.YELLOW);
+			g.fillOval(x, y, borderWidth, borderWidth);
+		}
 		g.setColor(Color.BLACK);
-		
+		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 	}
 	
 	// Tekent alle bekende tegels op de map.
@@ -171,6 +185,7 @@ public class DrawCanvas extends Canvas{
 						g.fillRect(pixelX, pixelY + barStart + ((i + 1) * bar), tileSize, bar);
 						g.setColor(Color.BLACK);
 					}
+					
 				} else {
 					if (dir2 == Direction.LEFT || dir2 == Direction.RIGHT){
 					// rechte barcode |||
@@ -187,6 +202,24 @@ public class DrawCanvas extends Canvas{
 							g.setColor(Color.BLACK);
 						}
 					}
+				}
+				// vakje bevat object
+				if (true){ // code = object code
+					int xBall = startX + (x * (tileSize));
+					int yBall = startY - (y * (tileSize));
+					if (true){// code = eigen object code
+						g.setColor(Color.YELLOW);
+					} else {
+						g.setColor(Color.RED);
+					}
+					switch(dir2){
+						case LEFT: xBall = xBall + halfTileSize - borderWidth ;
+						case RIGHT: xBall = xBall - halfTileSize + borderWidth;
+						case TOP: yBall = yBall + halfTileSize - borderWidth;
+						case BOTTOM: yBall = yBall - halfTileSize + borderWidth;
+					}
+					g.fillOval(xBall, yBall, borderWidth, borderWidth);
+					g.setColor(Color.BLACK);
 				}
 			}
 		}
@@ -270,6 +303,11 @@ public class DrawCanvas extends Canvas{
 				}
 			}
 		}
+	}
+	
+	// tekent de balletjes in het doolhof
+	private void paintObjects(Graphics g){
+		
 	}
 	
 	private void shortestPath(Graphics g){

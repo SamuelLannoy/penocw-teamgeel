@@ -48,6 +48,37 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		setTurnSpeed(trnSpeed);
 		instance = this;
 	}
+	
+	
+	private double width = 2;
+	private double length = 2;
+	
+	public double[][] getCorners() {
+		double[][] arr = new double[4][2];
+		
+		double tx = getTDistanceX();
+		double ty = getTDistanceY();
+		double ta = -getTRotation() * Math.PI / 180;
+		
+		System.out.println("rot: " + ta);
+		
+		//left upper
+		arr[0][0] = tx + ( width * Math.cos(ta + Math.PI) + length * Math.sin(ta + Math.PI)); 
+		arr[0][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		//right upper
+		arr[1][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
+		arr[1][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		//left lower
+		arr[2][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
+		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		//right lower
+		arr[3][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
+		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		
+		
+		
+		return arr;
+	}
 
 	private double moveSpeed = 0.0;
 	
