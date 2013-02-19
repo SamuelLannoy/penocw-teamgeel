@@ -124,8 +124,8 @@ public class DrawCanvas extends Canvas{
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
-			drawXs[i] = (int)((xs[i] + robot.getCurrTile().getPosition().getX() * 40)* scale);
-			drawYs[i] = (int)((ys[i] + robot.getCurrTile().getPosition().getY() * 40)* scale);
+			drawXs[i] = (int)((startX + (10*xs[i]) + (x * scale)));
+			drawYs[i] = (int)((startY - (10*ys[i]) - (y * scale)));
 		}
 		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
@@ -135,10 +135,10 @@ public class DrawCanvas extends Canvas{
 		g.setColor(Color.GREEN);
 		g.fillPolygon(robotSurface);
 		// robot heeft object bij.
-		if (robot.hasObject()){
+		/**if (robot.hasObject()){
 			g.setColor(Color.YELLOW);
 			g.fillOval(x, y, borderWidth, borderWidth);
-		}
+		}**/
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 	}
@@ -204,7 +204,7 @@ public class DrawCanvas extends Canvas{
 					}
 				}
 				// vakje bevat object
-				if (true){ // code = object code
+				/**if (currentTile.hasObject()){ // code = object code
 					int xBall = startX + (x * (tileSize));
 					int yBall = startY - (y * (tileSize));
 					if (true){// code = eigen object code
@@ -220,7 +220,7 @@ public class DrawCanvas extends Canvas{
 					}
 					g.fillOval(xBall, yBall, borderWidth, borderWidth);
 					g.setColor(Color.BLACK);
-				}
+				}**/
 			}
 		}
 	}
