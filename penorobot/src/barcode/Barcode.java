@@ -81,7 +81,7 @@ public enum Barcode {
 
 		@Override
 		public void execute() {
-			BarcodeAction.setHighSpeed();
+			BarcodeAction.seesaw();
 		}
 	},
 	FINISH {
