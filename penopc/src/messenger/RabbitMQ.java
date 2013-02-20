@@ -40,7 +40,7 @@ public class RabbitMQ {
 	 */
 	public static Channel createChannel(Connection conn) throws IOException {
 		Channel channel = conn.createChannel();
-		channel.exchangeDeclare(Config.EXCHANGE_NAME, "robots");
+		channel.exchangeDeclare(Config.EXCHANGE_NAME, "topic");
 
 		return channel;
 	}

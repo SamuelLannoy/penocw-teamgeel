@@ -3,6 +3,8 @@ package messenger;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
 import com.rabbitmq.client.*;
 
 public class Messenger {
@@ -26,6 +28,7 @@ public class Messenger {
 		
 		channel.basicPublish(Config.EXCHANGE_NAME, Config.ROUTING_KEY, 
 				props, message.getBytes());
+		System.out.println("Dit is geen test");
 	}
 	
 	public static String receiveTimer(String key) throws IOException {				
