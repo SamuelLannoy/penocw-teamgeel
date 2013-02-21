@@ -321,7 +321,7 @@ public class Robot {
 	
 	public void moveNext() {
 		//if (counter == 0){
-			orientOnWhiteLine(false);
+			//orientOnWhiteLine(false);
 			moveForward(230);
 			counter++;
 		/*} else {
