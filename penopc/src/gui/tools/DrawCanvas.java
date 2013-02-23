@@ -103,7 +103,7 @@ public class DrawCanvas extends Canvas{
 		barEnd = barStart + (7 * bar);
 	}
 	
-	// Tekent de huidige positie op de map. De robot als driehoek.
+	// Tekent de huidige positie op de map. De robot als rechthoek.
 	private void paintPos(Graphics g){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
@@ -121,12 +121,11 @@ public class DrawCanvas extends Canvas{
 		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
 		double[] xs = robot.getCornersX();
 		double[] ys = robot.getCornersY();
-		robot.test();
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
-			drawXs[i] = (int)((startX + (xs[i]) + (x * scale)));
-			drawYs[i] = (int)((startY - (ys[i]) - (y * scale)));
+			drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
+			drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
 		}
 		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
