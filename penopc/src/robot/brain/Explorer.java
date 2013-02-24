@@ -19,6 +19,28 @@ public class Explorer {
 	private static boolean pause = false;
 	
 	public static void explore(final Robot robot) {
+		explore(robot, new EndingCondition() {
+
+			@Override
+			public boolean isLastTile(Robot robot) {
+				return false;
+			}
+			
+		});
+	}
+	
+	public static void exploreTillObjectFound(final Robot robot) {
+		explore(robot, new EndingCondition() {
+
+			@Override
+			public boolean isLastTile(Robot robot) {
+				return robot.hasBall();
+			}
+			
+		});
+	}
+	
+	public static void explore(final Robot robot, EndingCondition endCond) {
 		// TODO: set on center tile
 		if (!robot.isSim()) {
 			robot.setOnCenterTile();
@@ -41,7 +63,7 @@ public class Explorer {
 		ExploreNode init = new ExploreNode(robot.getCurrTile(), null);
 		toExplore.add(init);
 		
-		while (!toExplore.isEmpty()) {
+		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
 			boolean quit = false;
 			ExploreNode current = toExplore.removeFirst();
 			while  (robot.getField().isSure(current.getTile().getPosition())) {

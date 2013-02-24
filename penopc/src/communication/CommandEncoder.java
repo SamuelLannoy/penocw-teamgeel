@@ -159,4 +159,10 @@ public class CommandEncoder implements AbstractRobotConnector {
 		Bluetooth.getInstance().send(Encoding.CHECKSCAN.ordinal(), 0, 0, false);
 	}
 
+	@Override
+	public boolean hasBall() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

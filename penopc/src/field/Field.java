@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import robot.DebugBuffer;
+
 
 public class Field {
 	
 	public final static int TILE_SIZE = 40;
-	public final static double BORDER_SIZE = 2.5;
+	public final static double BORDER_SIZE = 2;
 	//public final static double BORDER_SIZE = 5.5;
 	
 	public Field() {
 	}
 	
 	private ObjectMap<Position, Tile> tileMap = new ObjectMap<Position, Tile>();
+	private ObjectMap<Position, Ball> ballMap = new ObjectMap<Position, Ball>();
 	private ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>();
 	
 	
@@ -117,6 +120,16 @@ public class Field {
 		}
 	}
 	
+	public void addBall(Ball ball, Position pos) {
+		if (ballMap.canHaveAsObject(ball)) {
+			ballMap.addObject(pos, ball);
+		}
+	}
+	
+	public void removeBall(Position pos) {
+		ballMap.removeObjectAtId(pos);
+	}
+	
 	public boolean canHaveAsBorder(BorderPosition pos) {
 		if (!borderMap.hasId(pos))
 			return true;
@@ -131,6 +144,10 @@ public class Field {
 
 	public ObjectMap<BorderPosition, Border> getBorderMap() {
 		return borderMap;
+	}
+	
+	public ObjectMap<Position, Ball> getBallMap() {
+		return ballMap;
 	}
 	
 	public static Position convertToTilePosition(double xpos, double ypos) {
@@ -187,6 +204,46 @@ public class Field {
 			return !border.isPassable();
 		}
 		
+		return false;
+	}
+	
+	public boolean collidesWithBorder(double[][] corners)
+			throws IllegalArgumentException {
+		for (int i = 0; i < 4; i++) {
+			Tile tile;
+			try {
+				tile = getCurrentTile(corners[i][0], corners[i][1]);
+			} catch (IllegalArgumentException e) {
+				return true;
+			}
+			Border border = getBorderOfPos(tile, corners[i][0], corners[i][1]);
+			//DebugBuffer.addInfo("x= " + corners[i][0] + " y= " + corners[i][1] + "border = " + border);
+			if (border != null && !border.isPassable()) {
+				//System.out.println("border " + border.toString() + " pass " + border.isPassable());
+				return !border.isPassable();
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean collidesWithBall(double[][] corners) {
+		for (int i = 0; i < 2; i++) {
+			Tile tile;
+			try {
+				tile = getCurrentTile(corners[i][0], corners[i][1]);
+			} catch (IllegalArgumentException e) {
+				return true;
+			}
+			if (ballMap.hasId(tile.getPosition())) {
+				Border border = getBorderOfPos(tile, corners[i][0], corners[i][1]);
+				if (border != null && !border.isPassable()) {
+					ballMap.removeObjectAtId(tile.getPosition());
+					DebugBuffer.addInfo("robot collected ball");
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 	

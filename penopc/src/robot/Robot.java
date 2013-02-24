@@ -321,7 +321,7 @@ public class Robot {
 	
 	public void moveNext() {
 		//if (counter == 0){
-			//orientOnWhiteLine(false);
+			orientOnWhiteLine(false);
 			moveForward(230);
 			counter++;
 		/*} else {
@@ -370,6 +370,10 @@ public class Robot {
 	public void updatePosition() {		
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
+		
+		if (robotConn.hasBall()) {
+			setHasBall(true);
+		}
 		
 		// Set whether the current tile is a start tile, a finish tile or an ordinary tile
 		if(robotConn.isStartTile())
@@ -634,8 +638,12 @@ public class Robot {
 		return ((VirtualRobotConnector)robotConn).getTRotation() * Math.PI / 180;
 	}
 	
-	private double width = 2;
-	private double length = 2;
+	public void setSimLoc(int x, int y) {
+		((VirtualRobotConnector)robotConn).setSimLoc(x, y);
+	}
+	
+	private double width = 6;
+	private double length = 10;
 	
 	public double[][] getCorners() {
 		double[][] arr = new double[4][2];
@@ -646,19 +654,29 @@ public class Robot {
 		
 		
 		//left upper
-		arr[0][0] = tx + ( width * Math.cos(ta + Math.PI) + length * Math.sin(ta + Math.PI)); 
-		arr[0][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		double lux = - width;
+		double luy = length;
+		
+		arr[0][0] = tx + ( lux * Math.cos(ta) - luy * Math.sin(ta)); 
+		arr[0][1] = ty + ( lux * Math.sin(ta)  + luy * Math.cos(ta)); 
 		//right upper
-		arr[1][0] = tx + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
-		arr[1][1] = ty + ( width * Math.cos(ta)  + length * Math.sin(ta));
+		double rux = width;
+		double ruy = length;
+		
+		arr[1][0] = tx + ( rux * Math.cos(ta)  - ruy * Math.sin(ta));
+		arr[1][1] = ty + ( rux * Math.sin(ta)  + ruy * Math.cos(ta)); 
 		//left lower
-		arr[2][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta));
-		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		double llx = width;
+		double lly = - length;
+		
+		arr[2][0] = tx + ( llx * Math.cos(ta)  - lly * Math.sin(ta));  
+		arr[2][1] = ty + ( llx * Math.sin(ta)  + lly * Math.cos(ta));
 		//right lower
-		arr[3][0] = tx + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2));
-		arr[3][1] = ty + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI));  
+		double rlx = - width;
+		double rly = - length;
 		
-		
+		arr[3][0] = tx + ( rlx * Math.cos(ta)  - rly * Math.sin(ta));
+		arr[3][1] = ty + ( rlx * Math.sin(ta)  + rly * Math.cos(ta)); 
 		
 		return arr;
 	}
@@ -690,7 +708,7 @@ public class Robot {
 	}
 	
 	public void test() {
-		double[][] corners = ((VirtualRobotConnector)robotConn).getCorners();
+		double[][] corners = getCorners();
 		System.out.println("corners: x1:" + corners[0][0] + " y1: " + corners[0][1]
 				 + " x2: " + corners[1][0] + " y2: " + corners[1][1]
 						 + " x3: " + corners[2][0] + " y3: " + corners[2][1]

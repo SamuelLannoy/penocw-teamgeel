@@ -48,6 +48,13 @@ public class ObjectMap<S,T> implements Iterable<T> {
 		return objectMap.get(id);
 	}
 	
+	public void removeObjectAtId(S id) {
+		if (!hasId(id)) {
+			throw new IllegalArgumentException(""+id + " does not exist");
+		}
+		objectMap.remove(id);
+	}
+	
 	public void overWrite(S id, T object)
 			throws IllegalArgumentException {
 		if (!canHaveAsObject(object)) {

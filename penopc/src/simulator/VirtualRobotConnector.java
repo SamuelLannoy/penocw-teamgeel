@@ -49,35 +49,49 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		instance = this;
 	}
 	
+
+	private double width = 6;
+	private double length = 18;
 	
-	private double width = 2;
-	private double length = 2;
-	
-	public double[][] getCorners() {
+	public double[][] getCorners(double x, double y) {
 		double[][] arr = new double[4][2];
 		
-		double tx = getTDistanceX();
-		double ty = getTDistanceY();
+		double tx = x;//getTDistanceX();
+		double ty = y;//getTDistanceY();
 		double ta = -getTRotation() * Math.PI / 180;
 		
-		System.out.println("rot: " + ta);
 		
 		//left upper
-		arr[0][0] = tx + ( width * Math.cos(ta + Math.PI) + length * Math.sin(ta + Math.PI)); 
-		arr[0][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
+		double lux = - width;
+		double luy = length;
+		
+		arr[0][0] = tx + ( lux * Math.cos(ta) - luy * Math.sin(ta)); 
+		arr[0][1] = ty + ( lux * Math.sin(ta)  + luy * Math.cos(ta)); 
 		//right upper
-		arr[1][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
-		arr[1][1] = ty + ( length * Math.sin(ta + Math.PI / 2)  + width * Math.cos(ta + Math.PI / 2)); 
-		//left lower 
-		arr[2][0] = tx + ( width * Math.cos(ta)  + length * Math.sin(ta)); 
-		arr[2][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2)); 
+		double rux = width;
+		double ruy = length;
+		
+		arr[1][0] = tx + ( rux * Math.cos(ta)  - ruy * Math.sin(ta));
+		arr[1][1] = ty + ( rux * Math.sin(ta)  + ruy * Math.cos(ta)); 
+		//left lower
+		double llx = width;
+		double lly = - length;
+		
+		arr[2][0] = tx + ( llx * Math.cos(ta)  - lly * Math.sin(ta));  
+		arr[2][1] = ty + ( llx * Math.sin(ta)  + lly * Math.cos(ta));
 		//right lower
-		arr[3][0] = tx + ( width * Math.cos(ta + Math.PI)  + length * Math.sin(ta + Math.PI)); 
-		arr[3][1] = ty + ( length * Math.sin(ta + 3 * Math.PI / 2)  + width * Math.cos(ta + 3 * Math.PI / 2));
+		double rlx = - width;
+		double rly = - length;
 		
-		
+		arr[3][0] = tx + ( rlx * Math.cos(ta)  - rly * Math.sin(ta));
+		arr[3][1] = ty + ( rlx * Math.sin(ta)  + rly * Math.cos(ta)); 
 		
 		return arr;
+	}
+	
+	public void setSimLoc(int x, int y) {
+		tdistancex = x * 40;
+		tdistancey = y * 40;
 	}
 
 	private double moveSpeed = 0.0;
@@ -296,9 +310,13 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		}
 		double newx = tdistancex + getMoveSpeed() * sign * Math.sin(angle);
 		double newy = tdistancey + getMoveSpeed() * sign * Math.cos(angle);
-		if (newx != 0.0 || newy != 0.0)
+		double[][] newcorners = getCorners(newx, newy);
+		//if (newx != 0.0 || newy != 0.0)
 			//System.out.println("newx " + newx + " newy " + newy);
-		if (!checkCollision(newx, newy)) {
+		if (maze.collidesWithBall(newcorners)) {
+			hasBall = true;
+		}
+		if (!checkCollision(newcorners)) {
 			distanceMoved += getMoveSpeed() * sign;
 			tdistancex = newx;
 			tdistancey = newy;
@@ -310,6 +328,14 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	private boolean checkCollision(double x, double y) {
 		try {
 			return maze.collidesWithBorder(x, y);
+		} catch (IllegalArgumentException e){
+			return false;
+		}
+	}
+	
+	private boolean checkCollision(double[][] corners) {
+		try {
+			return maze.collidesWithBorder(corners);
 		} catch (IllegalArgumentException e){
 			return false;
 		}
@@ -404,6 +430,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			maze.addBall(new Ball(1), new Position(0, 7));
 			/*maze = new Field();
 			maze.addTileWithBorders(new Tile(0, 0), true, false, true, true);
 			maze.addTileWithBorders(new Tile(1, 0), false, false, true, false);
@@ -538,5 +565,16 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	@Override
 	public void checkScan() {
 		UltrasonicSensor.getInstance().checkScan();
+	}
+
+	private boolean hasBall;
+	
+	@Override
+	public boolean hasBall() {
+		if (hasBall) {
+			hasBall = false;
+			return true;
+		}
+		return false;
 	}	
 }

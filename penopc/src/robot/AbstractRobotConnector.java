@@ -36,4 +36,6 @@ public interface AbstractRobotConnector {
 	public abstract List<Border> getBorderSurroundings();
 	public abstract boolean isStartTile();
 	public abstract boolean isFinishTile();
+	
+	public abstract boolean hasBall();
 }
