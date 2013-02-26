@@ -1,0 +1,3 @@
+[submodule "penopc/src/htttp"]
+	path = penopc/src/htttp
+	url = https://github.com/tgoossens/htttp-peno.git

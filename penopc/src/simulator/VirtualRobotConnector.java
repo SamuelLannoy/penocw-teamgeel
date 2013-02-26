@@ -89,9 +89,10 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		return arr;
 	}
 	
-	public void setSimLoc(int x, int y) {
-		tdistancex = x * 40;
-		tdistancey = y * 40;
+	public void setSimLoc(double x, double y, double angle) {
+		tdistancex = x;
+		tdistancey = y;
+		tRotation = angle;
 	}
 
 	private double moveSpeed = 0.0;
@@ -576,5 +577,35 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void setOurBarcode(String teamnr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBarcodePlayer2(String player2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBarcodePlayer3(String player3) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBarcodePlayer4(String player4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getTeam() {
+		// TODO Auto-generated method stub
+		return 0;
 	}	
 }
