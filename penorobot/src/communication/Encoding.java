@@ -114,6 +114,11 @@ public enum Encoding {
 		public void execute(double param1, double param2, boolean flag) {
 			Robot.getInstance().checkScan();
 		}
+	},
+	SETOURBARCODE{
+		public void execute(double param1, double param2, boolean flag) {
+			Robot.getInstance().setBarcodeForObject(param1);
+		}
 	};
 	
 	public abstract void execute(double param1, double param2, boolean immediateReturn);

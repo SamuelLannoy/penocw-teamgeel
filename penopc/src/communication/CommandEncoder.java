@@ -11,6 +11,10 @@ import robot.Robot;
 public class CommandEncoder implements AbstractRobotConnector {
 	
 	private static CommandEncoder instance;
+	private static String ourBarcode;
+	private static String barcodePlayer2;
+	private static String barcodePlayer3;
+	private static String barcodePlayer4;
 	
 	public static CommandEncoder getInstance() {
 		return instance;
@@ -166,29 +170,36 @@ public class CommandEncoder implements AbstractRobotConnector {
 	}
 
 	@Override
-	public int getTeamNr() {
-		// TODO Auto-generated method stub
-		// set als bal voorwerp is gevonden
-		return 0;
+	public void setOurBarcode(String teamnr) {
+		//TODO oproepen vanuit GUI
+		CommandEncoder.ourBarcode = teamnr;
+		Bluetooth.getInstance().send(Encoding.SETOURBARCODE.ordinal(), (double) Integer.parseInt(teamnr,2), 0, false);
 	}
 
 	@Override
-	public int getId() {
-		// TODO Auto-generated method stub
-		// identificatienr voor voorwerp
-		return 0;
+	public void setBarcodePlayer2(String player2) {
+		CommandEncoder.barcodePlayer2 = player2;
 	}
 
 	@Override
-	public void setTeamNr(int teamnr) {
-		// TODO Auto-generated method stub
-		
+	public void setBarcodePlayer3(String player3) {
+		CommandEncoder.barcodePlayer3 = player3;
 	}
 
 	@Override
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-		
+	public void setBarcodePlayer4(String player4) {
+		CommandEncoder.barcodePlayer4 = player4;
 	}
+
+	@Override
+	public int getTeam() {
+		//TODO
+		if(!CommandEncoder.getInstance().hasBall())
+			return -1;
+		else{
+			//TODO
+		}
+	}
+	
 
 }

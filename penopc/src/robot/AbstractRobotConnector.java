@@ -38,8 +38,10 @@ public interface AbstractRobotConnector {
 	public abstract boolean isFinishTile();
 	
 	public abstract boolean hasBall();
-	public abstract void setTeamNr(final int teamnr);
-	public abstract int getTeamNr();
-	public abstract void setId(final int id);
-	public abstract int getId();
+	public abstract void setOurBarcode(String teamnr);
+	public abstract void setBarcodePlayer2(String player2);
+	public abstract void setBarcodePlayer3(String player3);
+	public abstract void setBarcodePlayer4(String player4);
+	public abstract int getTeam();
+
 }
