@@ -4,7 +4,9 @@ import communication.Buffer;
 
 import lejos.nxt.Button;
 import lejos.nxt.Sound;
+import lightsensor.LightSensorVigilante;
 import robot.Robot;
+import touchsensor.TouchSensor;
 
 public class BarcodeAction {
 	private static Action action;
@@ -59,10 +61,22 @@ public class BarcodeAction {
 	}
 	
 	public static void pickupobject(){
+		LightSensorVigilante.pause();
+		Robot.getInstance().rotateLeft(90,false);
+		Robot.getInstance().forward();
+		while(!TouchSensor.getInstance().isPressed());
+		Robot.getInstance().stop();
+		Robot.getInstance().travel(-100, false);
+		Robot.getInstance().rotateRight(90,false);
+		Robot.getInstance().forward();
+		while(!TouchSensor.getInstance().isPressed());
+		Button.waitForAnyPress(1000);
+		Robot.getInstance().stop();
 		Robot.getInstance().travel(800, false);
 		Robot.getInstance().travel(-100, false);
 		Robot.getInstance().rotateLeft(180, false);
-		Robot.getInstance().travel(600,false);
+		Robot.getInstance().travel(800,false);
+		LightSensorVigilante.resume();
 	}
 	
 	public static void seesaw(){

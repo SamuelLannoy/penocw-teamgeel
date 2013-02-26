@@ -23,7 +23,7 @@ public class Robot {
 		private boolean isCentering;
 		private LightSensor lightSensor = LightSensor.getInstance();
 		private TouchSensor touchSensor = TouchSensor.getInstance();
-		private String ourBarcode;
+		private static String ourBarcode;
 		
 		public static final int DEFAULT_TRAVEL_SPEED = 150;
 		public static final int DEFAULT_ROTATE_SPEED = 50;
@@ -403,8 +403,8 @@ public class Robot {
 			this.noLines = noLines;
 		}
 
-		public void setBarcodeForObject(double param1) {
-			ourBarcode = "";
+		public static void setBarcodeForObject(double param1) {
+			String ourBarcode = "";
 			while(param1 != 1 ){
 				if(param1 % 2 == 0){
 					ourBarcode = "0" + ourBarcode;
@@ -412,7 +412,13 @@ public class Robot {
 				else{
 					ourBarcode = "1" + ourBarcode;
 				}
-			}
+				param1/=2;
+		}
+			ourBarcode = "1" + ourBarcode;
+		}
+
+		public String getOurBarcode() {
+			return ourBarcode;
 		}
 		
 }

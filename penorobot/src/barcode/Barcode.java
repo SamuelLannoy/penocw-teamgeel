@@ -3,6 +3,8 @@ package barcode;
 import java.util.ArrayList;
 import java.util.List;
 
+import robot.Robot;
+
 import communication.Buffer;
 
 
@@ -11,126 +13,144 @@ import lightsensor.Color;
 import lightsensor.LightSensorVigilante;
 
 public enum Barcode {
-	TURNLEFT {
-		@Override
-		public String getCode() {
-			return "000101";
+	PICKUP{
+		public String getCode(){
+			return Robot.getInstance().getOurBarcode();
 		}
 
 		@Override
 		public void execute() {
-			LightSensorVigilante.pause();
-			Button.waitForAnyPress(200);
-			BarcodeAction.turnAroundLeft();		
-			LightSensorVigilante.resume();
+			BarcodeAction.pickupobject();
 		}
 	},
-	TURNRIGHT {
-		@Override
-		public String getCode() {
-			return "001001";
-		}
-
-		@Override
-		public void execute() {
-			LightSensorVigilante.pause();
-			Button.waitForAnyPress(200);
-			BarcodeAction.turnAroundRight();
-			LightSensorVigilante.resume();
-
-		}
-	},
-	PLAYMUSIC {
-		@Override
-		public String getCode() {
-			return "001111";
-		}
-
-		@Override
-		public void execute() {
-			BarcodeAction.playMusic();
-		}
-	},
-	WAITFIVESECONDS {
-		@Override
-		public String getCode() {
-			return "010011";
-		}
-
-		@Override
-		public void execute() {
-			BarcodeAction.waitFiveSeconds();
-		}
-	},
-	LOWSPEED {
-		@Override
-		public String getCode() {
-			return "011001";
-		}
-
-		@Override
-		public void execute() {
-			BarcodeAction.setLowSpeed();
-		}
-	},
-	HIGHSPEED {
-		@Override
-		public String getCode() {
-			return "100101";
-		}
+	SEESAW{
 
 		@Override
 		public void execute() {
 			BarcodeAction.seesaw();
 		}
-	},
-	FINISH {
-		@Override
-		public String getCode() {
-			return "110111";
-		}
-
-		@Override
-		public void execute() {
-			BarcodeAction.finish();
-		}
-	},
-	START {
-		@Override
-		public String getCode() {
-			return "001101";
-		}
-
-		@Override
-		public void execute() {
-			BarcodeAction.start();
-		}
+		
 	};
+//	TURNLEFT {
+//		@Override
+//		public String getCode() {
+//			return "000101";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			LightSensorVigilante.pause();
+//			Button.waitForAnyPress(200);
+//			BarcodeAction.turnAroundLeft();		
+//			LightSensorVigilante.resume();
+//		}
+//	},
+//	TURNRIGHT {
+//		@Override
+//		public String getCode() {
+//			return "001001";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			LightSensorVigilante.pause();
+//			Button.waitForAnyPress(200);
+//			BarcodeAction.turnAroundRight();
+//			LightSensorVigilante.resume();
+//
+//		}
+//	},
+//	PLAYMUSIC {
+//		@Override
+//		public String getCode() {
+//			return "001111";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.playMusic();
+//		}
+//	},
+//	WAITFIVESECONDS {
+//		@Override
+//		public String getCode() {
+//			return "010011";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.waitFiveSeconds();
+//		}
+//	},
+//	LOWSPEED {
+//		@Override
+//		public String getCode() {
+//			return "011001";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.setLowSpeed();
+//		}
+//	},
+//	HIGHSPEED {
+//		@Override
+//		public String getCode() {
+//			return "100101";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.seesaw();
+//		}
+//	},
+//	FINISH {
+//		@Override
+//		public String getCode() {
+//			return "110111";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.finish();
+//		}
+//	},
+//	START {
+//		@Override
+//		public String getCode() {
+//			return "001101";
+//		}
+//
+//		@Override
+//		public void execute() {
+//			BarcodeAction.start();
+//		}
+//	};
 	
 	public static Barcode getBarcode(String code) {
-		switch(code) {
-			case "000101":
-				return TURNLEFT;
-			case "001001":
-				return TURNRIGHT;
-			case "001111":
-				return PLAYMUSIC;
-			case "010011":
-				return WAITFIVESECONDS;
-			case "011001":
-				return LOWSPEED;
-			case "100101":
-				return HIGHSPEED;
-			case "110111":
-				return FINISH;
-			case "001101":
-				return START;
-		    default:
-		    	return null;
-		}
+		if(code.equals(Robot.getInstance().getOurBarcode()))
+				return PICKUP;
+			//TODO seesaw
+//			case "000101":
+//				return TURNLEFT;
+//			case "001001":
+//				return TURNRIGHT;
+//			case "001111":
+//				return PLAYMUSIC;
+//			case "010011":
+//				return WAITFIVESECONDS;
+//			case "011001":
+//				return LOWSPEED;
+//			case "100101":
+//				return HIGHSPEED;
+//			case "110111":
+//				return FINISH;
+//			case "001101":
+//				return START;
+		return null;
 	}
 	
-	public abstract String getCode();
+//	public abstract String getCode();
 	
 	public abstract void execute();
 	
