@@ -142,10 +142,10 @@ public class DrawCanvas extends Canvas{
 		}
 		g.fillPolygon(robotSurface);
 		// robot heeft object bij.
-		/**if (robot.hasObject()){
+		if (currentRobot.hasBall()){
 			g.setColor(Color.YELLOW);
 			g.fillOval(x, y, borderWidth, borderWidth);
-		}**/
+		}
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 		}
