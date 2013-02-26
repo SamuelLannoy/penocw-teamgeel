@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class ObjectMap<S,T> implements Iterable<T> {
 
@@ -66,6 +67,10 @@ public class ObjectMap<S,T> implements Iterable<T> {
 	@Override
 	public Iterator<T> iterator() {
 		return objectMap.values().iterator();
+	}
+	
+	public Set<S> getKeys() {
+		return objectMap.keySet();
 	}
 
 }
