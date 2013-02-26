@@ -524,7 +524,9 @@ public class Main extends JFrame {
 					robotReceiveTimer.stop();
 				}
 				robot.terminate();
+				robotPool.terminate();
 				robot = null;
+				robotPool = null;
 				canvas.setRobotPool(robotPool);
 			}
 		});
@@ -532,7 +534,7 @@ public class Main extends JFrame {
 		mntmAdvanced.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (robot != null){
-					Advanced advanced = new Advanced(robot, Main.this);
+					Advanced advanced = new Advanced(robotPool, Main.this);
 				}
 			}
 		});

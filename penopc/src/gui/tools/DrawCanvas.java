@@ -367,7 +367,9 @@ public class DrawCanvas extends Canvas{
 	// tekent de balletjes in het doolhof
 	private void paintObjects(Graphics g){
 		ObjectMap<Position, Ball> ballMap = robot.getField().getBallMap();
-		
+		for (Ball currentBall : field.getBallMap()){
+			
+		}
 	}
 	
 	private void shortestPath(Graphics g){

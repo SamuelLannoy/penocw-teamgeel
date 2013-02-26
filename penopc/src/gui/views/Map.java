@@ -16,6 +16,7 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import robot.Robot;
+import robot.RobotPool;
 
 public class Map extends JFrame {
 
@@ -25,15 +26,15 @@ public class Map extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Component canvas;
-	private Robot robot;
+	private RobotPool robotPool;
 	
 	private Timer timer = new Timer(500, new ActionListener() {
 	    public void actionPerformed(ActionEvent evt) {
-	    	if (robot != null) {
+	    	if (robotPool != null) {
 				Thread thread = new Thread(new Runnable() {
 					public void run() {
 						try {
-						robot.updatePosition();
+						robotPool.updatePosition();
 						canvas.update(canvas.getGraphics());
 						}
 						catch (NullPointerException e) {
@@ -49,14 +50,14 @@ public class Map extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Map(Robot robot) {
+	public Map(RobotPool robotPool) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
 				timer.stop();
 			}
 		});
-		this.robot = robot;
+		this.robotPool = robotPool;
 		initComponents();
 		createEvents();
 		this.setVisible(true);
@@ -72,7 +73,7 @@ public class Map extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		canvas = new DrawCanvas(robot);
+		canvas = new DrawCanvas(robotPool);
 		canvas.setBackground(new Color(160, 82, 45));
 		canvas.setBounds(1062, 290, 265, 241);
 		contentPane.add(canvas);

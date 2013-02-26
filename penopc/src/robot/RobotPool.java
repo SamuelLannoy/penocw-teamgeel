@@ -12,10 +12,11 @@ import java.util.Iterator;
 
 public class RobotPool implements Iterable<Robot>{
 	
-	private ArrayList<Robot> robotPool = new ArrayList<Robot>();
+	private ArrayList<Robot> robotPool;
 	
 	public RobotPool(Robot mainRobot){
-		robotPool.set(0, mainRobot);
+		robotPool = new ArrayList<Robot>();
+		robotPool.add(mainRobot);
 	}
 	
 	public ArrayList<Robot> getRobotPool(){
@@ -49,7 +50,13 @@ public class RobotPool implements Iterable<Robot>{
 			currentRobot.updatePosition();
 		}
 	}
-
+	
+	public void terminate(){
+		for(Robot currentRobot:robotPool){
+			currentRobot.terminate();
+		}
+	}
+	
 	@Override
 	public Iterator<Robot> iterator() {
 		Iterator<Robot> robotIt = robotPool.iterator();

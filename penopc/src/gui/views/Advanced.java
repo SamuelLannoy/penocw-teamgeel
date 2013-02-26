@@ -24,6 +24,7 @@ import field.WhiteBorder;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.RobotPool;
 import gui.tools.BarCodeCanvas;
 import java.awt.Color;
 import javax.swing.JTextArea;
@@ -55,6 +56,7 @@ public class Advanced extends JFrame {
 	private JTextField textField_load;
 	private JButton btn_load;
 	private JButton button_RIGHT;
+	private RobotPool robotPool;
 	private Robot robot;
 	private JTextField textField_speed_motor;
 	private JTextField textField_turn_speed;
@@ -108,8 +110,9 @@ public class Advanced extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Advanced(Robot robot, Main parent) {
-		this.robot = robot;
+	public Advanced(RobotPool robotPool, Main parent) {
+		this.robotPool = robotPool;
+		this.robot = robotPool.getMainRobot();
 		this.parent = parent;
 		initialize();
 		createEvents();
@@ -578,7 +581,7 @@ public class Advanced extends JFrame {
 				});
 				map.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						Map map = new Map(robot);
+						Map map = new Map(robotPool);
 					}
 				});
 				
