@@ -641,8 +641,8 @@ public class Robot {
 		return ((VirtualRobotConnector)robotConn).getTRotation() * Math.PI / 180;
 	}
 	
-	public void setSimLoc(int x, int y) {
-		((VirtualRobotConnector)robotConn).setSimLoc(x, y);
+	public void setSimLoc(double x, double y, double angle) {
+		((VirtualRobotConnector)robotConn).setSimLoc(x, y, angle);
 	}
 	
 	private double width = 6;
