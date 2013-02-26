@@ -245,7 +245,8 @@ public class Main extends JFrame {
 	private JButton btnSubmitBarcodes;
 	private JTextArea teamTextArea;
 	private JTextArea teamMateTextArea;
-	private JTextArea otherTeamTextArea;
+	private JTextArea otherTeamTextArea1;
+	private JTextArea otherTeamTextArea2;
 
 	/**
 	 * Launch the application.
@@ -467,13 +468,17 @@ public class Main extends JFrame {
 		btnSubmitBarcodes.setBounds(300, 125, 128, 23);
 		contentPane.add(btnSubmitBarcodes);
 		
-		JLabel lblOtherTeamBarcode = new JLabel("Other team barcode");
+		JLabel lblOtherTeamBarcode = new JLabel("Other team barcodes");
 		lblOtherTeamBarcode.setBounds(286, 85, 109, 14);
 		contentPane.add(lblOtherTeamBarcode);
 		
-		otherTeamTextArea = new JTextArea();
-		otherTeamTextArea.setBounds(286, 100, 90, 24);
-		contentPane.add(otherTeamTextArea);
+		otherTeamTextArea1 = new JTextArea();
+		otherTeamTextArea1.setBounds(286, 100, 90, 24);
+		contentPane.add(otherTeamTextArea1);
+		
+		otherTeamTextArea2 = new JTextArea();
+		otherTeamTextArea2.setBounds(380, 100, 90, 24);
+		contentPane.add(otherTeamTextArea2);
 		
 	}
 	
@@ -593,12 +598,19 @@ public class Main extends JFrame {
 				Barcode teamBarcode = new Barcode(code);
 				robot.setTeamMateBarcode(teamBarcode);
 				}
-				if (otherTeamTextArea.getText().length() == 6){
-				for (int i = 0; i < otherTeamTextArea.getText().length(); i++) {
-					code[i] = Integer.parseInt(otherTeamTextArea.getText().substring(i, i+1));
+				if (otherTeamTextArea1.getText().length() == 6){
+				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
+					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
 				}
 				Barcode otherTeamBarcode = new Barcode(code);
 				robot.addOtherTeamBarcode(otherTeamBarcode);
+				}
+				if (otherTeamTextArea2.getText().length() == 6){
+					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
+						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
+					}
+					Barcode otherTeamBarcode = new Barcode(code);
+					robot.addOtherTeamBarcode(otherTeamBarcode);
 				}
 			}
 		});
