@@ -27,6 +27,7 @@ import messenger.Messenger;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.RobotPool;
 import robot.SensorBuffer;
 
 import communication.Bluetooth;
@@ -44,6 +45,7 @@ public class Main extends JFrame {
 	private JTextArea debugwindow;
 	
 	private Robot robot;
+	private RobotPool robotPool;
 	private Timer simulatorTimer;
 	private Timer robotGuiTimer;
 	private Timer robotReceiveTimer;
@@ -55,8 +57,8 @@ public class Main extends JFrame {
 		public void run() {
 			simulatorTimer = new Timer(1, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-						robot.updatePosition();
+			    	if (robotPool != null) {
+						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
@@ -70,8 +72,8 @@ public class Main extends JFrame {
 		public void run() {
 			robotGuiTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-						robot.updatePosition();
+			    	if (robotPool != null) {
+						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
@@ -107,7 +109,6 @@ public class Main extends JFrame {
 						try {
 							//robot.updatePosition();
 							canvas.update(canvas.getGraphics());
-							barcode_canvas.update(barcode_canvas.getGraphics());
 						} catch (NullPointerException e) {
 							// nothing
 						}
@@ -240,6 +241,7 @@ public class Main extends JFrame {
 	private JButton btn_pause;
 	private JTextArea textArea_multiscan;
 	private JLabel lblPosition;
+	private JTextArea textArea_messages;
 
 
 	/**
@@ -269,6 +271,7 @@ public class Main extends JFrame {
 		debugthread.start();
 		messagethread.start();
 	}
+	
 	private void initComponents(){
 		this.setFocusable(true);
 		setTitle("Robot control centre");
@@ -302,24 +305,24 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		
 		JScrollPane scrollPane_debugwindow = new JScrollPane();
-		scrollPane_debugwindow.setBounds(10, 432, 458, 70);
+		scrollPane_debugwindow.setBounds(10, 275, 460, 100);
 		
 		last_movement_window = new JTextArea();
-		last_movement_window.setBounds(10, 372, 250, 53);
-		
-		debugwindow = new JTextArea();
-		scrollPane_debugwindow.setViewportView(debugwindow);
-		debugwindow.append("Maak een keuze uit robot of simulator.\n");
+		last_movement_window.setBounds(10, 480, 250, 23);
 
 		contentPane.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 154, 250, 207);
+		scrollPane.setBounds(10, 400, 250, 78);
 		contentPane.add(scrollPane);
 		
 		movement_window = new JTextArea();
 		scrollPane.setViewportView(movement_window);
 		contentPane.add(scrollPane_debugwindow);
+		
+		debugwindow = new JTextArea();
+		scrollPane_debugwindow.setViewportView(debugwindow);
+		debugwindow.append("Maak een keuze uit robot of simulator.\n");
 		contentPane.add(last_movement_window);
 		
 		toggle_robot = new JToggleButton("robot");
@@ -396,19 +399,10 @@ public class Main extends JFrame {
 		textArea_light.setBounds(10, 600, 128, 30);
 		contentPane.add(textArea_light);
 		
-		canvas = new DrawCanvas(robot);
+		canvas = new DrawCanvas(robotPool);
 		canvas.setBounds(474, 7, 500, 500);
 		canvas.setBackground(new Color(160, 82, 45));
 		contentPane.add(canvas);
-		
-		barcode_canvas = new BarCodeCanvas(robot);
-		barcode_canvas.setBounds(266, 326, 202, 100);
-		barcode_canvas.setBackground(Color.WHITE);
-		contentPane.add(barcode_canvas);
-		
-		JLabel lblBarcode = new JLabel("barcode");
-		lblBarcode.setBounds(266, 306, 67, 14);
-		contentPane.add(lblBarcode);
 		
 		btn_pause = new JButton("Pause");
 
@@ -421,19 +415,50 @@ public class Main extends JFrame {
 		contentPane.add(btn_resume);
 		
 		JScrollPane scrollPane_multiscan = new JScrollPane();
-		scrollPane_multiscan.setBounds(266, 154, 202, 141);
+		scrollPane_multiscan.setBounds(266, 400, 202, 100);
 		contentPane.add(scrollPane_multiscan);
 		
 		textArea_multiscan = new JTextArea();
 		scrollPane_multiscan.setViewportView(textArea_multiscan);
 		
 		JLabel lblMultiscanValues = new JLabel("multiscan values");
-		lblMultiscanValues.setBounds(266, 129, 104, 14);
+		lblMultiscanValues.setBounds(266, 380, 104, 14);
 		contentPane.add(lblMultiscanValues);
 		
 		lblPosition = new JLabel("position");
-		lblPosition.setBounds(10, 129, 54, 14);
+		lblPosition.setBounds(10, 380, 54, 14);
 		contentPane.add(lblPosition);
+		
+		JLabel lblTeam = new JLabel("Team");
+		lblTeam.setBounds(286, 11, 46, 14);
+		contentPane.add(lblTeam);
+		
+		JLabel lblTeammate = new JLabel("Teammate");
+		lblTeammate.setBounds(286, 50, 67, 14);
+		contentPane.add(lblTeammate);
+		
+		JTextArea teamTextArea = new JTextArea();
+		teamTextArea.setBounds(286, 25, 90, 24);
+		contentPane.add(teamTextArea);
+		
+		JTextArea teamMateTextArea = new JTextArea();
+		teamMateTextArea.setBounds(286, 71, 90, 24);
+		contentPane.add(teamMateTextArea);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 150, 460, 100);
+		contentPane.add(scrollPane_1);
+		
+		textArea_messages = new JTextArea();
+		scrollPane_1.setViewportView(textArea_messages);
+		
+		JLabel lblMessages = new JLabel("messages");
+		lblMessages.setBounds(10, 129, 67, 14);
+		contentPane.add(lblMessages);
+		
+		JLabel lblDebugwindow = new JLabel("debugwindow");
+		lblDebugwindow.setBounds(10, 255, 67, 14);
+		contentPane.add(lblDebugwindow);
 		
 	}
 	
@@ -449,8 +474,8 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de simulator.\n");
 					debugwindow.append("Maak een keuze uit de opdracht en.\n");
 					robot = new Robot(1);
-					canvas.setRobot(robot);
-					barcode_canvas.setRobot(robot);
+					robotPool = new RobotPool(robot);
+					canvas.setRobotPool(robotPool);
 					robot.initialize();
 					simulatorthread.start();
 				} catch (Exception a) {
@@ -470,9 +495,9 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de robot.\n");
 					debugwindow.append("Maak een keuze uit de opdrachten.\n");
 					robot = new Robot(2);
+					robotPool = new RobotPool(robot);
 					robot.initialize();
-					canvas.setRobot(robot);
-					barcode_canvas.setRobot(robot);
+					canvas.setRobotPool(robotPool);
 					robotguithread.start();
 					robotreceivethread.start();
 					
@@ -502,17 +527,17 @@ public class Main extends JFrame {
 					robotReceiveTimer.stop();
 				}
 				robot.terminate();
+				robotPool.terminate();
 				robot = null;
-				canvas.setRobot(robot);
-				barcode_canvas.setRobot(robot);
-
+				robotPool = null;
+				canvas.setRobotPool(robotPool);
 			}
 		});
 		
 		mntmAdvanced.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (robot != null){
-					Advanced advanced = new Advanced(robot, Main.this);
+					Advanced advanced = new Advanced(robotPool, Main.this);
 				}
 			}
 		});
@@ -540,6 +565,6 @@ public class Main extends JFrame {
 	
 	
 	public void resetCanvas() {
-		canvas.setRobot(robot);
+		canvas.setRobotPool(robotPool);
 	}
 }

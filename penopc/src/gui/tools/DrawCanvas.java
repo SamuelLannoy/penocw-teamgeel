@@ -21,11 +21,12 @@ public class DrawCanvas extends Canvas{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Robot robot;
+	private RobotPool robotPool;
 	private Field field;
 	private int tileSize;
 	private int borderWidth;
 	private int halfTileSize;
+	private int halfArrow;
 	private int boardSize;
 	private int halfBoardSize;
 	private int halfBorderWidth;
@@ -36,15 +37,15 @@ public class DrawCanvas extends Canvas{
 	private int barStart;
 	private int barEnd;
 	
-	public DrawCanvas(Robot robot){
-		setRobot(robot);
+	public DrawCanvas(RobotPool robotPool){
+		setRobotPool(robotPool);
 		this.setVisible(true);
 	}
 	
-	public void setRobot(Robot robot) {
-		if (robot != null) {
-			this.robot = robot;
-			setField(robot.getField());
+	public void setRobotPool(RobotPool robotPool) {
+		if (robotPool != null) {
+			this.robotPool = robotPool;
+			setField(robotPool.getMainRobot().getField());
 		}
 	}
 
@@ -54,7 +55,7 @@ public class DrawCanvas extends Canvas{
 	
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
-		if (robot != null) {
+		if (robotPool != null) {
 			rescale();
 			paintTiles(g);
 			paintBorders(g);
@@ -94,6 +95,7 @@ public class DrawCanvas extends Canvas{
 		tileSize = (int) (boardSize / (size + 1));
 		borderWidth = (int) (tileSize * (.1));
 		halfTileSize = (int) (tileSize / 2);
+		halfArrow = (int) (halfTileSize / 2);
 		halfBorderWidth = (int) (borderWidth / 2);
 		scale = (double)tileSize / 40.0;
 		startX = 5 + (tileSize * (Math.abs(minX) +1));
@@ -103,8 +105,9 @@ public class DrawCanvas extends Canvas{
 		barEnd = barStart + (7 * bar);
 	}
 	
-	// Tekent de huidige positie op de map. De robot als rechthoek.
+	// Tekent de huidige posities op de map. De robots als rechthoek.
 	private void paintPos(Graphics g){
+		for (Robot currentRobot : robotPool){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
@@ -117,22 +120,26 @@ public class DrawCanvas extends Canvas{
 			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
 		}**/
-		int x = (int) robot.getPosition().getPosX() + robot.getCurrTile().getPosition().getX() * 40;
-		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
-		double[] xs = robot.getCornersX();
-		double[] ys = robot.getCornersY();
+		int x = (int) currentRobot.getPosition().getPosX() + currentRobot.getCurrTile().getPosition().getX() * 40;
+		int y = (int) currentRobot.getPosition().getPosY() + currentRobot.getCurrTile().getPosition().getY() * 40;
+		double[] xs = currentRobot.getCornersX();
+		double[] ys = currentRobot.getCornersY();
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
 			drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
 			drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
 		}
-		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
+		double r = currentRobot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/
 		Polygon robotSurface = new Polygon(drawXs, drawYs, 4);
-		g.setColor(Color.GREEN);
+		if (currentRobot == robotPool.getMainRobot()){
+			g.setColor(Color.GREEN);
+		} else {
+			g.setColor(Color.BLUE);
+		}
 		g.fillPolygon(robotSurface);
 		// robot heeft object bij.
 		/**if (robot.hasObject()){
@@ -141,6 +148,7 @@ public class DrawCanvas extends Canvas{
 		}**/
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
+		}
 	}
 	
 	// Tekent alle bekende tegels op de map.
@@ -220,6 +228,55 @@ public class DrawCanvas extends Canvas{
 					}
 					g.fillOval(xBall, yBall, borderWidth, borderWidth);
 					g.setColor(Color.BLACK);
+				}**/
+				// vakje onderdeel van wip
+				/**if (currentTile.isWip()){
+				   	int[] Xpnts = new int[6];
+				   	int[] Ypnts = new int[6];
+				   	// Alle 6 punten van de pijl in het midden van het vakje.
+				   	for (int i = 0; i < 6; i++){
+				   	 	Xpnts[i] = startX + (x * (tileSize));
+				   		Ypnts[i] = startY - (y * (tileSize));
+				   	}
+				   	// Pas de nodige punten aan afhankelijk van de richting.
+					field.Direction dir = currentTile.getDirection();
+					switch (dir) {
+						// onder boven links boven rechts boven
+						case TOP:		Ypnts[0] = Ypnts[0] - halfArrow;
+										Ypnts[1] = Ypnts[1] + halfArrow;
+										Xpnts[2] = Xpnts[2] - halfArrow;
+										Ypnts[3] = Ypnts[3] + halfArrow;
+										Xpnts[4] = Xpnts[4] + halfArrow;
+										Ypnts[5] = Ypnts[5] + halfArrow;
+										break;
+						// boven onder links onder rechts onder
+						case BOTTOM:	Ypnts[0] = Ypnts[0] + halfArrow;
+										Ypnts[1] = Ypnts[1] - halfArrow;
+										Xpnts[2] = Xpnts[2] - halfArrow;
+										Ypnts[3] = Ypnts[3] - halfArrow;
+										Xpnts[4] = Xpnts[4] + halfArrow;
+										Ypnts[5] = Ypnts[5] - halfArrow;
+										break;
+						// rechts links onder links boven links
+						case LEFT:		Xpnts[0] = Xpnts[0] + halfArrow;
+										Xpnts[1] = Xpnts[1] - halfArrow;
+										Ypnts[2] = Ypnts[2] - halfArrow;
+										Xpnts[3] = Xpnts[3] - halfArrow;
+										Ypnts[4] = Ypnts[4] + halfArrow;
+										Xpnts[5] = Xpnts[5] - halfArrow;
+										break;
+						// links rechts onder rechts boven rechts
+						case RIGHT: 	Xpnts[0] = Xpnts[0] - halfArrow;
+										Xpnts[1] = Xpnts[1] + halfArrow;
+										Ypnts[2] = Ypnts[2] - halfArrow;
+										Xpnts[3] = Xpnts[3] + halfArrow;
+										Ypnts[4] = Ypnts[4] + halfArrow;
+										Xpnts[5] = Xpnts[5] + halfArrow;
+										break;
+						}
+					// draw arrow
+					 * g.setColor(Color.BLACK);
+					g.drawPolygon(Xpnts,Ypnts,6);
 				}**/
 			}
 		}
@@ -307,13 +364,40 @@ public class DrawCanvas extends Canvas{
 	
 	// tekent de balletjes in het doolhof
 	private void paintObjects(Graphics g){
-		
+		ObjectMap<Position, Ball> ballMap = robotPool.getMainRobot().getField().getBallMap();
+		ObjectMap<Position, Tile> TileMap = robotPool.getMainRobot().getField().getTileMap();
+		for (Position pos : ballMap.getKeys()){
+			Tile currentTile = TileMap.getObjectAtId(pos);
+			int xBall = startX + (pos.getX() * (tileSize));
+			int yBall = startY - (pos.getY() * (tileSize));
+			Direction dir2 = null;
+			for (Direction dir : Direction.values()){
+				try {
+					Border bord = field.getBorderInDirection(currentTile, dir);
+					if (bord instanceof WhiteBorder) {
+						dir2 = dir;
+						break;
+					}
+				} catch (IllegalArgumentException top) {
+					
+				}
+			}
+			switch(dir2){
+			case LEFT: xBall = xBall + halfTileSize - borderWidth ;
+			case RIGHT: xBall = xBall - halfTileSize + borderWidth;
+			case TOP: yBall = yBall + halfTileSize - borderWidth;
+			case BOTTOM: yBall = yBall - halfTileSize + borderWidth;
+		}
+		g.setColor(Color.YELLOW);
+		g.fillOval(xBall, yBall, borderWidth, borderWidth);
+		g.setColor(Color.BLACK);
+		}
 	}
 	
 	private void shortestPath(Graphics g){
-		if (robot.getAStarTileList() != null){
+		if (robotPool.getMainRobot().getAStarTileList() != null){
 			g.setColor(Color.CYAN);
-			List<Tile> list = robot.getAStarTileList();
+			List<Tile> list = robotPool.getMainRobot().getAStarTileList();
 			for (int i = 0; i < list.size()-1; i++){
 				Position pos1 = list.get(i).getPosition();
 				Position pos2 = list.get(i+1).getPosition();
