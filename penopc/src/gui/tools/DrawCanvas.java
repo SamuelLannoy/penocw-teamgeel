@@ -22,7 +22,6 @@ public class DrawCanvas extends Canvas{
 	 */
 	private static final long serialVersionUID = 1L;
 	private RobotPool robotPool;
-	private Robot robot;
 	private Field field;
 	private int tileSize;
 	private int borderWidth;
@@ -46,8 +45,7 @@ public class DrawCanvas extends Canvas{
 	public void setRobotPool(RobotPool robotPool) {
 		if (robotPool != null) {
 			this.robotPool = robotPool;
-			this.robot = robotPool.getMainRobot();
-			setField(robot.getField());
+			setField(robotPool.getMainRobot().getField());
 		}
 	}
 
@@ -137,7 +135,7 @@ public class DrawCanvas extends Canvas{
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/
 		Polygon robotSurface = new Polygon(drawXs, drawYs, 4);
-		if (currentRobot == robot){
+		if (currentRobot == robotPool.getMainRobot()){
 			g.setColor(Color.GREEN);
 		} else {
 			g.setColor(Color.BLUE);
@@ -366,16 +364,40 @@ public class DrawCanvas extends Canvas{
 	
 	// tekent de balletjes in het doolhof
 	private void paintObjects(Graphics g){
-		ObjectMap<Position, Ball> ballMap = robot.getField().getBallMap();
-		for (Ball currentBall : field.getBallMap()){
-			
+		ObjectMap<Position, Ball> ballMap = robotPool.getMainRobot().getField().getBallMap();
+		ObjectMap<Position, Tile> TileMap = robotPool.getMainRobot().getField().getTileMap();
+		for (Position pos : ballMap.getKeys()){
+			Tile currentTile = TileMap.getObjectAtId(pos);
+			int xBall = startX + (pos.getX() * (tileSize));
+			int yBall = startY - (pos.getY() * (tileSize));
+			Direction dir2 = null;
+			for (Direction dir : Direction.values()){
+				try {
+					Border bord = field.getBorderInDirection(currentTile, dir);
+					if (bord instanceof WhiteBorder) {
+						dir2 = dir;
+						break;
+					}
+				} catch (IllegalArgumentException top) {
+					
+				}
+			}
+			switch(dir2){
+			case LEFT: xBall = xBall + halfTileSize - borderWidth ;
+			case RIGHT: xBall = xBall - halfTileSize + borderWidth;
+			case TOP: yBall = yBall + halfTileSize - borderWidth;
+			case BOTTOM: yBall = yBall - halfTileSize + borderWidth;
+		}
+		g.setColor(Color.YELLOW);
+		g.fillOval(xBall, yBall, borderWidth, borderWidth);
+		g.setColor(Color.BLACK);
 		}
 	}
 	
 	private void shortestPath(Graphics g){
-		if (robot.getAStarTileList() != null){
+		if (robotPool.getMainRobot().getAStarTileList() != null){
 			g.setColor(Color.CYAN);
-			List<Tile> list = robot.getAStarTileList();
+			List<Tile> list = robotPool.getMainRobot().getAStarTileList();
 			for (int i = 0; i < list.size()-1; i++){
 				Position pos1 = list.get(i).getPosition();
 				Position pos2 = list.get(i+1).getPosition();
