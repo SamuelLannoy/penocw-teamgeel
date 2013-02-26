@@ -1,7 +1,7 @@
 package robot;
 
-import java.awt.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Een klasse die alle robots bijhoudt die in het spel zijn.
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  */
 
-public class RobotPool {
+public class RobotPool implements Iterable<Robot>{
 	
 	private ArrayList<Robot> robotPool = new ArrayList<Robot>();
 	
@@ -49,4 +49,11 @@ public class RobotPool {
 			currentRobot.updatePosition();
 		}
 	}
+
+	@Override
+	public Iterator<Robot> iterator() {
+		Iterator<Robot> robotIt = robotPool.iterator();
+		return robotIt;
+	}
+
 }

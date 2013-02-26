@@ -21,6 +21,7 @@ public class DrawCanvas extends Canvas{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private RobotPool robotPool;
 	private Robot robot;
 	private Field field;
 	private int tileSize;
@@ -37,14 +38,15 @@ public class DrawCanvas extends Canvas{
 	private int barStart;
 	private int barEnd;
 	
-	public DrawCanvas(Robot robot){
-		setRobot(robot);
+	public DrawCanvas(RobotPool robotPool){
+		setRobotPool(robotPool);
 		this.setVisible(true);
 	}
 	
-	public void setRobot(Robot robot) {
-		if (robot != null) {
-			this.robot = robot;
+	public void setRobotPool(RobotPool robotPool) {
+		if (robotPool != null) {
+			this.robotPool = robotPool;
+			this.robot = robotPool.getMainRobot();
 			setField(robot.getField());
 		}
 	}
@@ -55,7 +57,7 @@ public class DrawCanvas extends Canvas{
 	
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
-		if (robot != null) {
+		if (robotPool != null) {
 			rescale();
 			paintTiles(g);
 			paintBorders(g);
@@ -105,8 +107,9 @@ public class DrawCanvas extends Canvas{
 		barEnd = barStart + (7 * bar);
 	}
 	
-	// Tekent de huidige positie op de map. De robot als rechthoek.
+	// Tekent de huidige posities op de map. De robots als rechthoek.
 	private void paintPos(Graphics g){
+		for (Robot currentRobot : robotPool){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
@@ -119,22 +122,26 @@ public class DrawCanvas extends Canvas{
 			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
 		}**/
-		int x = (int) robot.getPosition().getPosX() + robot.getCurrTile().getPosition().getX() * 40;
-		int y = (int) robot.getPosition().getPosY() + robot.getCurrTile().getPosition().getY() * 40;
-		double[] xs = robot.getCornersX();
-		double[] ys = robot.getCornersY();
+		int x = (int) currentRobot.getPosition().getPosX() + currentRobot.getCurrTile().getPosition().getX() * 40;
+		int y = (int) currentRobot.getPosition().getPosY() + currentRobot.getCurrTile().getPosition().getY() * 40;
+		double[] xs = currentRobot.getCornersX();
+		double[] ys = currentRobot.getCornersY();
 		int[] drawXs = new int[4];
 		int[] drawYs = new int[4];
 		for (int i = 0; i < 4; i++){
 			drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
 			drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
 		}
-		double r = robot.getPosition().getRotationRadian() + (Math.PI/2);
+		double r = currentRobot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/
 		Polygon robotSurface = new Polygon(drawXs, drawYs, 4);
-		g.setColor(Color.GREEN);
+		if (currentRobot == robot){
+			g.setColor(Color.GREEN);
+		} else {
+			g.setColor(Color.BLUE);
+		}
 		g.fillPolygon(robotSurface);
 		// robot heeft object bij.
 		/**if (robot.hasObject()){
@@ -143,7 +150,7 @@ public class DrawCanvas extends Canvas{
 		}**/
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
-		// teken andere robots.
+		}
 	}
 	
 	// Tekent alle bekende tegels op de map.

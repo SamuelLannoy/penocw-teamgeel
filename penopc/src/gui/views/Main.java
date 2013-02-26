@@ -27,6 +27,7 @@ import messenger.Messenger;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.RobotPool;
 import robot.SensorBuffer;
 
 import communication.Bluetooth;
@@ -44,6 +45,7 @@ public class Main extends JFrame {
 	private JTextArea debugwindow;
 	
 	private Robot robot;
+	private RobotPool robotPool;
 	private Timer simulatorTimer;
 	private Timer robotGuiTimer;
 	private Timer robotReceiveTimer;
@@ -55,8 +57,8 @@ public class Main extends JFrame {
 		public void run() {
 			simulatorTimer = new Timer(1, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-						robot.updatePosition();
+			    	if (robotPool != null) {
+						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
@@ -70,8 +72,8 @@ public class Main extends JFrame {
 		public void run() {
 			robotGuiTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-						robot.updatePosition();
+			    	if (robotPool != null) {
+						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
@@ -266,6 +268,7 @@ public class Main extends JFrame {
 		debugthread.start();
 		messagethread.start();
 	}
+	
 	private void initComponents(){
 		this.setFocusable(true);
 		setTitle("Robot control centre");
@@ -393,7 +396,7 @@ public class Main extends JFrame {
 		textArea_light.setBounds(10, 600, 128, 30);
 		contentPane.add(textArea_light);
 		
-		canvas = new DrawCanvas(robot);
+		canvas = new DrawCanvas(robotPool);
 		canvas.setBounds(474, 7, 500, 500);
 		canvas.setBackground(new Color(160, 82, 45));
 		contentPane.add(canvas);
@@ -468,7 +471,8 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de simulator.\n");
 					debugwindow.append("Maak een keuze uit de opdracht en.\n");
 					robot = new Robot(1);
-					canvas.setRobot(robot);
+					robotPool = new RobotPool(robot);
+					canvas.setRobotPool(robotPool);
 					robot.initialize();
 					simulatorthread.start();
 				} catch (Exception a) {
@@ -488,8 +492,9 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de robot.\n");
 					debugwindow.append("Maak een keuze uit de opdrachten.\n");
 					robot = new Robot(2);
+					robotPool = new RobotPool(robot);
 					robot.initialize();
-					canvas.setRobot(robot);
+					canvas.setRobotPool(robotPool);
 					robotguithread.start();
 					robotreceivethread.start();
 					
@@ -520,7 +525,7 @@ public class Main extends JFrame {
 				}
 				robot.terminate();
 				robot = null;
-				canvas.setRobot(robot);
+				canvas.setRobotPool(robotPool);
 			}
 		});
 		
@@ -555,6 +560,6 @@ public class Main extends JFrame {
 	
 	
 	public void resetCanvas() {
-		canvas.setRobot(robot);
+		canvas.setRobotPool(robotPool);
 	}
 }
