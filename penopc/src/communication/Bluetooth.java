@@ -163,6 +163,11 @@ public class Bluetooth {
 					debug.add(dataIn.readUTF());
 				}
 				DebugBuffer.updateDebuginfo(debug);
+				
+				// Receive hasBall
+				boolean hasBall = dataIn.readBoolean();
+				CommandEncoder.getInstance().setHasBall(hasBall);
+				
 			} else {
 				System.out.println("No values received.");
 			}

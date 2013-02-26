@@ -5,6 +5,7 @@ import java.util.List;
 import lejos.pc.comm.NXTCommException;
 import exception.CommunicationException;
 import field.Border;
+import field.Field;
 import robot.AbstractRobotConnector;
 import robot.Robot;
 
@@ -12,13 +13,13 @@ public class CommandEncoder implements AbstractRobotConnector {
 	
 	private static CommandEncoder instance;
 	private static String ourBarcode;
-	private static String barcodePlayer2;
-	private static String barcodePlayer3;
-	private static String barcodePlayer4;
+	private static List<String> barcodePlayers;
 	
 	public static CommandEncoder getInstance() {
 		return instance;
 	}
+
+	private boolean hasBall;
 
 	@Override
 	public void initialize() throws CommunicationException {
@@ -165,8 +166,7 @@ public class CommandEncoder implements AbstractRobotConnector {
 
 	@Override
 	public boolean hasBall() {
-		// TODO Auto-generated method stub
-		return false;
+		return hasBall;
 	}
 
 	@Override
@@ -177,18 +177,9 @@ public class CommandEncoder implements AbstractRobotConnector {
 	}
 
 	@Override
-	public void setBarcodePlayer2(String player2) {
-		CommandEncoder.barcodePlayer2 = player2;
-	}
-
-	@Override
-	public void setBarcodePlayer3(String player3) {
-		CommandEncoder.barcodePlayer3 = player3;
-	}
-
-	@Override
-	public void setBarcodePlayer4(String player4) {
-		CommandEncoder.barcodePlayer4 = player4;
+	public void setBarcodePlayer(String player) {
+		if(CommandEncoder.barcodePlayers.size() != 4 && !CommandEncoder.barcodePlayers.contains(player))
+			CommandEncoder.barcodePlayers.add(player);
 	}
 
 	@Override
@@ -199,6 +190,10 @@ public class CommandEncoder implements AbstractRobotConnector {
 		else{
 			//TODO
 		}
+	}
+
+	public void setHasBall(boolean hasBall) {
+		this.hasBall = hasBall;
 	}
 	
 

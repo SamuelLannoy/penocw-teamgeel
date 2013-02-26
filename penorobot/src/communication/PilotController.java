@@ -232,6 +232,9 @@ public class PilotController {
 				dataOut.writeUTF(bc);
 			}
 			
+			//Write hasBall
+			dataOut.writeBoolean(Buffer.hasBall());
+			
 			dataOut.flush();
 		} catch (IOException e) {
 			LCD.drawString("Conn fail", 0, 0);

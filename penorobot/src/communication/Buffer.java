@@ -2,6 +2,8 @@ package communication;
 
 import java.util.ArrayList;
 
+import robot.Robot;
+
 public class Buffer {
 	
 	/**
@@ -106,5 +108,18 @@ public class Buffer {
 		synchronized(debug) {
 			debug.add(debugUpdate);
 		}
+	}
+	
+	/**
+	 * HASBALL
+	 */
+	private static boolean hasBall;
+	
+	public static boolean hasBall(){
+		return Robot.getInstance().hasBall();
+	}
+	
+	public static void setHasBall(){
+		Buffer.hasBall = true;
 	}
 }

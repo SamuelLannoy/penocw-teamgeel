@@ -24,6 +24,7 @@ public class Robot {
 		private LightSensor lightSensor = LightSensor.getInstance();
 		private TouchSensor touchSensor = TouchSensor.getInstance();
 		private static String ourBarcode;
+		private static boolean hasBall;
 		
 		public static final int DEFAULT_TRAVEL_SPEED = 150;
 		public static final int DEFAULT_ROTATE_SPEED = 50;
@@ -403,7 +404,7 @@ public class Robot {
 			this.noLines = noLines;
 		}
 
-		public static void setBarcodeForObject(double param1) {
+		public void setBarcodeForObject(double param1) {
 			String ourBarcode = "";
 			while(param1 != 1 ){
 				if(param1 % 2 == 0){
@@ -415,10 +416,23 @@ public class Robot {
 				param1/=2;
 		}
 			ourBarcode = "1" + ourBarcode;
+			
+			while(ourBarcode.length() < 6){
+				ourBarcode = "0"+ ourBarcode;
+			}
 		}
 
 		public String getOurBarcode() {
 			return ourBarcode;
+		}
+
+		public boolean hasBall() {
+			return hasBall;
+		}
+
+		public static void setHasBall() {
+			Robot.hasBall = true;
+			Buffer.setHasBall();
 		}
 		
 }

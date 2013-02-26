@@ -77,6 +77,7 @@ public class BarcodeAction {
 		Robot.getInstance().rotateLeft(180, false);
 		Robot.getInstance().travel(800,false);
 		LightSensorVigilante.resume();
+		Robot.getInstance().setHasBall();
 	}
 	
 	public static void seesaw(){

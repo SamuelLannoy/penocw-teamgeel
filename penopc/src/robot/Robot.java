@@ -719,6 +719,7 @@ public class Robot {
 	}
 	
 	public void setOwnBarcode(Barcode barcode){
+		robotConn.setOurBarcode(barcode.toString());
 		ownBarcode = barcode;
 	}
 	

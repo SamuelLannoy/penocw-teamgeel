@@ -39,9 +39,7 @@ public interface AbstractRobotConnector {
 	
 	public abstract boolean hasBall();
 	public abstract void setOurBarcode(String teamnr);
-	public abstract void setBarcodePlayer2(String player2);
-	public abstract void setBarcodePlayer3(String player3);
-	public abstract void setBarcodePlayer4(String player4);
+	public abstract void setBarcodePlayer(String player);
 	public abstract int getTeam();
 
 }
