@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import field.fieldmerge.Fieldable;
+
 import robot.DebugBuffer;
 
 
-public class Field {
+public class Field implements Fieldable {
 	
 	public final static int TILE_SIZE = 40;
 	public final static double BORDER_SIZE = 2;
@@ -336,6 +338,11 @@ public class Field {
 				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.BOTTOM) instanceof UnsureBorder) &&
 				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.LEFT) instanceof UnsureBorder) &&
 				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.RIGHT) instanceof UnsureBorder);
+	}
+
+	@Override
+	public Field toField() {
+		return this;
 	}
 	
 }

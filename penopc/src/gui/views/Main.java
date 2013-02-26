@@ -447,7 +447,7 @@ public class Main extends JFrame {
 		contentPane.add(lblTeam);
 		
 		JLabel lblTeammate = new JLabel("Teammate barcode");
-		lblTeammate.setBounds(286, 45, 109, 14);
+		lblTeammate.setBounds(286, 45, 140, 14);
 		contentPane.add(lblTeammate);
 		
 		teamTextArea = new JTextArea();
@@ -474,11 +474,11 @@ public class Main extends JFrame {
 		contentPane.add(lblDebugwindow);
 		
 		btnSubmitBarcodes = new JButton("Submit barcodes");
-		btnSubmitBarcodes.setBounds(300, 125, 128, 23);
+		btnSubmitBarcodes.setBounds(300, 125, 150, 23);
 		contentPane.add(btnSubmitBarcodes);
 		
 		JLabel lblOtherTeamBarcode = new JLabel("Other team barcodes");
-		lblOtherTeamBarcode.setBounds(286, 85, 109, 14);
+		lblOtherTeamBarcode.setBounds(286, 85, 140, 14);
 		contentPane.add(lblOtherTeamBarcode);
 		
 		otherTeamTextArea1 = new JTextArea();
