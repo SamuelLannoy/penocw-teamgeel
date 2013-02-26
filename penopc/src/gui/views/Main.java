@@ -239,7 +239,10 @@ public class Main extends JFrame {
 	private JTextArea textArea_multiscan;
 	private JLabel lblPosition;
 	private JTextArea textArea_messages;
-
+	private JButton btnSubmitBarcodes;
+	private JTextArea teamTextArea;
+	private JTextArea teamMateTextArea;
+	private JTextArea otherTeamTextArea;
 
 	/**
 	 * Launch the application.
@@ -426,20 +429,20 @@ public class Main extends JFrame {
 		lblPosition.setBounds(10, 380, 54, 14);
 		contentPane.add(lblPosition);
 		
-		JLabel lblTeam = new JLabel("Team");
-		lblTeam.setBounds(286, 11, 46, 14);
+		JLabel lblTeam = new JLabel("Own barcode");
+		lblTeam.setBounds(286, 7, 90, 14);
 		contentPane.add(lblTeam);
 		
-		JLabel lblTeammate = new JLabel("Teammate");
-		lblTeammate.setBounds(286, 50, 67, 14);
+		JLabel lblTeammate = new JLabel("Teammate barcode");
+		lblTeammate.setBounds(286, 45, 109, 14);
 		contentPane.add(lblTeammate);
 		
-		JTextArea teamTextArea = new JTextArea();
-		teamTextArea.setBounds(286, 25, 90, 24);
+		teamTextArea = new JTextArea();
+		teamTextArea.setBounds(286, 20, 90, 24);
 		contentPane.add(teamTextArea);
 		
-		JTextArea teamMateTextArea = new JTextArea();
-		teamMateTextArea.setBounds(286, 71, 90, 24);
+		teamMateTextArea = new JTextArea();
+		teamMateTextArea.setBounds(286, 60, 90, 24);
 		contentPane.add(teamMateTextArea);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -456,6 +459,18 @@ public class Main extends JFrame {
 		JLabel lblDebugwindow = new JLabel("debugwindow");
 		lblDebugwindow.setBounds(10, 255, 67, 14);
 		contentPane.add(lblDebugwindow);
+		
+		btnSubmitBarcodes = new JButton("Submit barcodes");
+		btnSubmitBarcodes.setBounds(300, 125, 128, 23);
+		contentPane.add(btnSubmitBarcodes);
+		
+		JLabel lblOtherTeamBarcode = new JLabel("Other team barcode");
+		lblOtherTeamBarcode.setBounds(286, 85, 109, 14);
+		contentPane.add(lblOtherTeamBarcode);
+		
+		otherTeamTextArea = new JTextArea();
+		otherTeamTextArea.setBounds(286, 100, 90, 24);
+		contentPane.add(otherTeamTextArea);
 		
 	}
 	
@@ -555,6 +570,33 @@ public class Main extends JFrame {
 		btn_resume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				robot.resumeExplore();
+			}
+		});
+		
+		btnSubmitBarcodes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int[] code = new int[6];
+				if (teamTextArea.getText().length() == 6){
+				for (int i = 0; i < teamTextArea.getText().length(); i++) {
+					code[i] = Integer.parseInt(teamTextArea.getText().substring(i, i+1));
+				}
+				Barcode ownBarcode = new Barcode(code);
+				robot.setOwnBarcode(ownBarcode);
+				}
+				if (teamMateTextArea.getText().length() == 6){
+				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
+					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
+				}
+				Barcode teamBarcode = new Barcode(code);
+				robot.setTeamMateBarcode(teamBarcode);
+				}
+				if (otherTeamTextArea.getText().length() == 6){
+				for (int i = 0; i < otherTeamTextArea.getText().length(); i++) {
+					code[i] = Integer.parseInt(otherTeamTextArea.getText().substring(i, i+1));
+				}
+				Barcode otherTeamBarcode = new Barcode(code);
+				robot.addOtherTeamBarcode(otherTeamBarcode);
+				}
 			}
 		});
 		
