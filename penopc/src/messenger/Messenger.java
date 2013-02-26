@@ -1,9 +1,12 @@
 package messenger;
 
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+
+import robot.DebugBuffer;
 
 import com.rabbitmq.client.*;
 
@@ -28,13 +31,8 @@ public class Messenger {
 		
 		channel.basicPublish(Config.EXCHANGE_NAME, Config.ROUTING_KEY, 
 				props, message.getBytes());
-		System.out.println("Dit is geen test");
-	}
-	
-	public static String receiveTimer(String key) throws IOException {				
-		// TODO: implementeren (of zelfs niet indien niet nodig)
 		
-		return null;
+		DebugBuffer.addInfo("Voorwerp gevonden. Bericht verzonden.");
 	}
 	
 	public static void receivePush(String key) throws IOException {
@@ -60,10 +58,12 @@ public class Messenger {
 				// that the sender added when the message was published. This 
 				// time is the time on the sender and NOT the time on the 
 				// AMQP server. This implies that clients are possibly out of sync!
-				System.out.println(String.format("@%d: %s -> %s", 
-						properties.getTimestamp().getTime(),
-						envelope.getRoutingKey(),
-						new String(body)));
+				//System.out.println(String.format("@%d: %s -> %s", 
+				//		properties.getTimestamp().getTime(),
+				//		envelope.getRoutingKey(),
+				//		new String(body)));
+				
+				DebugBuffer.addInfo("Voorwerp gevonden door " + envelope.getRoutingKey() + ".");
 				
 				// send an ack to the server so it can remove the message from the queue.	
 				channel.basicAck(deliveryTag, false);
