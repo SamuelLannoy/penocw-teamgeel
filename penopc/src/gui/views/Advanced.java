@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import field.Border;
@@ -23,6 +24,9 @@ import field.WhiteBorder;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import gui.tools.BarCodeCanvas;
+import java.awt.Color;
+import javax.swing.JTextArea;
 
 public class Advanced extends JFrame {
 
@@ -77,7 +81,30 @@ public class Advanced extends JFrame {
 	private JButton btn_start;
 	private JButton btn_finish;
 	private JButton btn_race;
-
+	private JLabel label_1;
+	private BarCodeCanvas barcode_canvas;
+	private JTextArea textArea_multiscan;
+	
+	private Timer advancedTimer;
+	
+	private Thread advancedThread = new Thread(new Runnable() {
+		public void run() {
+			advancedTimer = new Timer(100, new ActionListener() {
+			    public void actionPerformed(ActionEvent evt) {
+			    	if (robot != null) {
+						try {
+							//robot.updatePosition();
+							barcode_canvas.update(barcode_canvas.getGraphics());
+						} catch (NullPointerException e) {
+							// nothing
+						}
+			    	}
+			    }    
+			});
+			advancedTimer.start();
+		}
+	});
+	
 	/**
 	 * Create the frame.
 	 */
@@ -87,11 +114,13 @@ public class Advanced extends JFrame {
 		initialize();
 		createEvents();
 		setVisible(true);
+		barcode_canvas.setRobot(robot);
+		advancedThread.start();
 	}
 	
 	private void initialize(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 413);
+		setBounds(100, 100, 654, 413);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -300,6 +329,23 @@ public class Advanced extends JFrame {
 
 		btn_race.setBounds(308, 338, 103, 23);
 		contentPane.add(btn_race);
+		
+		label_1 = new JLabel("barcode");
+		label_1.setBounds(421, 11, 67, 14);
+		contentPane.add(label_1);
+		
+		barcode_canvas = new BarCodeCanvas(robot);
+		barcode_canvas.setBackground(Color.WHITE);
+		barcode_canvas.setBounds(417, 31, 202, 100);
+		contentPane.add(barcode_canvas);
+		
+		JLabel label_2 = new JLabel("multiscan values");
+		label_2.setBounds(421, 131, 104, 14);
+		contentPane.add(label_2);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBounds(421, 156, 200, 139);
+		contentPane.add(textArea);
 	}
 	
 	private void createEvents(){
