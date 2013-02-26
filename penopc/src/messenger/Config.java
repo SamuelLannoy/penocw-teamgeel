@@ -11,5 +11,5 @@ public interface Config {
 	public static final int PORT = 5672;
 	
 	public static final String EXCHANGE_NAME = "Exchange"; // TODO
-	public static final String ROUTING_KEY = "testGeel"; // TODO
+	public static final String ROUTING_KEY = "test.rood"; // TODO
 }

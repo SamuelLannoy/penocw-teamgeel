@@ -146,7 +146,10 @@ public class Main extends JFrame {
 		public void run() {
 			try {
 				Messenger.connect();
-				Messenger.receivePush("testRood.*");
+				Messenger.send("Iets random");
+				while(true) {
+					Messenger.receivePush("test.*");
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
