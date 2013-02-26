@@ -45,7 +45,7 @@ public class BarcodeTest {
 
 		colors.add(Color.BLACK);
 		
-		assertEquals(Barcode.TURNLEFT, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.TURNLEFT, BarcodeParser.convertToBarcode(colors));
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class BarcodeTest {
 		colors.add(Color.BLACK);
 		
 		try{
-			Barcode.convertToBarcode(colors);
+			BarcodeParser.convertToBarcode(colors);
 		}
 		catch(IllegalArgumentException e){
 			assertEquals(true, true);
@@ -140,7 +140,7 @@ public class BarcodeTest {
 		colors.add(Color.BLACK);
 
 		try{
-			Barcode.convertToBarcode(colors);
+			BarcodeParser.convertToBarcode(colors);
 		}
 		catch(IllegalStateException e){
 			assertEquals(true, true);
@@ -160,7 +160,7 @@ public class BarcodeTest {
 
 		colors.add(Color.BLACK);
 		
-		assertEquals(Barcode.TURNRIGHT, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.TURNRIGHT, BarcodeParser.convertToBarcode(colors));
 	}
 	
 	@Test
@@ -194,7 +194,7 @@ public class BarcodeTest {
 		colors.add(Color.BLACK);
 
 		
-		assertEquals(Barcode.TURNRIGHT, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.TURNRIGHT, BarcodeParser.convertToBarcode(colors));
 	}
 	
 	@Test
@@ -308,7 +308,7 @@ public class BarcodeTest {
 		colors.add(Color.BLACK);
 
 		System.out.println("size: "+colors.size());
-		assertEquals(Barcode.TURNRIGHT, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.TURNRIGHT, BarcodeParser.convertToBarcode(colors));
 	}
 	
 	@Test
@@ -415,7 +415,7 @@ public class BarcodeTest {
 
 		System.out.println("size: "+colors.size());
 		System.out.println("mod: "+colors.size() % 8);
-		assertEquals(Barcode.LOWSPEED, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.LOWSPEED, BarcodeParser.convertToBarcode(colors));
 	}
 	
 	@Test
@@ -526,7 +526,7 @@ public class BarcodeTest {
 		
 		System.out.println("size: "+colors.size());
 		System.out.println("mod: "+colors.size() % 8);
-		assertEquals(Barcode.LOWSPEED, Barcode.convertToBarcode(colors));
+		assertEquals(BarcodeParser.LOWSPEED, BarcodeParser.convertToBarcode(colors));
 		
 	}
 

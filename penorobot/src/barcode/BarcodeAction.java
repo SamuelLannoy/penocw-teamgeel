@@ -81,7 +81,7 @@ public class BarcodeAction {
 	}
 	
 	public static void seesaw(){
-		//TODO check IR
+		//TODO check stand van de wip
 		double prev = Robot.speed;
 		Robot.getInstance().setTravelSpeed(250);
 		Robot.getInstance().travel(850,false);

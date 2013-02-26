@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import barcode.Barcode;
+import barcode.BarcodeParser;
 
 import communication.Buffer;
 
@@ -155,7 +156,7 @@ public class LightSensor {
 			}
 			Buffer.addDebug("--------- End Barcode list");
 			try{
-				Barcode barcode = Barcode.convertToBarcode(list);
+				Barcode barcode = BarcodeParser.convertToBarcode(list);
 				if(barcode !=null){
 				    Robot.getInstance().sendAndExecuteBarcode(barcode);
 				    Robot.getInstance().setScanning(false);

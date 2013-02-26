@@ -1,6 +1,7 @@
 package robot;
 
 import barcode.Barcode;
+import barcode.BarcodeParser;
 
 import communication.Buffer;
 import communication.PilotController;
