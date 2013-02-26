@@ -63,7 +63,8 @@ public class Messenger {
 				//		envelope.getRoutingKey(),
 				//		new String(body)));
 				
-				DebugBuffer.addInfo("Voorwerp gevonden door " + envelope.getRoutingKey() + ".");
+				// TODO: integratie
+				DebugBuffer.addInfo("Voorwerp gevonden door " + envelope.getRoutingKey() + ". Message: " + new String(body));
 				
 				// send an ack to the server so it can remove the message from the queue.	
 				channel.basicAck(deliveryTag, false);

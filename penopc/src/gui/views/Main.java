@@ -145,9 +145,8 @@ public class Main extends JFrame {
 		public void run() {
 			try {
 				Messenger.connect();
-				Messenger.send("Dit is een test");
+				Messenger.receivePush("testRood.*");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
