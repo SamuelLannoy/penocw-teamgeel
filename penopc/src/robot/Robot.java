@@ -729,6 +729,7 @@ public class Robot {
 	
 	public void setTeamMateBarcode(Barcode barcode){
 		teamMateBarcode = barcode;
+		robotConn.setBarcodePlayer(barcode.toString());
 	}
 	
 	public Barcode getTeamMateBarcode(){
@@ -737,10 +738,12 @@ public class Robot {
 	
 	public void addOtherTeamBarcode(Barcode barcode){
 		otherTeamBarcodes.add(barcode);
+		robotConn.setBarcodePlayer(barcode.toString());
 	}
 	
 	public void removeOtherTeamBarcode(Barcode barcode){
 		otherTeamBarcodes.remove(barcode);
+		robotConn.setBarcodePlayer(barcode.toString());
 	}
 	
 	public List<Barcode> getOtherTeamBarcode(){
