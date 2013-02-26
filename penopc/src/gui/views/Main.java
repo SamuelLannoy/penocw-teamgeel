@@ -23,7 +23,11 @@ import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import peno.htttp.Client;
+
+import messenger.HandlerImplementation;
 import messenger.Messenger;
+import messenger.RabbitMQ;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -40,7 +44,10 @@ import gui.tools.PlotCanvas;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-
+	
+	private final static String BROADCAST_ID = "teamGeel";
+	private final static String LOBBY_ID = "teamGeelLobby";
+	
 	private JPanel contentPane;
 	private JTextArea debugwindow;
 	
@@ -52,6 +59,8 @@ public class Main extends JFrame {
 	private Timer mapTimer;
 	private Timer debugTimer;
 	private Timer sensorTimer;
+	private HandlerImplementation handler;
+	private Client client;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -494,9 +503,7 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de simulator.\n");
 					debugwindow.append("Maak een keuze uit de opdracht en.\n");
 					robot = new Robot(1);
-					robotPool = new RobotPool(robot);
-					canvas.setRobotPool(robotPool);
-					robot.initialize();
+					init();
 					simulatorthread.start();
 				} catch (Exception a) {
 					a.printStackTrace();
@@ -515,9 +522,7 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de robot.\n");
 					debugwindow.append("Maak een keuze uit de opdrachten.\n");
 					robot = new Robot(2);
-					robotPool = new RobotPool(robot);
-					robot.initialize();
-					canvas.setRobotPool(robotPool);
+					init();
 					robotguithread.start();
 					robotreceivethread.start();
 					
@@ -616,7 +621,20 @@ public class Main extends JFrame {
 		});
 		
 	}
+
 	
+	public void init() {
+		robotPool = new RobotPool(robot);
+		robot.initialize();
+		canvas.setRobotPool(robotPool);
+		handler = new HandlerImplementation(robotPool, BROADCAST_ID);
+		try {
+			client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public void resetCanvas() {
 		canvas.setRobotPool(robotPool);
