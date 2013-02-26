@@ -38,4 +38,8 @@ public interface AbstractRobotConnector {
 	public abstract boolean isFinishTile();
 	
 	public abstract boolean hasBall();
+	public abstract void setTeamNr(final int teamnr);
+	public abstract int getTeamNr();
+	public abstract void setId(final int id);
+	public abstract int getId();
 }

@@ -43,7 +43,7 @@ public class Explorer {
 	public static void explore(final Robot robot, EndingCondition endCond) {
 		// TODO: set on center tile
 		if (!robot.isSim()) {
-			robot.setOnCenterTile();
+			//robot.setOnCenterTile();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

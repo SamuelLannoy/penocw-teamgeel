@@ -66,10 +66,13 @@ public class BarcodeAction {
 	}
 	
 	public static void seesaw(){
+		//TODO check IR
+		double prev = Robot.speed;
 		Robot.getInstance().setTravelSpeed(250);
-		Robot.getInstance().travel(900,false);
+		Robot.getInstance().travel(850,false);
 		Button.waitForAnyEvent(1000);
-		Robot.getInstance().travel(300,false);
+		Robot.getInstance().travel(350,false);
+		Robot.getInstance().setTravelSpeed(prev);
 	}
 	
 }

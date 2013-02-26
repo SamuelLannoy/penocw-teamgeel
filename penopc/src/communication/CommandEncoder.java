@@ -165,4 +165,30 @@ public class CommandEncoder implements AbstractRobotConnector {
 		return false;
 	}
 
+	@Override
+	public int getTeamNr() {
+		// TODO Auto-generated method stub
+		// set als bal voorwerp is gevonden
+		return 0;
+	}
+
+	@Override
+	public int getId() {
+		// TODO Auto-generated method stub
+		// identificatienr voor voorwerp
+		return 0;
+	}
+
+	@Override
+	public void setTeamNr(int teamnr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setId(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
