@@ -24,7 +24,6 @@ public class Robot {
 		private boolean isCentering;
 		private LightSensor lightSensor = LightSensor.getInstance();
 		private TouchSensor touchSensor = TouchSensor.getInstance();
-		private static String ourBarcode;
 		private static boolean hasBall;
 		private static int objectNr;
 		private static int teamNr;
@@ -40,6 +39,7 @@ public class Robot {
 			PILOT.setRotateSpeed(DEFAULT_ROTATE_SPEED);
 			PILOT.setAcceleration(DEFAULT_ACCELERATION);
 			speed = DEFAULT_TRAVEL_SPEED;
+			teamNr = -1;
 		}
 
 		public static Robot getInstance(){
@@ -408,6 +408,7 @@ public class Robot {
 		}
 
 		public void setObjectNr(double objectNr) {
+			Buffer.addDebug("ObjectNr received: "+objectNr);
 			objectNr = (int) objectNr;
 		}
 		
@@ -415,22 +416,23 @@ public class Robot {
 			return objectNr;
 		}
 
-		public String getOurBarcode() {
-			return ourBarcode;
-		}
-
 		public boolean hasBall() {
 			return hasBall;
 		}
 
-		public static void setHasBall() {
+		public void setHasBall() {
+			Buffer.addDebug("Robot has found object");
 			Robot.hasBall = true;
 			Buffer.setHasBall();
 		}
 		
 		public void setTeamNr(int i){
+			Buffer.addDebug("TeamNr calculated: "+i);
 			teamNr = i;
-			//TODO send naar PC
+		}
+		
+		public int getTeamNr(){
+			return teamNr;
 		}
 		
 }

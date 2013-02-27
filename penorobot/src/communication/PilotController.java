@@ -235,6 +235,10 @@ public class PilotController {
 			//Write hasBall
 			dataOut.writeBoolean(Buffer.hasBall());
 			
+			//Write teamNr if known
+			dataOut.writeBoolean(Buffer.isTeamKnown());
+			dataOut.writeInt(Buffer.getTeamNr());
+			
 			dataOut.flush();
 		} catch (IOException e) {
 			LCD.drawString("Conn fail", 0, 0);

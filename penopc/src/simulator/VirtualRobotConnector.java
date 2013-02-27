@@ -580,25 +580,13 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	}
 
 	@Override
-	public void setOurBarcode(String teamnr) {
+	public void setObjectNr(int objectNr) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setBarcodePlayer2(String player2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBarcodePlayer3(String player3) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBarcodePlayer4(String player4) {
+	public void setTeamNr(int teamNr) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -607,5 +595,11 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	public int getTeam() {
 		// TODO Auto-generated method stub
 		return 0;
-	}	
+	}
+
+	@Override
+	public int getObjectNr() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

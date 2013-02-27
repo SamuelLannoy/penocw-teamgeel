@@ -168,6 +168,13 @@ public class Bluetooth {
 				boolean hasBall = dataIn.readBoolean();
 				CommandEncoder.getInstance().setHasBall(hasBall);
 				
+				//Receive teamNrInfo
+				boolean teamKnown = dataIn.readBoolean();
+				int teamNr = dataIn.readInt();
+				if(teamKnown){
+					CommandEncoder.getInstance().setTeamNr(teamNr);
+				}
+				
 			} else {
 				System.out.println("No values received.");
 			}

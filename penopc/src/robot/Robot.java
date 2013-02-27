@@ -29,9 +29,6 @@ public class Robot {
 	private Tile startTile;
 	private Tile endTile;
 	private boolean hasBall = false;
-	private Barcode ownBarcode;
-	private Barcode teamMateBarcode;
-	private List<Barcode> otherTeamBarcodes;
 
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
@@ -718,38 +715,6 @@ public class Robot {
 								 + " x4: " + corners[3][0] + " y4: " + corners[3][1]);
 	}
 	
-	public void setOwnBarcode(Barcode barcode){
-		robotConn.setOurBarcode(barcode.toString());
-		ownBarcode = barcode;
-	}
-	
-	public Barcode getOwnBarcode(){
-		return ownBarcode;
-	}
-	
-	public void setTeamMateBarcode(Barcode barcode){
-		teamMateBarcode = barcode;
-		robotConn.setBarcodePlayer(barcode.toString());
-	}
-	
-	public Barcode getTeamMateBarcode(){
-		return teamMateBarcode;
-	}
-	
-	public void addOtherTeamBarcode(Barcode barcode){
-		otherTeamBarcodes.add(barcode);
-		robotConn.setBarcodePlayer(barcode.toString());
-	}
-	
-	public void removeOtherTeamBarcode(Barcode barcode){
-		otherTeamBarcodes.remove(barcode);
-		robotConn.setBarcodePlayer(barcode.toString());
-	}
-	
-	public List<Barcode> getOtherTeamBarcode(){
-		return otherTeamBarcodes;
-	}
-	
 	public void addAction(int action) {
 		System.out.println("action: " + action);
 		switch(action) {
@@ -763,6 +728,10 @@ public class Robot {
 				break;
 		}
 		
+	}
+	
+	public void setObjectNr(int nr){
+		robotConn.setObjectNr(nr);
 	}
 
 }

@@ -122,4 +122,23 @@ public class Buffer {
 	public static void setHasBall(){
 		Buffer.hasBall = true;
 	}
+	
+	/**
+	 * SETTEAMNR
+	 */
+	private static boolean teamKnown;
+	private static int teamNr;
+	
+	public static boolean isTeamKnown(){
+		return Robot.getInstance().getTeamNr() != -1;
+	}
+	
+	public static int getTeamNr(){
+		return Robot.getInstance().getTeamNr();
+	}
+	
+	public static void setTeamNr(int i){
+		teamNr = i;
+	}
+	
 }

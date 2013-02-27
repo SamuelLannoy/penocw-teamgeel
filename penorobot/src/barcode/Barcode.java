@@ -1,5 +1,7 @@
 package barcode;
 
+import communication.Buffer;
+
 import robot.Robot;
 
 public class Barcode {
@@ -14,6 +16,7 @@ public class Barcode {
 		this.type = type;
 		if (type == BarcodeType.OBJECT){
 			determineTeamAndObjectnr(code);
+			Buffer.addDebug("OBJECT barcode: object "+getObjectNr()+", team "+getTeamNr());
 		}
 	}
 
@@ -22,12 +25,15 @@ public class Barcode {
 			if (objectNr == Robot.getInstance().getObjectNr()){
 				Robot.getInstance().setTeamNr(teamNr);
 				BarcodeType.PICKUP.execute();
+				Buffer.addDebug("Executing barcode: "+this.getCode()+", type: "+BarcodeType.PICKUP);
 			}
 			else{
 				BarcodeType.OTHERPLAYERBARCODE.execute();
+				Buffer.addDebug("Executing barcode: "+this.getCode()+", type: "+BarcodeType.OTHERPLAYERBARCODE);
 			}
 		}
 		else{
+			Buffer.addDebug("Executing barcode: "+this.getCode()+", type: "+this.getBarcodeType());
 			type.execute();
 		}
 	}

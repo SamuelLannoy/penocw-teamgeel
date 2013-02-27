@@ -442,9 +442,9 @@ public class Main extends JFrame {
 		lblPosition.setBounds(10, 380, 54, 14);
 		contentPane.add(lblPosition);
 		
-		JLabel lblTeam = new JLabel("Own barcode");
-		lblTeam.setBounds(286, 7, 90, 14);
-		contentPane.add(lblTeam);
+		JLabel lblObjectNr = new JLabel("Object Number");
+		lblObjectNr.setBounds(286, 7, 90, 14);
+		contentPane.add(lblObjectNr);
 		
 		JLabel lblTeammate = new JLabel("Teammate barcode");
 		lblTeammate.setBounds(286, 45, 140, 14);
@@ -588,35 +588,34 @@ public class Main extends JFrame {
 		
 		btnSubmitBarcodes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int[] code = new int[6];
-				if (teamTextArea.getText().length() == 6){
-				for (int i = 0; i < teamTextArea.getText().length(); i++) {
-					code[i] = Integer.parseInt(teamTextArea.getText().substring(i, i+1));
-				}
-				Barcode ownBarcode = new Barcode(code);
-				robot.setOwnBarcode(ownBarcode);
-				}
-				if (teamMateTextArea.getText().length() == 6){
-				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
-					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
-				}
-				Barcode teamBarcode = new Barcode(code);
-				robot.setTeamMateBarcode(teamBarcode);
-				}
-				if (otherTeamTextArea1.getText().length() == 6){
-				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
-					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
-				}
-				Barcode otherTeamBarcode = new Barcode(code);
-				robot.addOtherTeamBarcode(otherTeamBarcode);
-				}
-				if (otherTeamTextArea2.getText().length() == 6){
-					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
-						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
+				int nr = Integer.parseInt(teamTextArea.getText());
+				if (nr < 4){
+					if(robot!=null){
+						robot.setObjectNr(nr);
+						System.out.println("OK, nr = "+nr);
 					}
-					Barcode otherTeamBarcode = new Barcode(code);
-					robot.addOtherTeamBarcode(otherTeamBarcode);
 				}
+//				if (teamMateTextArea.getText().length() == 6){
+//				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
+//					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
+//				}
+//				Barcode teamBarcode = new Barcode(code);
+//				robot.setTeamMateBarcode(teamBarcode);
+//				}
+//				if (otherTeamTextArea1.getText().length() == 6){
+//				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
+//					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
+//				}
+//				Barcode otherTeamBarcode = new Barcode(code);
+//				robot.addOtherTeamBarcode(otherTeamBarcode);
+//				}
+//				if (otherTeamTextArea2.getText().length() == 6){
+//					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
+//						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
+//					}
+//					Barcode otherTeamBarcode = new Barcode(code);
+//					robot.addOtherTeamBarcode(otherTeamBarcode);
+//				}
 			}
 		});
 		
