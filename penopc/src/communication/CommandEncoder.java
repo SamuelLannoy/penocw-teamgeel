@@ -12,8 +12,8 @@ import robot.Robot;
 public class CommandEncoder implements AbstractRobotConnector {
 	
 	private static CommandEncoder instance;
-	private static String ourBarcode;
-	private static List<String> barcodePlayers;
+	private static int objectNr;
+	private static int teamNr;
 	
 	public static CommandEncoder getInstance() {
 		return instance;
@@ -24,6 +24,7 @@ public class CommandEncoder implements AbstractRobotConnector {
 	@Override
 	public void initialize() throws CommunicationException {
 		try {
+			teamNr = -1;
 			Bluetooth.getInstance().setUpConnection();
 		} catch(NXTCommException e) {
 			throw new CommunicationException();
@@ -169,31 +170,36 @@ public class CommandEncoder implements AbstractRobotConnector {
 		return hasBall;
 	}
 
-	@Override
-	public void setOurBarcode(String teamnr) {
-		//TODO oproepen vanuit GUI
-		CommandEncoder.ourBarcode = teamnr;
-		Bluetooth.getInstance().send(Encoding.SETOURBARCODE.ordinal(), (double) Integer.parseInt(teamnr,2), 0, false);
+	public void setHasBall(boolean hasBall) {
+		this.hasBall = hasBall;
 	}
 
 	@Override
-	public void setBarcodePlayer(String player) {
-		if(CommandEncoder.barcodePlayers.size() != 4 && !CommandEncoder.barcodePlayers.contains(player))
-			CommandEncoder.barcodePlayers.add(player);
+	public void setObjectNr(int objectNr) {
+		// TODO Via de GUI ingeven en doorsturen naar robot
 	}
 
+	@Override
+	public void setTeamNr(int teamNr) {
+		// TODO Van de robot naar de PC doorgegeven
+		
+	}
+	
+	/**
+	 * @return -1 if the ball hasn't been located yet
+	 */
 	@Override
 	public int getTeam() {
-		//TODO
 		if(!CommandEncoder.getInstance().hasBall())
 			return -1;
 		else{
-			//TODO
+			return teamNr;
 		}
 	}
 
-	public void setHasBall(boolean hasBall) {
-		this.hasBall = hasBall;
+	@Override
+	public int getObjectNr() {
+		return objectNr;
 	}
 	
 

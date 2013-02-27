@@ -26,6 +26,8 @@ public class Robot {
 		private TouchSensor touchSensor = TouchSensor.getInstance();
 		private static String ourBarcode;
 		private static boolean hasBall;
+		private static int objectNr;
+		private static int teamNr;
 		
 		public static final int DEFAULT_TRAVEL_SPEED = 150;
 		public static final int DEFAULT_ROTATE_SPEED = 50;
@@ -405,22 +407,12 @@ public class Robot {
 			this.noLines = noLines;
 		}
 
-		public void setBarcodeForObject(double param1) {
-			String ourBarcode = "";
-			while(param1 != 1 ){
-				if(param1 % 2 == 0){
-					ourBarcode = "0" + ourBarcode;
-				}
-				else{
-					ourBarcode = "1" + ourBarcode;
-				}
-				param1/=2;
+		public void setObjectNr(double objectNr) {
+			objectNr = (int) objectNr;
 		}
-			ourBarcode = "1" + ourBarcode;
-			
-			while(ourBarcode.length() < 6){
-				ourBarcode = "0"+ ourBarcode;
-			}
+		
+		public int getObjectNr(){
+			return objectNr;
 		}
 
 		public String getOurBarcode() {
@@ -434,6 +426,11 @@ public class Robot {
 		public static void setHasBall() {
 			Robot.hasBall = true;
 			Buffer.setHasBall();
+		}
+		
+		public void setTeamNr(int i){
+			teamNr = i;
+			//TODO send naar PC
 		}
 		
 }

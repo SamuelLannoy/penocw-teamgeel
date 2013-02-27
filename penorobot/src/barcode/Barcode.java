@@ -19,7 +19,8 @@ public class Barcode {
 
 	public void execute(){
 		if(type == BarcodeType.OBJECT){
-			if (code.equals(Robot.getInstance().getOurBarcode())){ //TODO teamnr
+			if (objectNr == Robot.getInstance().getObjectNr()){
+				Robot.getInstance().setTeamNr(teamNr);
 				BarcodeType.PICKUP.execute();
 			}
 			else{

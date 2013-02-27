@@ -115,9 +115,9 @@ public enum Encoding {
 			Robot.getInstance().checkScan();
 		}
 	},
-	SETOURBARCODE{
+	SETOBJECTNR{
 		public void execute(double param1, double param2, boolean flag) {
-			Robot.getInstance().setBarcodeForObject(param1);
+			Robot.getInstance().setObjectNr(param1);
 		}
 	};
 	
