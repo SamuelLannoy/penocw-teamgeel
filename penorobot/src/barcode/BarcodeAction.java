@@ -62,6 +62,8 @@ public class BarcodeAction {
 	}
 	
 	public static void pickupobject(){
+		Buffer.addDebug("STOPSTREAM");
+		PilotController.stopStream();
 		LightSensorVigilante.pause();
 		Robot.getInstance().rotateLeft(90,false);
 		Robot.getInstance().forward();
@@ -71,8 +73,6 @@ public class BarcodeAction {
 		Robot.getInstance().rotateRight(90,false);
 		Robot.getInstance().forward();
 		while(!TouchSensor.getInstance().isPressed());
-		Buffer.addDebug("STOPSTREAM");
-		PilotController.stopStream();
 		Button.waitForAnyPress(1000);
 		PilotController.startStream();
 		Buffer.addDebug("STARTSTREAM");
