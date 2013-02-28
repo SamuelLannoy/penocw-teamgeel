@@ -21,7 +21,10 @@ public class Barcode {
 	}
 
 	public void execute(){
+		Buffer.addDebug("Type: "+type);
 		if(type == BarcodeType.OBJECT){
+			Buffer.addDebug("ObjectNr Barocode" + objectNr);
+			Buffer.addDebug("Our ObjectNr" + Robot.getInstance().getObjectNr());
 			if (objectNr == Robot.getInstance().getObjectNr()){
 				Robot.getInstance().setTeamNr(teamNr);
 				BarcodeType.PICKUP.execute();

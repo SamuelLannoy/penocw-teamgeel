@@ -184,6 +184,8 @@ public class CommandEncoder implements AbstractRobotConnector {
 	@Override
 	public void setObjectNr(int nr) {
 		Status.setObjectNr(nr);
+		Bluetooth.getInstance().send(Encoding.SETOBJECTNR.ordinal(),nr,0,false);
+		System.out.println("teamnr verzonden "+ nr);
 	}
 	
 
