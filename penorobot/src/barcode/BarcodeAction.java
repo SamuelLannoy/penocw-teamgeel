@@ -73,7 +73,7 @@ public class BarcodeAction {
 		Robot.getInstance().rotateRight(90,false);
 		Robot.getInstance().forward();
 		while(!TouchSensor.getInstance().isPressed());
-		Button.waitForAnyPress(1000);
+		Button.waitForAnyPress(500);
 		PilotController.startStream();
 //		Buffer.addDebug("STARTSTREAM");
 //		Robot.getInstance().stop();
