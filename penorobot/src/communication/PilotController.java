@@ -89,7 +89,7 @@ public class PilotController {
 		Thread touchSensorVigilante = new Thread(new Runnable() {
 			public void run() {
 				while(true){
-					Buffer.setTouched(TouchSensor.getInstance().isPressed());
+					//Buffer.setTouched(TouchSensor.getInstance().isPressed());
 					try {
 						Thread.sleep(TIME_OUT);
 					} catch (InterruptedException e) {
