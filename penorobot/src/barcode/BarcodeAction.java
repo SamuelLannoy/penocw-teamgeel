@@ -77,10 +77,10 @@ public class BarcodeAction {
 		PilotController.startStream();
 //		Buffer.addDebug("STARTSTREAM");
 //		Robot.getInstance().stop();
-		Robot.getInstance().travel(800, false);
+//		Robot.getInstance().travel(800, false);
 		Robot.getInstance().travel(-100, false);
 		Robot.getInstance().rotateLeft(180, false);
-		Robot.getInstance().travel(800,false);
+		Robot.getInstance().travel(400,false);
 		LightSensorVigilante.resume();
 		Robot.getInstance().setHasBall();
 	}
