@@ -1,6 +1,7 @@
 package barcode;
 
 import communication.Buffer;
+import communication.PilotController;
 
 import lejos.nxt.Button;
 import lejos.nxt.Sound;
@@ -70,7 +71,9 @@ public class BarcodeAction {
 		Robot.getInstance().rotateRight(90,false);
 		Robot.getInstance().forward();
 		while(!TouchSensor.getInstance().isPressed());
+		PilotController.stopStream();
 		Button.waitForAnyPress(1000);
+		PilotController.startStream();
 		Robot.getInstance().stop();
 		Robot.getInstance().travel(800, false);
 		Robot.getInstance().travel(-100, false);
