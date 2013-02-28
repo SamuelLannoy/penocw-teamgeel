@@ -3,6 +3,7 @@ package messenger;
 import java.util.Collection;
 
 import peno.htttp.Handler;
+import robot.DebugBuffer;
 import robot.Robot;
 import robot.RobotPool;
 
@@ -23,7 +24,7 @@ public class HandlerImplementation implements Handler {
 				robotPool.addRobot(new Robot(1), id);
 			}
 		}
-
+		DebugBuffer.addInfo("game started with " + robotPool.getRobots().toString());
 	}
 
 	@Override
@@ -35,6 +36,7 @@ public class HandlerImplementation implements Handler {
 	@Override
 	public void playerPosition(String playerID, double x, double y, double angle) {
 		robotPool.updateRobot(playerID, x, y, angle);
+		DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
 	}
 
 }
