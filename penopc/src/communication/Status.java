@@ -12,6 +12,9 @@ public class Status {
 	private static boolean isCentering = false;
 	private static boolean isStartTile = false;
 	private static boolean isFinishTile = false;
+	private static boolean hasBall = false;
+	private static int teamNr = -1;
+	private static int objectNr = -1;
 	
 	public static double getMovementIncrement() {
 		double increment = movementIncrement/10;
@@ -54,6 +57,27 @@ public class Status {
 		Status.isCentering = isCentering;
 		Status.isStartTile = isStartTile;
 		Status.isFinishTile = isFinishTile;
+	}
+	
+	public static void updateObjectInfo(boolean hasBall, int teamNr){
+		Status.hasBall = hasBall;
+		Status.teamNr = teamNr;
+	}
+	
+	public static void setObjectNr(int i){
+		objectNr = i;
+	}
+	
+	public static int getObjectNr(){
+		return objectNr;
+	}
+	
+	public static boolean getHasBall(){
+		return hasBall;
+	}
+	
+	public static int getTeamNr(){
+		return teamNr;
 	}
 	
 	

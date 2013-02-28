@@ -12,19 +12,17 @@ import robot.Robot;
 public class CommandEncoder implements AbstractRobotConnector {
 	
 	private static CommandEncoder instance;
-	private static int objectNr;
-	private static int teamNr;
 	
 	public static CommandEncoder getInstance() {
+		if(instance == null){
+			instance = new CommandEncoder();
+		}
 		return instance;
 	}
-
-	private boolean hasBall;
-
+	
 	@Override
 	public void initialize() throws CommunicationException {
 		try {
-			teamNr = -1;
 			Bluetooth.getInstance().setUpConnection();
 		} catch(NXTCommException e) {
 			throw new CommunicationException();
@@ -167,22 +165,7 @@ public class CommandEncoder implements AbstractRobotConnector {
 
 	@Override
 	public boolean hasBall() {
-		return hasBall;
-	}
-
-	public void setHasBall(boolean hasBall) {
-		this.hasBall = hasBall;
-	}
-
-	@Override
-	public void setObjectNr(int objectNr) {
-		// TODO Via de GUI ingeven en doorsturen naar robot
-	}
-
-	@Override
-	public void setTeamNr(int teamNr) {
-		// TODO Van de robot naar de PC doorgegeven
-		
+		return Status.getHasBall();
 	}
 	
 	/**
@@ -190,16 +173,17 @@ public class CommandEncoder implements AbstractRobotConnector {
 	 */
 	@Override
 	public int getTeam() {
-		if(!CommandEncoder.getInstance().hasBall())
-			return -1;
-		else{
-			return teamNr;
-		}
+		return Status.getTeamNr();
 	}
 
 	@Override
 	public int getObjectNr() {
-		return objectNr;
+		return Status.getObjectNr();
+	}
+
+	@Override
+	public void setObjectNr(int nr) {
+		Status.setObjectNr(nr);
 	}
 	
 

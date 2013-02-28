@@ -515,6 +515,7 @@ public class Main extends JFrame {
 		// robot gekozen.
 		toggle_robot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("Fysische robot gekozen");
 				try {
 					toggle_robot.setSelected(true);
 					toggle_robot.setEnabled(false);
@@ -522,11 +523,13 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de robot.\n");
 					debugwindow.append("Maak een keuze uit de opdrachten.\n");
 					robot = new Robot(2);
+					System.out.println("Robot ok: "+robot);
 					init();
 					robotguithread.start();
 					robotreceivethread.start();
 					
 				} catch (CommunicationException norobot){
+					System.out.println("Exception");
 					toggle_robot.setSelected(false);
 					toggle_robot.setEnabled(true);
 					toggle_simulator.setEnabled(true);
@@ -569,6 +572,7 @@ public class Main extends JFrame {
 		
 		btnExplore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(robot);
 				robot.explore();
 				resetCanvas();
 			}
@@ -627,16 +631,16 @@ public class Main extends JFrame {
 		robot.initialize();
 		canvas.setRobotPool(robotPool);
 		handler = new HandlerImplementation(robotPool, BROADCAST_ID);
-		try {
-			client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void resetCanvas() {
