@@ -6,6 +6,16 @@ public class Barcode {
 
 	int[] code = new int[6];
 	
+	BarcodeType type;
+	
+	public BarcodeType getType() {
+		return type;
+	}
+
+	public void setType(BarcodeType type) {
+		this.type = type;
+	}
+
 	public Barcode(int... code)
 		throws IllegalArgumentException {
 		setCode(code);

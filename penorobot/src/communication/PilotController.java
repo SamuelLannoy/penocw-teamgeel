@@ -89,7 +89,7 @@ public class PilotController {
 		Thread touchSensorVigilante = new Thread(new Runnable() {
 			public void run() {
 				while(true){
-					//Buffer.setTouched(TouchSensor.getInstance().isPressed());
+					 Buffer.setTouched(TouchSensor.getInstance().isPressed());
 					try {
 						Thread.sleep(TIME_OUT);
 					} catch (InterruptedException e) {
@@ -217,6 +217,18 @@ public class PilotController {
 			
 			dataOut.writeInt(barcodes.size());
 			for(String bc: barcodes) {
+				dataOut.writeUTF(bc);
+			}
+			
+			// Write the barcodetypes
+			ArrayList<String> barcodetypes = new ArrayList<String>();
+			synchronized(Buffer.getBarcodetypes()) {
+				barcodes.addAll(Buffer.getBarcodetypes());
+				Buffer.getBarcodetypes().clear();
+			}
+			
+			dataOut.writeInt(barcodetypes.size());
+			for(String bc: barcodetypes) {
 				dataOut.writeUTF(bc);
 			}
 			

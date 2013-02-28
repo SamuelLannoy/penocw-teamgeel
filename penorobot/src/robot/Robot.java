@@ -380,6 +380,8 @@ public class Robot {
 		
 		public void sendBarcode(Barcode barcode) {
 			Buffer.addBarcode(barcode.getCode());
+			Buffer.addBarcodeType(barcode.getBarcodeType().toString());
+			Buffer.addDebug("test send " + barcode.getBarcodeType());
 		}
 
 		public boolean isScanning() {

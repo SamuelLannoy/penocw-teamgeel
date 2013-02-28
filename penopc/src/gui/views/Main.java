@@ -23,6 +23,7 @@ import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import peno.htttp.Callback;
 import peno.htttp.Client;
 
 import messenger.HandlerImplementation;
@@ -38,6 +39,7 @@ import communication.Bluetooth;
 
 import exception.CommunicationException;
 import field.Barcode;
+import field.BarcodeType;
 import gui.tools.BarCodeCanvas;
 import gui.tools.DrawCanvas;
 import gui.tools.PlotCanvas;
@@ -98,8 +100,9 @@ public class Main extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
 			    		try {
-			    		Bluetooth.getInstance().receive();
+			    			Bluetooth.getInstance().receive();
 			    		} catch (Exception e){
+			    			e.printStackTrace();
 			    			debugwindow.append("Verbinding verbroken.");
 			    			button_terminate.doClick();
 			    		}
@@ -205,10 +208,14 @@ public class Main extends JFrame {
 	
 						// update pressure sensor data.
 						textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
+						
+						
 						if (!SensorBuffer.getBarcodes().isEmpty()){
 							Barcode barcode = new Barcode(SensorBuffer.getBarcodes().get(0));
+							barcode.setType(BarcodeType.valueOf(SensorBuffer.getBarcodeTypes().get(0)));
 							robot.getCurrTile().setBarcode(barcode);
 							SensorBuffer.getBarcodes().clear();
+							SensorBuffer.getBarcodeTypes().clear();
 						}
 						
 						// update scanned data
@@ -515,7 +522,6 @@ public class Main extends JFrame {
 		// robot gekozen.
 		toggle_robot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Fysische robot gekozen");
 				try {
 					toggle_robot.setSelected(true);
 					toggle_robot.setEnabled(false);
@@ -523,13 +529,15 @@ public class Main extends JFrame {
 					debugwindow.append("U heeft gekozen voor de robot.\n");
 					debugwindow.append("Maak een keuze uit de opdrachten.\n");
 					robot = new Robot(2);
-					System.out.println("Robot ok: "+robot);
-					init();
+					try {
+						init();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					robotguithread.start();
 					robotreceivethread.start();
 					
 				} catch (CommunicationException norobot){
-					System.out.println("Exception");
 					toggle_robot.setSelected(false);
 					toggle_robot.setEnabled(true);
 					toggle_simulator.setEnabled(true);
@@ -572,7 +580,6 @@ public class Main extends JFrame {
 		
 		btnExplore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(robot);
 				robot.explore();
 				resetCanvas();
 			}
@@ -626,21 +633,29 @@ public class Main extends JFrame {
 	}
 
 	
-	public void init() {
+	public void init() throws IOException {
 		robotPool = new RobotPool(robot);
 		robot.initialize();
 		canvas.setRobotPool(robotPool);
 		handler = new HandlerImplementation(robotPool, BROADCAST_ID);
-//		try {
-//			client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		try {
-//			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
+		DebugBuffer.addInfo("joining lobby");
+		client.join(new Callback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				DebugBuffer.addInfo("joined lobby");
+			}
+			
+			@Override
+			public void onFailure(Throwable t) {
+				
+			}
+		});
+
+		
+		//client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+
 	}
 	
 	public void resetCanvas() {

@@ -156,6 +156,14 @@ public class Bluetooth {
 				}
 				SensorBuffer.updateBarcodes(barcodes);
 				
+				// Receive barcodetypes
+				int numberOfBarcodetypes = dataIn.readInt();
+				ArrayList<String> barcodetypes = new ArrayList<String>();
+				for(int i = 0; i < numberOfBarcodetypes; i++) {
+					barcodetypes.add(dataIn.readUTF());
+				}
+				SensorBuffer.updateBarcodeTypes(barcodetypes);
+				
 				// Receive debug information
 				int numberOfDebugMsg = dataIn.readInt();
 				ArrayList<String> debug = new ArrayList<String>();

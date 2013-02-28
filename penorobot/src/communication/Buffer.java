@@ -82,6 +82,18 @@ public class Buffer {
 		}
 	}
 	
+	private static ArrayList<String> barcodetypes = new ArrayList<String>();
+	
+	public static ArrayList<String> getBarcodetypes() {
+		return barcodetypes;
+	}
+	
+	public static void addBarcodeType(String barcodeType) {
+		synchronized(barcodetypes) {
+			barcodetypes.add(barcodeType);
+		}
+	}
+	
 	/**
 	 * TOUCH SENSOR
 	 */

@@ -29,8 +29,7 @@ public class HandlerImplementation implements Handler {
 
 	@Override
 	public void gameStopped() {
-		// TODO Auto-generated method stub
-
+		DebugBuffer.addInfo("game stopped");
 	}
 
 	@Override

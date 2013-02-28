@@ -162,6 +162,11 @@ public class Explorer {
 				
 				if (correct) {
 					DebugBuffer.addInfo("correct barcode");
+					
+					Barcode code = robot.getCurrTile().getBarcode();
+					
+					DebugBuffer.addInfo("test: " + code.getType());
+					
 				} else if (wrong) {
 					DebugBuffer.addInfo("wrong barcode");
 					robot.moveForward(40);

@@ -117,6 +117,20 @@ public class SensorBuffer {
 		return barcodes;
 	}
 	
+	private static List<String> barcodetypes = Collections.synchronizedList(new ArrayList<String>());
+	
+	public static void updateBarcodeTypes(ArrayList<String> barcodetypes) {
+		if (barcodetypes.size() > 0) {
+			System.out.println("test");
+		}
+		for(int i = 0; i < barcodetypes.size(); i++) {
+			SensorBuffer.barcodetypes.add(barcodetypes.get(i));
+		}
+	}
+	
+	public static List<String> getBarcodeTypes() {
+		return barcodetypes;
+	}
 		
 	/**
 	 * TOUCH SENSOR
