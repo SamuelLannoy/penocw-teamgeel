@@ -595,6 +595,7 @@ public class Main extends JFrame {
 						System.out.println("OK, nr = "+nr);
 					}
 				}
+				
 //				if (teamMateTextArea.getText().length() == 6){
 //				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
 //					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
