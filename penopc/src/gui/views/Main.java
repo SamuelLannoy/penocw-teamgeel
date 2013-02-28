@@ -46,7 +46,7 @@ import gui.tools.PlotCanvas;
 public class Main extends JFrame {
 	
 	private final static String BROADCAST_ID = "teamGeel";
-	private final static String LOBBY_ID = "teamGeelLobby";
+	private final static String LOBBY_ID = "Exchange";
 	
 	private JPanel contentPane;
 	private JTextArea debugwindow;
@@ -152,7 +152,7 @@ public class Main extends JFrame {
 		}
 	});
 	
-	private Thread messagethread = new Thread(new Runnable() {
+	/*private Thread messagethread = new Thread(new Runnable() {
 		public void run() {
 			try {
 				Messenger.connect();
@@ -164,7 +164,7 @@ public class Main extends JFrame {
 				e.printStackTrace();
 			}
 		}
-	});
+	});*/
 	
 	private Thread sensorthread = new Thread(new Runnable() {
 		public void run() {
@@ -282,7 +282,7 @@ public class Main extends JFrame {
 		mapthread.start();
 		sensorthread.start();
 		debugthread.start();
-		messagethread.start();
+		//messagethread.start();
 	}
 	
 	private void initComponents(){
@@ -442,9 +442,9 @@ public class Main extends JFrame {
 		lblPosition.setBounds(10, 380, 54, 14);
 		contentPane.add(lblPosition);
 		
-		JLabel lblObjectNr = new JLabel("Object Number");
-		lblObjectNr.setBounds(286, 7, 90, 14);
-		contentPane.add(lblObjectNr);
+		JLabel lblTeam = new JLabel("Own barcode");
+		lblTeam.setBounds(286, 7, 90, 14);
+		contentPane.add(lblTeam);
 		
 		JLabel lblTeammate = new JLabel("Teammate barcode");
 		lblTeammate.setBounds(286, 45, 140, 14);
@@ -588,34 +588,35 @@ public class Main extends JFrame {
 		
 		btnSubmitBarcodes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int nr = Integer.parseInt(teamTextArea.getText());
-				if (nr < 4){
-					if(robot!=null){
-						robot.setObjectNr(nr);
-						System.out.println("OK, nr = "+nr);
-					}
+				int[] code = new int[6];
+				if (teamTextArea.getText().length() == 6){
+				for (int i = 0; i < teamTextArea.getText().length(); i++) {
+					code[i] = Integer.parseInt(teamTextArea.getText().substring(i, i+1));
 				}
-//				if (teamMateTextArea.getText().length() == 6){
-//				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
-//					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
-//				}
-//				Barcode teamBarcode = new Barcode(code);
-//				robot.setTeamMateBarcode(teamBarcode);
-//				}
-//				if (otherTeamTextArea1.getText().length() == 6){
-//				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
-//					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
-//				}
-//				Barcode otherTeamBarcode = new Barcode(code);
-//				robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
-//				if (otherTeamTextArea2.getText().length() == 6){
-//					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
-//						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
-//					}
-//					Barcode otherTeamBarcode = new Barcode(code);
-//					robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
+				Barcode ownBarcode = new Barcode(code);
+				robot.setOwnBarcode(ownBarcode);
+				}
+				if (teamMateTextArea.getText().length() == 6){
+				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
+					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
+				}
+				Barcode teamBarcode = new Barcode(code);
+				robot.setTeamMateBarcode(teamBarcode);
+				}
+				if (otherTeamTextArea1.getText().length() == 6){
+				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
+					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
+				}
+				Barcode otherTeamBarcode = new Barcode(code);
+				robot.addOtherTeamBarcode(otherTeamBarcode);
+				}
+				if (otherTeamTextArea2.getText().length() == 6){
+					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
+						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
+					}
+					Barcode otherTeamBarcode = new Barcode(code);
+					robot.addOtherTeamBarcode(otherTeamBarcode);
+				}
 			}
 		});
 		
@@ -632,7 +633,11 @@ public class Main extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		try {
+			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void resetCanvas() {
