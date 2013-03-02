@@ -14,6 +14,7 @@ import field.*;
 import field.fromfile.FieldFactory;
 
 import robot.AbstractRobotConnector;
+import robot.DebugBuffer;
 import robot.Robot;
 import robot.SensorBuffer;
 import simulator.lightsensor.LightSensor;
@@ -51,7 +52,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	
 
 	private double width = 6;
-	private double length = 18;
+	private double length = 10;
 	
 	public double[][] getCorners(double x, double y) {
 		double[][] arr = new double[4][2];
@@ -89,10 +90,16 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		return arr;
 	}
 	
+	public void setSimAngle(double angle) {
+		tRotation = angle;
+		this.angle = angle * Math.PI / 180;
+	}
+	
 	public void setSimLoc(double x, double y, double angle) {
 		tdistancex = x;
 		tdistancey = y;
 		tRotation = angle;
+		this.angle = angle;
 	}
 
 	private double moveSpeed = 0.0;
@@ -535,7 +542,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	
 	@Override
 	public void setOnCenterTile(Robot robot){
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -572,34 +579,33 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	
 	@Override
 	public boolean hasBall() {
-		if (hasBall) {
-			hasBall = false;
-			return true;
-		}
-		return false;
+		return hasBall;
+	}
+	
+	public void setHasBall(boolean set) {
+		hasBall = set;
 	}
 
+	private int objectNr;
+	
 	@Override
 	public void setObjectNr(int objectNr) {
-		// TODO Auto-generated method stub
-		
+		this.objectNr = objectNr;
 	}
 
-	@Override
-	public void setTeamNr(int teamNr) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	private int teamNr = -1;
+	
 	@Override
 	public int getTeam() {
-		// TODO Auto-generated method stub
-		return 0;
+		return teamNr;
 	}
 
+	public void setTeamNr(int nr) {
+		teamNr = nr;
+	}
+	
 	@Override
 	public int getObjectNr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return objectNr;
 	}
 }

@@ -1,7 +1,10 @@
 package simulator.lightsensor;
 
+import robot.DebugBuffer;
 import robot.SensorBuffer;
 import simulator.VirtualRobotConnector;
+import field.Barcode;
+import field.BarcodeType;
 import field.Field;
 
 public class LightSensor {
@@ -43,6 +46,8 @@ public class LightSensor {
 	private int lastVal = 63;
 	private int counter;
 	private int hoeveel;
+	private boolean wasOnBarcode = false;
+	private Barcode lastBarcode;
 	public int readValue(){
 		int randomness = !connector.isMoving() ? (int)(Math.random()*2) : ((int)(Math.random()*7) < 6 ? (int)(Math.random()*6) : (int)(Math.random()*15));
 		int posneg = Math.random() > 0.5 ? 1 : -1;
@@ -51,11 +56,42 @@ public class LightSensor {
 			System.out.println(hoeveel++);
 		if(connector.isMoving()){
 			if (maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY())){
+				wasOnBarcode = false;
 				value =  100 + posneg * randomness;
 				lastColor = Color.WHITE;
 				//System.out.println("1 " + "wit");
 			}
 			else if (maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())){
+				if (!wasOnBarcode) {
+					wasOnBarcode = true;
+					SensorBuffer.addLightUpdate(1);
+					Barcode bc = maze.getTileMap().getObjectAtId(Field.convertToTilePosition(connector.getTDistanceX(), connector.getTDistanceY())).getBarcode();
+					DebugBuffer.addInfo("code " + bc.getDecimal());
+					if (bc.getDecimal() <= 7) {
+						SensorBuffer.addBarcodeType(BarcodeType.OBJECT.toString());
+						if ((bc.getDecimal() % 4) == connector.getObjectNr()) {
+							DebugBuffer.addInfo("TEST");
+							if (!connector.hasBall()) {
+								//connector.turnLeft(180);
+								//connector.setSimAngle((connector.getTRotation() + 180) % 360);
+								connector.setHasBall(true);
+							}
+							if (bc.getDecimal() <= 3) {
+								connector.setTeamNr(0);
+							} else if (bc.getDecimal() <= 7) {
+								connector.setTeamNr(1);
+							}
+						}
+					} else if (bc.getDecimal() >= 55){
+						SensorBuffer.addBarcodeType(BarcodeType.CHECKPOINT.toString());
+					} else if (bc.getDecimal() > 7 && bc.getDecimal() < 55) {
+						SensorBuffer.addBarcodeType(BarcodeType.SEESAW.toString());
+					} else {
+						SensorBuffer.addBarcodeType(BarcodeType.ILLEGAL.toString());
+					}
+					SensorBuffer.addBarcode(bc.toString());
+					
+				}
 				if (maze.isOnBlack(connector.getTDistanceX(), connector.getTDistanceY())) {
 					value =  15 + posneg * randomness;
 					//lastColor = Color.BLACK;
@@ -67,6 +103,7 @@ public class LightSensor {
 				}
 			}
 			else{
+				wasOnBarcode = false;
 				value = 63 + posneg * randomness;
 				lastColor = Color.BROWN;
 			}

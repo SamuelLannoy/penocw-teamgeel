@@ -223,7 +223,7 @@ public class PilotController {
 			// Write the barcodetypes
 			ArrayList<String> barcodetypes = new ArrayList<String>();
 			synchronized(Buffer.getBarcodetypes()) {
-				barcodes.addAll(Buffer.getBarcodetypes());
+				barcodetypes.addAll(Buffer.getBarcodetypes());
 				Buffer.getBarcodetypes().clear();
 			}
 			

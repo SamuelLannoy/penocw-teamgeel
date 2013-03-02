@@ -23,7 +23,8 @@ public class Explorer {
 
 			@Override
 			public boolean isLastTile(Robot robot) {
-				return false;
+				//return false;
+				return robot.hasBall();
 			}
 			
 		});
@@ -53,7 +54,7 @@ public class Explorer {
 				
 			}
 			waitTillRobotStops(robot, 1000);
-			DebugBuffer.addInfo("resetting pos");
+			//DebugBuffer.addInfo("resetting pos");
 			robot.zeroPos();
 		}
 		
@@ -77,7 +78,7 @@ public class Explorer {
 			}
 			if (quit)
 				break;
-			DebugBuffer.addInfo("explore " + current.getTile().getPosition());
+			//DebugBuffer.addInfo("explore " + current.getTile().getPosition());
 
 
 			List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile());
@@ -113,8 +114,10 @@ public class Explorer {
 				//DebugBuffer.addInfo("done moving!");
 			}
 			Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
+			System.out.println("dirforw " + dirForw);
 			Direction dirLeft = Direction.fromAngle(robot.getPosition().getRotation() - 90); 
 			Direction dirRight = Direction.fromAngle(robot.getPosition().getRotation() + 90);
+			Direction dirBack = Direction.fromAngle(robot.getPosition().getRotation() + 180);
 			/*for (Tile tile : tileList) {
 				robot.travelToNextTile(tile);
 				waitTillRobotStops(robot, 2000);
@@ -123,7 +126,7 @@ public class Explorer {
 			
 			boolean correct = robot.hasCorrectBarcode();
 			boolean wrong = robot.hasWrongBarcode();
-			DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
+			//DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
 			/*if (correct || wrong) {
 				DebugBuffer.addInfo("barcode detected!");
 			}*/
@@ -131,8 +134,12 @@ public class Explorer {
 				//DebugBuffer.addInfo("barcode detected!");
 				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
+				
+				Position newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+				System.out.println("newtilepos " + newTilePos);
 				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addTile(new Tile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())));
+					field.addTile(new Tile(newTilePos));
+				
 				if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
 				if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
@@ -157,8 +164,10 @@ public class Explorer {
 						//System.out.println("waiting for barcode result");
 					//}
 					
-					DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
+					//DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
 				}
+
+				boolean check = true;
 				
 				if (correct) {
 					DebugBuffer.addInfo("correct barcode");
@@ -166,6 +175,73 @@ public class Explorer {
 					Barcode code = robot.getCurrTile().getBarcode();
 					
 					DebugBuffer.addInfo("test: " + code.getType());
+					
+					switch (code.getType()) {
+						case OBJECT:
+							/*if (robot.getTeamNr() == -1 || (robot.hasBall() && robot.getTeamNr() != -1)){
+
+								
+							} else {
+								
+							}*/
+							
+							Direction dirForwLocal = dirForw;
+							Direction dirBackLocal = dirBack;
+
+							Tile newT;
+							if (robot.getTeamNr() != -1 && !robot.hasFoundOwnBarcode()) {
+								robot.setHasFoundOwnBarcode(true);
+								robot.stopMoving();
+								//Direction temp = dirForw;
+								//dirForwLocal = dirBack;
+								//dirBackLocal = temp;
+								
+								//Position pos = dirBackLocal.getPositionInDirection(robot.getCurrTile().getPosition());
+								//pos = dirBackLocal.getPositionInDirection(pos);
+								//Tile tile = robot.getField().getTileMap().getObjectAtId(pos);
+								
+								
+								robot.setPosition(new robot.Position(0, 0, dirBackLocal.toAngle()), robot.getCurrTile());
+								
+								//pos = dirForwLocal.getPositionInDirection(pos);
+								//pos = dirForwLocal.getPositionInDirection(pos);
+								System.out.println("adding tile: " + newTilePos);
+								/*if (field.canHaveAsTile(pos)) {
+									field.addTile(new Tile(pos));
+								}*/
+								newT = robot.getField().getTileMap().getObjectAtId(newTilePos);
+							} else {
+								if (field.canHaveAsTile(dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition())))
+									field.addTile(new Tile(dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition())));
+								newT = robot.getField().getTileMap().getObjectAtId(dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition()));
+								System.out.println("adding tile: " + newT.getPosition());
+							}
+							System.out.println("tile: " + robot.getCurrTile().getPosition());
+							
+							
+							if (field.canHaveAsBorder(dirForwLocal.getBorderPositionInDirection(newT.getPosition())))
+								field.addBorder(new PanelBorder(dirForwLocal.getBorderPositionInDirection(newT.getPosition())));
+							
+							if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())))
+								field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())));
+							
+							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
+								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
+							check = false;
+							break;
+						case CHECKPOINT:
+							break;
+						case ILLEGAL:
+							break;
+						case OTHERPLAYERBARCODE:
+							break;
+						case PICKUP:
+							break;
+						case SEESAW:
+							break;
+						default:
+							break;
+					}
 					
 				} else if (wrong) {
 					DebugBuffer.addInfo("wrong barcode");
@@ -185,10 +261,12 @@ public class Explorer {
 					wrong = robot.hasWrongBarcode();*/
 				}
 				
-				Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
-				ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
-				if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
-					toExplore.add(newNode);
+				if (check) {
+					Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
+					ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
+					if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
+						toExplore.add(newNode);
+					}
 				}
 			} else {
 
@@ -257,7 +335,7 @@ public class Explorer {
 			});
 			
 			
-			System.out.println("list " + toExplore);
+			DebugBuffer.addInfo("list " + toExplore);
 			// reset barcode values
 			robot.hasCorrectBarcode();
 			robot.hasWrongBarcode();

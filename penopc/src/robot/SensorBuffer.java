@@ -88,13 +88,13 @@ public class SensorBuffer {
 	public static void updateLightUpdates(ArrayList<Integer> lightUpdates) {
 		for(int i = 0; i < lightUpdates.size(); i++) {
 			SensorBuffer.lightUpdates.add(lightUpdates.get(i));
-			DebugBuffer.addInfo("lightupdate: " + lightUpdates.get(i));
+			//DebugBuffer.addInfo("lightupdate: " + lightUpdates.get(i));
 		}
 	}
 	
 	public static void addLightUpdate(int update) {
 		lightUpdates.add(update);
-		DebugBuffer.addInfo("lightupdate: " + update);
+		//DebugBuffer.addInfo("lightupdate: " + update);
 	}
 	
 	public static List<Integer> getLightUpdates() {
@@ -113,6 +113,10 @@ public class SensorBuffer {
 		}
 	}
 	
+	public static void addBarcode(String barcode) {
+		SensorBuffer.barcodes.add(barcode);
+	}
+	
 	public static List<String> getBarcodes() {
 		return barcodes;
 	}
@@ -126,6 +130,11 @@ public class SensorBuffer {
 		for(int i = 0; i < barcodetypes.size(); i++) {
 			SensorBuffer.barcodetypes.add(barcodetypes.get(i));
 		}
+	}
+	
+	public static void addBarcodeType(String type) {
+		SensorBuffer.barcodetypes.add(type);
+		System.out.println("test");
 	}
 	
 	public static List<String> getBarcodeTypes() {

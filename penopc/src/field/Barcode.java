@@ -62,6 +62,14 @@ public class Barcode {
 		return code;
 	}
 	
+	public int getDecimal() {
+		int dec = 0;
+		for (int i = 0; i < getCode().length; i++) {
+			dec += Math.pow(2, i) * getCode()[getCode().length - i - 1];
+		}
+		return dec;
+	}
+	
 	private void setCode(int... code)
 			throws IllegalArgumentException {
 		if (!isValidCode(code))
@@ -100,6 +108,17 @@ public class Barcode {
 		if (!Arrays.equals(code, other.code))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getCode().length; i++){
+			sb.append(getCode()[i]);
+		}
+		
+		return sb.toString();
+		
 	}
 	
 }

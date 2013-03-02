@@ -13,25 +13,25 @@ import java.util.Map;
  *
  */
 
-public class RobotPool implements Iterable<Robot>{
+public class RobotPool implements Iterable<RobotModel>{
 	
-	private Map<String, Robot> robotPool;
+	private Map<String, RobotModel> robotPool;
 	
 	public RobotPool(Robot mainRobot){
-		robotPool = new HashMap<String, Robot>();
+		robotPool = new HashMap<String, RobotModel>();
 		robotPool.put("main", mainRobot);
 	}
 	
-	public Collection<Robot> getRobots(){
+	public Collection<RobotModel> getRobots(){
 		return robotPool.values();
 	}
 	
 	public Robot getMainRobot(){
-		return robotPool.get("main");
+		return (Robot)robotPool.get("main");
 	}
 	
-	public Collection<Robot> getOtherRobots(){
-		Collection<Robot> others = new ArrayList<Robot>();
+	public Collection<RobotModel> getOtherRobots(){
+		Collection<RobotModel> others = new ArrayList<RobotModel>();
 		for (String rob : robotPool.keySet()) {
 			if (!rob.equals("main")) {
 				others.add(robotPool.get(rob));
@@ -40,12 +40,12 @@ public class RobotPool implements Iterable<Robot>{
 		return others;
 	}
 	
-	public void addRobot(Robot robot, String id){
+	public void addRobot(RobotModel robot, String id){
 		robotPool.put(id, robot);
 	}
 	
-	public void removeRobot(Robot robot){
-		robotPool.remove(robot);
+	public void removeRobot(String id){
+		robotPool.remove(id);
 	}
 	
 	public int getRobotPoolSize(){
@@ -55,27 +55,27 @@ public class RobotPool implements Iterable<Robot>{
 	public void updatePosition(){
 		/*for (String rob : robotPool.keySet()) {
 			if (!rob.equals("main")) {*/
-		robotPool.get("main").updatePosition();
+		getMainRobot().updatePosition();
 			//}
 		//}
 	}
 	
 	public void updateRobot(String playerID, double x, double y, double angle) {
 		if (robotPool.containsKey(playerID)) {
-			robotPool.get(playerID).setSimLoc(x, y, angle);
+			robotPool.get(playerID).setGlobalPosition(x, y, angle);
 		}
 	}
 	
 	public void terminate(){
-		for(Robot currentRobot:robotPool.values()){
+		/*for(Robot currentRobot:robotPool.values()){
 			currentRobot.terminate();
-		}
+		}*/
+		getMainRobot().terminate();
 	}
 	
 	@Override
-	public Iterator<Robot> iterator() {
-		Iterator<Robot> robotIt = getRobots().iterator();
-		return robotIt;
+	public Iterator<RobotModel> iterator() {
+		return getRobots().iterator();
 	}
 
 }

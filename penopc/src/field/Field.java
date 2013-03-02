@@ -30,7 +30,7 @@ public class Field implements Fieldable {
 	
 	public void addTile(Tile tile){
 		if (!canHaveAsTile(tile.getPosition()))
-			throw new IllegalArgumentException("given position already used");
+			throw new IllegalArgumentException("given position already used " + tile.getPosition());
 		tileMap.addObject(tile.getPosition(), tile);
 	}
 	

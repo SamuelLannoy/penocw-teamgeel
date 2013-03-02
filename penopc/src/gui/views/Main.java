@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 
 import peno.htttp.Callback;
 import peno.htttp.Client;
+import peno.htttp.GameState;
 
 import messenger.HandlerImplementation;
 import messenger.Messenger;
@@ -32,6 +35,7 @@ import messenger.RabbitMQ;
 
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.RobotModel;
 import robot.RobotPool;
 import robot.SensorBuffer;
 
@@ -72,6 +76,11 @@ public class Main extends JFrame {
 						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
+			    	}
+			    	
+			    	
+			    	if (client != null) { // TODO: move this to general case
+						//DebugBuffer.addInfo("gstate: " + client.getGameState());
 			    	}
 			    }    
 			});
@@ -634,17 +643,38 @@ public class Main extends JFrame {
 
 	
 	public void init() throws IOException {
+		String playerID = teamMateTextArea.getText(); // TODO: proper text field
+		
 		robotPool = new RobotPool(robot);
 		robot.initialize();
+		double x = 0;
+		double y = 0;
+		try {
+			x = Integer.parseInt(otherTeamTextArea1.getText());
+			y = Integer.parseInt(otherTeamTextArea2.getText());
+		} catch( Exception e ) {
+			
+		}
+		
+		RobotModel test = new RobotModel();
+		test.setGlobalPosition(40, 0, 0);
+		robotPool.addRobot(test, "test");
+		
+		robot.setSimLoc(x, y, 0);
 		canvas.setRobotPool(robotPool);
-		handler = new HandlerImplementation(robotPool, BROADCAST_ID);
-		client = new Client(RabbitMQ.createConnection(), handler, LOBBY_ID, BROADCAST_ID);
-		DebugBuffer.addInfo("joining lobby");
-		client.join(new Callback<Boolean>() {
+		handler = new HandlerImplementation(robotPool, playerID);
+		client = new Client(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);
+		DebugBuffer.addInfo("joining lobby as " + playerID);
+		client.join(new Callback<Void>() {
 			
 			@Override
-			public void onSuccess(Boolean result) {
-				DebugBuffer.addInfo("joined lobby");
+			public void onSuccess(Void result) {
+				DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
+				/*try {
+					client.setReady(true);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}*/
 			}
 			
 			@Override
@@ -652,7 +682,7 @@ public class Main extends JFrame {
 				
 			}
 		});
-
+		//client.setReady(true);
 		
 		//client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
 

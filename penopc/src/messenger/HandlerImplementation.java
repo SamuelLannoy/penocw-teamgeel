@@ -18,12 +18,12 @@ public class HandlerImplementation implements Handler {
 	}
 	
 	@Override
-	public void gameStarted(Collection<String> players) {
-		for (String id : players) {
+	public void gameStarted() {
+		/*for (String id : players) {
 			if (!id.equals(ownId)) {
 				robotPool.addRobot(new Robot(1), id);
 			}
-		}
+		}*/
 		DebugBuffer.addInfo("game started with " + robotPool.getRobots().toString());
 	}
 
@@ -36,6 +36,25 @@ public class HandlerImplementation implements Handler {
 	public void playerPosition(String playerID, double x, double y, double angle) {
 		robotPool.updateRobot(playerID, x, y, angle);
 		DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
+	}
+
+	@Override
+	public void gamePaused() {
+		DebugBuffer.addInfo("game paused");
+		
+	}
+
+	@Override
+	public void playerJoined(String playerID) {
+		//robotPool.addRobot(new Robot(1), playerID);
+		DebugBuffer.addInfo("player " + playerID + " joined");
+		
+	}
+
+	@Override
+	public void playerLeft(String playerID) {
+		//robotPool.removeRobot(playerID);
+		DebugBuffer.addInfo("player " + playerID + " left");
 	}
 
 }

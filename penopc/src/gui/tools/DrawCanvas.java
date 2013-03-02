@@ -107,19 +107,10 @@ public class DrawCanvas extends Canvas{
 	
 	// Tekent de huidige posities op de map. De robots als rechthoek.
 	private void paintPos(Graphics g){
-		for (Robot currentRobot : robotPool){
+		for (RobotModel currentRobot : robotPool){
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
-		// ghost
-		/**if (robot.isSim()){
-			int x = (int) robot.getSimX();
-			int y = (int) robot.getSimY();
-			double r = robot.getSimAngle() + (Math.PI/2);
-			g.setColor(Color.CYAN);
-			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
-			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
-		}**/
 		int x = (int) currentRobot.getPosition().getPosX() + currentRobot.getCurrTile().getPosition().getX() * 40;
 		int y = (int) currentRobot.getPosition().getPosY() + currentRobot.getCurrTile().getPosition().getY() * 40;
 		double[] xs = currentRobot.getCornersX();
@@ -144,10 +135,27 @@ public class DrawCanvas extends Canvas{
 		// robot heeft object bij.
 		if (currentRobot.hasBall()){
 			g.setColor(Color.YELLOW);
-			g.fillOval(x, y, borderWidth, borderWidth);
+			g.fillOval(startX + x, startY - y, borderWidth, borderWidth);
 		}
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
+		}
+		
+		//current tile
+		int x = robotPool.getMainRobot().getCurrTile().getPosition().getX();
+		int y = robotPool.getMainRobot().getCurrTile().getPosition().getY();
+		g.setColor(Color.RED);
+		g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+		
+
+		//ghost
+		if (robotPool.getMainRobot().isSim()){
+			x = (int) robotPool.getMainRobot().getSimX();
+			y = (int) robotPool.getMainRobot().getSimY();
+			double r = robotPool.getMainRobot().getSimAngle() + (Math.PI/2);
+			g.setColor(Color.CYAN);
+			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
+			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
 		}
 	}
 	
@@ -156,6 +164,7 @@ public class DrawCanvas extends Canvas{
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
               //  RenderingHints.VALUE_ANTIALIAS_ON); 
+		synchronized(field.getTileMap()){
 		for (Tile currentTile : field.getTileMap()){
 			int x = currentTile.getPosition().getX();
 			int y = currentTile.getPosition().getY();
@@ -279,6 +288,7 @@ public class DrawCanvas extends Canvas{
 					g.drawPolygon(Xpnts,Ypnts,6);
 				}**/
 			}
+		}
 		}
 	}
 	
