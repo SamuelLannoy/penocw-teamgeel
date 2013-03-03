@@ -640,6 +640,10 @@ public class Robot extends RobotModel{
 		return ((ISimulator)robotConn).getTRotation() * Math.PI / 180;
 	}
 	
+	public double getSimAngleGr() {
+		return ((ISimulator)robotConn).getTRotation();
+	}
+	
 	public void setSimLoc(double x, double y, double angle) {
 		((ISimulator)robotConn).setSimLoc(x, y, angle);
 	}

@@ -72,7 +72,9 @@ public class RobotPool implements Iterable<RobotModel>{
 	}
 	
 	public void updateRobot(String playerID, double x, double y, double angle) {
-		getRobot(playerID).setGlobalPosition(x, y, angle);
+		if (!playerID.equals("main")) {
+			getRobot(playerID).setGlobalPosition(x, y, angle);
+		}
 	}
 	
 	public void terminate(){

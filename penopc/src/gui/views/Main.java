@@ -82,7 +82,7 @@ public class Main extends JFrame {
 			    	if (client != null && client.isPlaying()) { // TODO: move this to general case
 			    		try {
 							//client.foundObject();
-			    			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+			    			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngleGr());
 						} catch (IllegalStateException e) {
 							e.printStackTrace();
 						} catch (IOException e) {
@@ -692,9 +692,7 @@ public class Main extends JFrame {
 				
 			}
 		});
-		//client.setReady(true);
-		
-		//client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+
 
 	}
 	

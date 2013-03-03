@@ -42,7 +42,7 @@ public class HandlerImplementation implements Handler {
 	@Override
 	public void playerPosition(String playerID, double x, double y, double angle) {
 		robotPool.updateRobot(getPoolID(playerID), x, y, angle);
-		DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
+		//DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
 	}
 
 	@Override
