@@ -25,7 +25,7 @@ import simulator.ultrasonicsensor.UltrasonicSensor;
 /**
  * @author  Samuel
  */
-public class VirtualRobotConnector implements AbstractRobotConnector {
+public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	
 	private static VirtualRobotConnector instance;
 	
@@ -184,7 +184,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		return ticksTurning;
 	}
 
-	protected void setTicksTurning(int ticksTurning) {
+	public void setTicksTurning(int ticksTurning) {
 		this.ticksTurning = ticksTurning;
 	}
 	
@@ -243,7 +243,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 		return ticksMoving;
 	}
 
-	protected void setTicksMoving(int ticksMoving) {
+	public void setTicksMoving(int ticksMoving) {
 		this.ticksMoving = ticksMoving;
 	}
 	
@@ -438,7 +438,7 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			maze.addBall(new Ball(1), new Position(0, 7));
+			//maze.addBall(new Ball(1), new Position(0, 7));
 			/*maze = new Field();
 			maze.addTileWithBorders(new Tile(0, 0), true, false, true, true);
 			maze.addTileWithBorders(new Tile(1, 0), false, false, true, false);
@@ -607,5 +607,20 @@ public class VirtualRobotConnector implements AbstractRobotConnector {
 	@Override
 	public int getObjectNr() {
 		return objectNr;
+	}
+
+	@Override
+	public double getWidth() {
+		return width;
+	}
+
+	@Override
+	public double getLength() {
+		return length;
+	}
+
+	@Override
+	public void setCmdMger(CommandManager cmdMger) {
+		
 	}
 }

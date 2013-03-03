@@ -33,7 +33,6 @@ public interface AbstractRobotConnector {
 	public abstract void initialize() throws CommunicationException;
 	public abstract void terminate();
 	
-	public abstract List<Border> getBorderSurroundings();
 	public abstract boolean isStartTile();
 	public abstract boolean isFinishTile();
 	

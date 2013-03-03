@@ -8,13 +8,30 @@ public enum TurningMode {
 	 * @uml.property  name="left"
 	 * @uml.associationEnd  
 	 */
-	Left, /**
+	Left {
+		@Override
+		public int sign() {
+			return -1;
+		}
+	}, /**
 	 * @uml.property  name="right"
 	 * @uml.associationEnd  
 	 */
-	Right, /**
+	Right {
+		@Override
+		public int sign() {
+			return 1;
+		}
+	}, /**
 	 * @uml.property  name="none"
 	 * @uml.associationEnd  
 	 */
-	None
+	None {
+		@Override
+		public int sign() {
+			return 0;
+		}
+	};
+	
+	public abstract int sign();
 }

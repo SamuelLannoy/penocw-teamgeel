@@ -1,9 +1,13 @@
 package robot;
 
+import java.io.IOException;
 import java.util.List;
+
+import peno.htttp.Client;
 
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
+import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
 
 import exception.CommunicationException;
@@ -27,9 +31,14 @@ public class Robot extends RobotModel{
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
+	private Client client;
 
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
+	}
+	
+	public void setClient(Client client) {
+		this.client = client;
 	}
 	
 	public void drivePolygon(double length, int corners) throws IllegalArgumentException {
@@ -361,8 +370,15 @@ public class Robot extends RobotModel{
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
 		
-		if (robotConn.hasBall()) {
+		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
+			try {
+				client.foundObject();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		// Set whether the current tile is a start tile, a finish tile or an ordinary tile
@@ -609,23 +625,23 @@ public class Robot extends RobotModel{
 	}
 	
 	public boolean isSim() {
-		return robotConn instanceof VirtualRobotConnector;
+		return robotConn instanceof ISimulator;
 	}
 	
 	public double getSimX() {
-		return ((VirtualRobotConnector)robotConn).getTDistanceX();
+		return ((ISimulator)robotConn).getTDistanceX();
 	}
 	
 	public double getSimY() {
-		return ((VirtualRobotConnector)robotConn).getTDistanceY();
+		return ((ISimulator)robotConn).getTDistanceY();
 	}
 	
 	public double getSimAngle() {
-		return ((VirtualRobotConnector)robotConn).getTRotation() * Math.PI / 180;
+		return ((ISimulator)robotConn).getTRotation() * Math.PI / 180;
 	}
 	
 	public void setSimLoc(double x, double y, double angle) {
-		((VirtualRobotConnector)robotConn).setSimLoc(x, y, angle);
+		((ISimulator)robotConn).setSimLoc(x, y, angle);
 	}
 	
 

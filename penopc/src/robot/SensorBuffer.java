@@ -58,6 +58,7 @@ public class SensorBuffer {
 	}
 	
 	public static List<Integer> getDistancesAD() {
+		DebugBuffer.addInfo("getdist");
 		return distancesAD;
 	}
 	

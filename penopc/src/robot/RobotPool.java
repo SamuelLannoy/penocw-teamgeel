@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import field.Tile;
+
 /**
  * Een klasse die alle robots bijhoudt die in het spel zijn.
  * Met op de eerste plaats de eigen robot.
@@ -48,6 +50,15 @@ public class RobotPool implements Iterable<RobotModel>{
 		robotPool.remove(id);
 	}
 	
+	public RobotModel getRobot(String id) {
+		if (!robotPool.containsKey(id)) {
+			RobotModel newModel = new RobotModel();
+			newModel.setCurrTile(new Tile(0, 0));
+			addRobot(newModel, id);
+		}
+		return robotPool.get(id);
+	}
+	
 	public int getRobotPoolSize(){
 		return robotPool.size();
 	}
@@ -61,9 +72,7 @@ public class RobotPool implements Iterable<RobotModel>{
 	}
 	
 	public void updateRobot(String playerID, double x, double y, double angle) {
-		if (robotPool.containsKey(playerID)) {
-			robotPool.get(playerID).setGlobalPosition(x, y, angle);
-		}
+		getRobot(playerID).setGlobalPosition(x, y, angle);
 	}
 	
 	public void terminate(){

@@ -269,7 +269,7 @@ public class Field implements Fieldable {
 		if (getLeftBorderOfTile(tile) instanceof PanelBorder) {
 			i = 1;
 		}
-		if (pos[i] > -12 && pos[0] < 12)
+		if (pos[i] > -12 && pos[i] < 12)
 			return true;
 		return false;
 	}

@@ -79,8 +79,15 @@ public class Main extends JFrame {
 			    	}
 			    	
 			    	
-			    	if (client != null) { // TODO: move this to general case
-						//DebugBuffer.addInfo("gstate: " + client.getGameState());
+			    	if (client != null && client.isPlaying()) { // TODO: move this to general case
+			    		try {
+							//client.foundObject();
+			    			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngle());
+						} catch (IllegalStateException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 			    	}
 			    }    
 			});
@@ -656,25 +663,28 @@ public class Main extends JFrame {
 			
 		}
 		
-		RobotModel test = new RobotModel();
+		/*RobotModel test = new RobotModel();
 		test.setGlobalPosition(40, 0, 0);
-		robotPool.addRobot(test, "test");
+		robotPool.addRobot(test, "test");*/
 		
 		robot.setSimLoc(x, y, 0);
 		canvas.setRobotPool(robotPool);
 		handler = new HandlerImplementation(robotPool, playerID);
 		client = new Client(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);
+		
+		robotPool.getMainRobot().setClient(client);
+		
 		DebugBuffer.addInfo("joining lobby as " + playerID);
 		client.join(new Callback<Void>() {
 			
 			@Override
 			public void onSuccess(Void result) {
 				DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
-				/*try {
+				try {
 					client.setReady(true);
 				} catch (IOException e) {
 					e.printStackTrace();
-				}*/
+				}
 			}
 			
 			@Override

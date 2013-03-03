@@ -1,5 +1,7 @@
 package simulator;
 
+import robot.AbstractRobotConnector;
+
 public class Command {
 			
 	public Command(int param, CommandType cmd) {
@@ -32,7 +34,7 @@ public class Command {
 		this.cmd = cmd;
 	}
 	
-	public void execute(VirtualRobotConnector conn) {
+	public void execute(IMovementManager conn) {
 		cmd.execute(conn, this);
 	}
 	

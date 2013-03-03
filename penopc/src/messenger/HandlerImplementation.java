@@ -17,6 +17,13 @@ public class HandlerImplementation implements Handler {
 		this.ownId = ownId;
 	}
 	
+	private String getPoolID(String playerID) {
+		if (playerID.equals(ownId)) {
+			return "main";
+		}
+		return playerID;
+	}
+	
 	@Override
 	public void gameStarted() {
 		/*for (String id : players) {
@@ -34,7 +41,7 @@ public class HandlerImplementation implements Handler {
 
 	@Override
 	public void playerPosition(String playerID, double x, double y, double angle) {
-		robotPool.updateRobot(playerID, x, y, angle);
+		robotPool.updateRobot(getPoolID(playerID), x, y, angle);
 		DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
 	}
 
@@ -55,6 +62,12 @@ public class HandlerImplementation implements Handler {
 	public void playerLeft(String playerID) {
 		//robotPool.removeRobot(playerID);
 		DebugBuffer.addInfo("player " + playerID + " left");
+	}
+
+	@Override
+	public void playerFoundObject(String playerID) {
+		robotPool.getRobot(getPoolID(playerID)).setHasBall(true);
+		DebugBuffer.addInfo("player " + playerID + " found object");
 	}
 
 }

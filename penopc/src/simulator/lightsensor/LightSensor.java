@@ -56,12 +56,15 @@ public class LightSensor {
 			System.out.println(hoeveel++);
 		if(connector.isMoving()){
 			if (maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY())){
-				wasOnBarcode = false;
+				if (!maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())) {
+						wasOnBarcode = false;
+				}
 				value =  100 + posneg * randomness;
 				lastColor = Color.WHITE;
 				//System.out.println("1 " + "wit");
 			}
 			else if (maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())){
+				DebugBuffer.addInfo("ON BARCODE");
 				if (!wasOnBarcode) {
 					wasOnBarcode = true;
 					SensorBuffer.addLightUpdate(1);
@@ -75,6 +78,11 @@ public class LightSensor {
 								//connector.turnLeft(180);
 								//connector.setSimAngle((connector.getTRotation() + 180) % 360);
 								connector.setHasBall(true);
+								
+								/*connector.moveForward(60);
+								connector.moveBackward(10);
+								connector.turnLeft(180);
+								connector.moveForward(20);*/
 							}
 							if (bc.getDecimal() <= 3) {
 								connector.setTeamNr(0);

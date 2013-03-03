@@ -126,12 +126,6 @@ public class CommandEncoder implements AbstractRobotConnector {
 	public boolean isScanning() {
 		return Status.isScanning();
 	}
-
-	@Override
-	public List<Border> getBorderSurroundings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public void scanSonar(){
