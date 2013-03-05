@@ -469,7 +469,7 @@ public class Main extends JFrame {
 		lblTeam.setBounds(286, 7, 90, 14);
 		contentPane.add(lblTeam);
 		
-		JLabel lblTeammate = new JLabel("Teammate barcode");
+		JLabel lblTeammate = new JLabel("Login naam");
 		lblTeammate.setBounds(286, 45, 140, 14);
 		contentPane.add(lblTeammate);
 		
@@ -500,7 +500,7 @@ public class Main extends JFrame {
 		btnSubmitBarcodes.setBounds(300, 125, 150, 23);
 		contentPane.add(btnSubmitBarcodes);
 		
-		JLabel lblOtherTeamBarcode = new JLabel("Other team barcodes");
+		JLabel lblOtherTeamBarcode = new JLabel("Start positie");
 		lblOtherTeamBarcode.setBounds(286, 85, 140, 14);
 		contentPane.add(lblOtherTeamBarcode);
 		
