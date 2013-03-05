@@ -135,7 +135,7 @@ public class DrawCanvas extends Canvas{
 		// robot heeft object bij.
 		if (currentRobot.hasBall()){
 			g.setColor(Color.YELLOW);
-			g.fillOval(startX + x, startY - y, borderWidth, borderWidth);
+			g.fillOval((int)(startX + x * scale), (int)(startY - y * scale), borderWidth, borderWidth);
 		}
 		g.setColor(Color.BLACK);
 		g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
@@ -149,14 +149,14 @@ public class DrawCanvas extends Canvas{
 		
 
 		//ghost
-		if (robotPool.getMainRobot().isSim()){
+		/*if (robotPool.getMainRobot().isSim()){
 			x = (int) robotPool.getMainRobot().getSimX();
 			y = (int) robotPool.getMainRobot().getSimY();
 			double r = robotPool.getMainRobot().getSimAngle() + (Math.PI/2);
 			g.setColor(Color.CYAN);
 			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
-		}
+		}*/
 	}
 	
 	// Tekent alle bekende tegels op de map.
