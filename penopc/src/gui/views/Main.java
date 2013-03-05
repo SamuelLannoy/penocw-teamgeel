@@ -68,6 +68,8 @@ public class Main extends JFrame {
 	private HandlerImplementation handler;
 	private Client client;
 	
+	private boolean setNr = false;
+	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
 			simulatorTimer = new Timer(1, new ActionListener() {
@@ -140,6 +142,15 @@ public class Main extends JFrame {
 						} catch (NullPointerException e) {
 							// nothing
 						}
+			    	}
+			    	
+			    	if (client != null && client.isPlaying()) {
+			    		if (!setNr) {
+			    			int nr = client.getPlayerNumber();
+			    			setNr = true;
+							//robot.setObjectNr(nr);
+							DebugBuffer.addInfo("received object number: "+nr);
+			    		}
 			    	}
 			    }    
 			});
@@ -667,7 +678,9 @@ public class Main extends JFrame {
 		test.setGlobalPosition(40, 0, 0);
 		robotPool.addRobot(test, "test");*/
 		
-		robot.setSimLoc(x, y, 0);
+		if (robot.isSim()) {
+			robot.setSimLoc(x, y, 0);
+		}
 		canvas.setRobotPool(robotPool);
 		handler = new HandlerImplementation(robotPool, playerID);
 		client = new Client(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);

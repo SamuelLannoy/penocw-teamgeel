@@ -192,9 +192,9 @@ public class Explorer {
 							if (robot.getTeamNr() != -1 && !robot.hasFoundOwnBarcode()) {
 								robot.setHasFoundOwnBarcode(true);
 								robot.stopMoving();
-								//Direction temp = dirForw;
-								//dirForwLocal = dirBack;
-								//dirBackLocal = temp;
+								Direction temp = dirForw;
+								dirForwLocal = dirBack;
+								dirBackLocal = temp;
 								
 								//Position pos = dirBackLocal.getPositionInDirection(robot.getCurrTile().getPosition());
 								//pos = dirBackLocal.getPositionInDirection(pos);
@@ -206,9 +206,11 @@ public class Explorer {
 								//pos = dirForwLocal.getPositionInDirection(pos);
 								//pos = dirForwLocal.getPositionInDirection(pos);
 								System.out.println("adding tile: " + newTilePos);
-								/*if (field.canHaveAsTile(pos)) {
-									field.addTile(new Tile(pos));
-								}*/
+								if (!robot.isSim()) {
+									newTilePos = dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition());
+									if (field.canHaveAsTile(newTilePos))
+										field.addTile(new Tile(newTilePos));
+								}
 								newT = robot.getField().getTileMap().getObjectAtId(newTilePos);
 							} else {
 								if (field.canHaveAsTile(dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition())))
@@ -221,6 +223,9 @@ public class Explorer {
 							
 							if (field.canHaveAsBorder(dirForwLocal.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirForwLocal.getBorderPositionInDirection(newT.getPosition())));
+							
+							if (field.canHaveAsBorder(dirBackLocal.getBorderPositionInDirection(newT.getPosition())))
+								field.addBorder(new WhiteBorder(dirBackLocal.getBorderPositionInDirection(newT.getPosition())));
 							
 							if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())));
