@@ -18,7 +18,7 @@ import lightsensor.LightSensor;
  */
 public class Robot {
 		
-		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.4, 54.3, 164.2497, Motor.B, Motor.C, false);
+		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.9, 126.5, Motor.B, Motor.C, false);
 		private static Robot instance = new Robot();
 		private boolean isScanning;
 		private boolean isCentering;
@@ -141,6 +141,7 @@ public class Robot {
 		}
 		
 		public void orientOnWhiteLine(boolean scan) {
+			LightSensorVigilante.pause();
 			setNoLines(true);
 			if(scan){
 				orientScan();
@@ -160,7 +161,7 @@ public class Robot {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
-				if (lightSensor.getLastColor() == Color.BROWN)
+				if (Color.getColor(lightSensor.readValue()) == Color.BROWN)
 						buffer++;
 				else 
 					buffer = 0;
@@ -170,9 +171,9 @@ public class Robot {
 			
 			//Buffer.addDebug("Begin white");
 			while (buffer<15) {
-				if (lightSensor.getLastColor() == Color.WHITE)
+				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
-				else if (lightSensor.getLastColor() == Color.BROWN){
+				else if (Color.getColor(lightSensor.readValue()) == Color.BROWN){
 					buffer = 0;
 				}
 				if(touchSensor.isPressed()){
@@ -189,7 +190,7 @@ public class Robot {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
-				if (lightSensor.getLastColor() == Color.BROWN)
+				if (Color.getColor(lightSensor.readValue()) == Color.BROWN)
 						buffer++;
 				else 
 					buffer = 0;
@@ -206,7 +207,7 @@ public class Robot {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
-				if (lightSensor.getLastColor() == Color.WHITE)
+				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else
 					buffer = 0;
@@ -223,7 +224,7 @@ public class Robot {
 				//Buffer.addDebug("buffer size: "+buffer);
 
 
-				if (lightSensor.getLastColor() == Color.BROWN)
+				if (Color.getColor(lightSensor.readValue()) == Color.BROWN)
 						buffer++;
 				else buffer = 0;
 			}
@@ -235,7 +236,7 @@ public class Robot {
 				//Buffer.addDebug("buffer size: "+buffer);
 
 
-				if (lightSensor.getLastColor() == Color.WHITE)
+				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else 
 					buffer = 0;
@@ -254,7 +255,7 @@ public class Robot {
 				//Buffer.addDebug("buffer size: "+buffer);
 
 
-				if (lightSensor.getLastColor() == Color.WHITE)
+				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else 
 					buffer = 0;
@@ -268,6 +269,7 @@ public class Robot {
 			PILOT.setRotateSpeed(previousRotateSpeed);
 			PILOT.setTravelSpeed(previousTravelSpeed);
 			PilotController.startStream();
+			LightSensorVigilante.resume();
 		}
 		
 		

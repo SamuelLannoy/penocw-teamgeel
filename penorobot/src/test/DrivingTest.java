@@ -10,7 +10,7 @@ public class DrivingTest {
 			System.out.println("Hello Team Geel");
 			Button.waitForAnyPress();
 
-			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.9, 121.9, Motor.B, Motor.C, false);
+			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.9, 126.5, Motor.B, Motor.C, false);
 			PILOT.setTravelSpeed(150);
 			PILOT.setRotateSpeed(50);
 			PILOT.setAcceleration(500);
@@ -34,7 +34,7 @@ public class DrivingTest {
 			// Draaien
 			
 			while(true) {
-				PILOT.rotate(900);
+				/*PILOT.rotate(900);
 				Button.waitForAnyPress();
 				System.out.println("Starting...");
 				Button.waitForAnyPress(2000);
@@ -47,7 +47,7 @@ public class DrivingTest {
 				Button.waitForAnyPress();
 				System.out.println("Starting...");
 				Button.waitForAnyPress(2000);
-				
+				*/
 				for(int i = 0; i<20; i++)
 					PILOT.rotate(90);
 				Button.waitForAnyPress();
