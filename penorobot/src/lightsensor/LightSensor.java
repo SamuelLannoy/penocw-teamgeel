@@ -24,7 +24,7 @@ public class LightSensor {
 	 * Creates a new lightsensor as a singleton object.
 	 */
 	private LightSensor() {
-		sensor = new lejos.nxt.LightSensor(SensorPort.S1);
+		sensor = new lejos.nxt.LightSensor(SensorPort.S2);
 	}
 	
 	public static LightSensor getInstance(){
@@ -107,13 +107,13 @@ public class LightSensor {
 							Robot.getInstance().setScanning(true);
 							Robot.getInstance().stop();
 							if(Robot.speed == 150){
-								Robot.getInstance().travel(-50,false);
+								Robot.getInstance().travel(-100,false);
 							}
 							else if (Robot.speed == 100){
-								Robot.getInstance().travel(-50,false);
+								Robot.getInstance().travel(-100,false);
 							}
 							else if (Robot.speed == 250){
-								Robot.getInstance().travel(-80,false);
+								Robot.getInstance().travel(-150,false);
 							}
 							
 							list.clear();

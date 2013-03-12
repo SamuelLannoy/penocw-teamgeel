@@ -12,7 +12,7 @@ public class TouchSensor {
 	 * Creates a new touch sensor as a singleton object.
 	 */
 	private TouchSensor() {
-		sensorL = new lejos.nxt.TouchSensor(SensorPort.S2);
+		sensorL = new lejos.nxt.TouchSensor(SensorPort.S1);
 		sensorR = new lejos.nxt.TouchSensor(SensorPort.S4);
 	}
 	
