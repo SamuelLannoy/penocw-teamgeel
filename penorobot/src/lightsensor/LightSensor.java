@@ -43,7 +43,7 @@ public class LightSensor {
 	public int readValue() {
 		addCounter++;
 		int value = readValueWithoutAdd();
-		if(addCounter >= 10*Robot.getInstance().getTravelSpeed()/Robot.DEFAULT_TRAVEL_SPEED) {
+		if(addCounter >= 30*Robot.getInstance().getTravelSpeed()/Robot.DEFAULT_TRAVEL_SPEED) {
 			//System.out.println(value);
 			Buffer.addLightValue(value);
 			addCounter = 0;
@@ -99,6 +99,9 @@ public class LightSensor {
 						}
 					}
 					list.add(temp);
+					//test zodat outofmemoryexception zich niet meer voordoet
+					if(list.size()>1000)
+						break;
 					buffer = 0;
 					if(temp == Color.BLACK){
 						counterBlack++;
