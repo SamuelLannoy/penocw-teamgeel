@@ -28,8 +28,8 @@ public class Robot {
 		private int objectNr;
 		private int teamNr;
 		
-		public static final int DEFAULT_TRAVEL_SPEED = 150;
-		public static final int DEFAULT_ROTATE_SPEED = 50;
+		public static final int DEFAULT_TRAVEL_SPEED = 175;
+		public static final int DEFAULT_ROTATE_SPEED = 150;
 		public static final int DEFAULT_ACCELERATION = 500;
 		
 		public static double speed;
@@ -150,8 +150,7 @@ public class Robot {
 			double previousTravelSpeed = PILOT.getTravelSpeed();
 			double previousRotateSpeed = PILOT.getRotateSpeed();
 			
-			PILOT.setTravelSpeed(100);
-			PILOT.setRotateSpeed(30);
+			
 			
 			Robot.getInstance().forward();
 			int buffer = 0;
@@ -186,7 +185,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<200) {
+			while (buffer<15) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -203,7 +202,7 @@ public class Robot {
 			PILOT.rotateRight();
 			buffer = 0;
 			//Buffer.addDebug("Begin white 2");
-			while (buffer<25) {
+			while (buffer<15) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -214,12 +213,11 @@ public class Robot {
 			}
 			buffer = 0;
 			PILOT.stop();
-			PILOT.rotate(10, false);
 			PILOT.reset();
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
-			while (buffer<150) {
+			while (buffer<50) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -231,7 +229,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 3");
-			while (buffer<25) {
+			while (buffer<15) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -250,7 +248,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 4");
-			while (buffer<25) {
+			while (buffer<15) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -261,7 +259,7 @@ public class Robot {
 					buffer = 0;
 			}
 			Robot.getInstance().stop();
-			Robot.getInstance().travel(75, false);
+			Robot.getInstance().travel(55, false);
 			Robot.getInstance().stop();
 			setNoLines(false);
 			Buffer.addLightUpdate(LightSensorUpdate.LINE.ordinal());
