@@ -1,5 +1,6 @@
 package lightsensor;
 
+import lejos.nxt.Button;
 import robot.Robot;
 import communication.Buffer;
 
@@ -57,6 +58,7 @@ public class LightSensorVigilante extends Thread {
 	 */
 	public void run() {
 		while (true) {
+			Button.waitForAnyPress(10);
 			if (!pause) {
 				LightSensorUpdate update = null;
 				boolean curOnlyLines = onlyLines; //not possible to change this variable if a scan is in progress

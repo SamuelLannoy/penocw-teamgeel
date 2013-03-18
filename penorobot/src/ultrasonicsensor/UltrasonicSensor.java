@@ -31,9 +31,9 @@ public class UltrasonicSensor {
 	
 	public void rotate(int angle){
 		if(angle < 0)
-			Motor.A.rotate(angle-MOTOR_CORRECTION);
+			Motor.A.rotate(angle);
 		else
-			Motor.A.rotate(angle+MOTOR_CORRECTION+3);
+			Motor.A.rotate(angle);
 		sensor.reset();
 	}
 	
@@ -189,14 +189,14 @@ public class UltrasonicSensor {
 			}
 			switch (i) {
 				case 0:
-					rotate(90);
+					rotate(100);
 					break;
 				case 1:
-					rotate(-180);
+					rotate(-200);
 					break;
 			}
 		}
-		rotate(90);
+		rotate(100);
 		return distances;
 	}
 	
