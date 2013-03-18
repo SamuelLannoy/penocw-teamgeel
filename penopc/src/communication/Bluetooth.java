@@ -183,6 +183,10 @@ public class Bluetooth {
 					Status.updateObjectInfo(hasBall, teamNr);
 				}
 				
+				//Receive seesaw open or closed
+				String status = dataIn.readUTF();
+				Status.setSeesawStatus(SeesawStatus.valueOf(status));
+				
 			} else {
 				System.out.println("No values received.");
 			}

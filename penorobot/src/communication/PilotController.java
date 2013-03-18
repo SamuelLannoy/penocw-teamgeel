@@ -1,5 +1,7 @@
 package communication;
 
+import infrared.IRSeeker;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -61,6 +63,8 @@ public class PilotController {
 		
 		connect();
 		
+		Buffer.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
+		
 		Thread read = new Thread(new Runnable() {
 			public void run() {
 				while(true){
@@ -110,11 +114,32 @@ public class PilotController {
 			}
 		});
 		
+		//TODO test IR
+		Thread infraredSensor = new Thread(new Runnable(){
+			public void run(){
+				while(true){
+					try{
+						Thread.sleep(1000);
+					} catch (InterruptedException e){
+					}
+					int dir =  IRSeeker.getInstance().getDirection();
+					int val = IRSeeker.getInstance().getValue(dir/2);
+					int valDir = IRSeeker.getInstance().getValueInTheDir();
+					int valAhead = IRSeeker.getInstance().getValueAhead();
+					Buffer.addDebug("IR dir: "+dir);
+					Buffer.addDebug("IR val in the dir: "+val);
+					Buffer.addDebug("IR val method: "+valDir);
+					Buffer.addDebug("IR ahead val: "+valAhead);
+				}
+			}
+		});
+		
 		ultrasonicSensor.start();
 		read.start();
 		write.start();
 		lightSensorVigilante.start();
 		touchSensorVigilante.start();
+		infraredSensor.start();
 	}
 	
 	public void writeData() {
@@ -250,6 +275,10 @@ public class PilotController {
 			//Write teamNr if known
 			dataOut.writeBoolean(Buffer.isTeamKnown());
 			dataOut.writeInt(Buffer.getTeamNr());
+			
+			//TODO Write whether the seesaw the robot is standing in front of is open or closed
+			SeesawStatus status = Buffer.getSeesawStatus();
+			dataOut.writeUTF(status.toString());
 			
 			dataOut.flush();
 		} catch (IOException e) {

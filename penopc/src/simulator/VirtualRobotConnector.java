@@ -434,7 +434,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		if (maze == null) {
 
 			try {
-				maze = FieldFactory.fieldFromFile("C:\\demo2.txt");
+				maze = FieldFactory.fieldFromFile("//Users//elinetje2//Documents//2012-2013//Semester 2//P&O//demo2.txt");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -2,6 +2,8 @@ package robot;
 
 import java.util.List;
 
+import communication.SeesawStatus;
+
 import exception.CommunicationException;
 import field.Border;
 
@@ -40,5 +42,7 @@ public interface AbstractRobotConnector {
 	public abstract int getTeam();
 	public abstract int getObjectNr();
 	public abstract void setObjectNr(int nr);
+	
+	public abstract SeesawStatus getSeesawStatus();
 
 }

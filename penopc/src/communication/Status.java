@@ -15,6 +15,7 @@ public class Status {
 	private static boolean hasBall = false;
 	private static int teamNr = -1;
 	private static int objectNr = -1;
+	private static SeesawStatus status = SeesawStatus.ISNOTAPPLICABLE;
 	
 	public static double getMovementIncrement() {
 		double increment = movementIncrement/10;
@@ -80,5 +81,13 @@ public class Status {
 		return teamNr;
 	}
 	
+	public static SeesawStatus getSeesawStatus(){
+		return status;
+	}
 	
+	public static void setSeesawStatus(SeesawStatus stat){
+		status = stat;
+	}
+	
+
 }

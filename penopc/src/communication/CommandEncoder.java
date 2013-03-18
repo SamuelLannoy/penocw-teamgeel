@@ -181,6 +181,10 @@ public class CommandEncoder implements AbstractRobotConnector {
 		Bluetooth.getInstance().send(Encoding.SETOBJECTNR.ordinal(),nr,0,false);
 		System.out.println("teamnr verzonden "+ nr);
 	}
-	
+
+	@Override
+	public SeesawStatus getSeesawStatus() {
+		return Status.getSeesawStatus();
+	}
 
 }
