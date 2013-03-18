@@ -20,8 +20,8 @@ public class UltrasonicSensor {
 	 */
 	private UltrasonicSensor() {
 		sensor = new lejos.nxt.UltrasonicSensor(SensorPort.S3);
-		Motor.A.setAcceleration(1000);
-		Motor.A.setSpeed(300); //0,5 rev/sec
+		Motor.A.setAcceleration(800);
+		Motor.A.setSpeed(250); //0,5 rev/sec
 		sensor.continuous();
 	}
 	
