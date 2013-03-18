@@ -11,6 +11,7 @@ public class UltrasonicSensor {
 	private static lejos.nxt.UltrasonicSensor sensor;
 	private static final int dangerousDistance = 50; //TODO 5 cm? 
 	private static final double[] correction = {5,2.5,-1,1.5};
+	private static final int MOTOR_CORRECTION = 10;
 	
 	private static final UltrasonicSensor instance = new UltrasonicSensor();
 	
@@ -29,7 +30,10 @@ public class UltrasonicSensor {
 	}
 	
 	public void rotate(int angle){
-		Motor.A.rotate(angle+10);
+		if(angle < 0)
+			Motor.A.rotate(angle-MOTOR_CORRECTION);
+		else
+			Motor.A.rotate(angle+MOTOR_CORRECTION);
 		sensor.reset();
 	}
 	
