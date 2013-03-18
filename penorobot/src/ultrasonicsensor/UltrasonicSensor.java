@@ -33,7 +33,7 @@ public class UltrasonicSensor {
 		if(angle < 0)
 			Motor.A.rotate(angle-MOTOR_CORRECTION);
 		else
-			Motor.A.rotate(angle+MOTOR_CORRECTION);
+			Motor.A.rotate(angle+MOTOR_CORRECTION+3);
 		sensor.reset();
 	}
 	
