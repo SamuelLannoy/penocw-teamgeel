@@ -153,4 +153,19 @@ public class Buffer {
 		teamNr = i;
 	}
 	
+	/**
+	 * SEESAW STATUS
+	 */
+	
+	private static SeesawStatus status;
+	
+	public static SeesawStatus getSeesawStatus(){
+		return status;
+	}
+	
+	public static void setSeesawStatus(SeesawStatus stat){
+		status = stat;
+	}
+	
+	
 }

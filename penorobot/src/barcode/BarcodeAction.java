@@ -1,7 +1,9 @@
 package barcode;
 
+import infrared.IRSeeker;
 import communication.Buffer;
 import communication.PilotController;
+import communication.SeesawStatus;
 
 import lejos.nxt.Button;
 import lejos.nxt.Sound;
@@ -86,13 +88,24 @@ public class BarcodeAction {
 	}
 	
 	public static void seesaw(){
-		//TODO check stand van de wip
-		double prev = Robot.speed;
-		Robot.getInstance().setTravelSpeed(250);
-		Robot.getInstance().travel(850,false);
-		Button.waitForAnyEvent(1000);
-		Robot.getInstance().travel(350,false);
-		Robot.getInstance().setTravelSpeed(prev);
+		// check stand van de wip
+		if(IRSeeker.getInstance().getValueAhead() == 255){ //TODO check of test goed werkt
+			Buffer.setSeesawStatus(SeesawStatus.ISOPEN);
+			double prev = Robot.speed;
+			Robot.getInstance().setTravelSpeed(250);
+			Robot.getInstance().travel(850,false);
+			Button.waitForAnyEvent(1000);
+			Robot.getInstance().travel(350,false);
+			Robot.getInstance().setTravelSpeed(prev);
+			Buffer.setSeesawStatus(SeesawStatus.ISOVER);
+			Button.waitForAnyEvent(1000);
+			Buffer.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
+		}
+		else{
+			Buffer.setSeesawStatus(SeesawStatus.ISCLOSED);
+			Button.waitForAnyEvent(1000);
+			Buffer.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
+		}		
 	}
 	
 }
