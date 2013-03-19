@@ -20,6 +20,7 @@ public class SensorBuffer {
 	public static void updateDistances(ArrayList<Integer> distances) {
 		for(int i = 0; i < distances.size(); i++) {
 			SensorBuffer.distances.add(distances.get(i));
+			SensorBuffer.lastDist.add(distances.get(i));
 		}
 		if (distances.size() > 0)
 			canClear = false;
@@ -38,6 +39,7 @@ public class SensorBuffer {
 	public static void addDistance(int distance) {
 		DebugBuffer.addInfo("getdist");
 		distances.add(distance);
+		lastDist.add(distance);
 	}
 	
 	public static List<Integer> getDistances() {
