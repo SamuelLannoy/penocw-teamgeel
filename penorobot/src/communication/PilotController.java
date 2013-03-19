@@ -114,32 +114,11 @@ public class PilotController {
 			}
 		});
 		
-		//TODO test IR
-		Thread infraredSensor = new Thread(new Runnable(){
-			public void run(){
-				while(true){
-					try{
-						Thread.sleep(1000);
-					} catch (InterruptedException e){
-					}
-					int dir =  IRSeeker.getInstance().getDirection();
-					int val = IRSeeker.getInstance().getValue(dir/2);
-					int valDir = IRSeeker.getInstance().getValueInTheDir();
-					int valAhead = IRSeeker.getInstance().getValueAhead();
-					Buffer.addDebug("IR dir: "+dir);
-					Buffer.addDebug("IR val in the dir: "+val);
-					Buffer.addDebug("IR val method: "+valDir);
-					Buffer.addDebug("IR ahead val: "+valAhead);
-				}
-			}
-		});
-		
 		ultrasonicSensor.start();
 		read.start();
 		write.start();
 		lightSensorVigilante.start();
 		touchSensorVigilante.start();
-		infraredSensor.start();
 	}
 	
 	public void writeData() {
