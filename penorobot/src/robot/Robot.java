@@ -18,7 +18,7 @@ import lightsensor.LightSensor;
  */
 public class Robot {
 		
-		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.9, 129.5, Motor.B, Motor.C, false);
+		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.9, 129.8, Motor.B, Motor.C, false);
 		private static Robot instance = new Robot();
 		private boolean isScanning;
 		private boolean isCentering;
@@ -212,8 +212,10 @@ public class Robot {
 					buffer = 0;
 			}
 			buffer = 0;
+			
 			PILOT.stop();
 			PILOT.reset();
+			PILOT.rotate(10);
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
@@ -242,7 +244,7 @@ public class Robot {
 			PILOT.stop();
 			double arc2 = PILOT.getAngleIncrement();
 			PILOT.reset();
-			PILOT.rotate(-((arc2) / 2));
+			PILOT.rotate(-((arc2+7)/ 2));
 			
 			Robot.getInstance().backward();
 			buffer = 0;
@@ -296,7 +298,7 @@ public class Robot {
 				double v2 = UltrasonicSensor.getInstance().getLastVal();
 				double max = Math.max(v1, v2);
 				double min = Math.min(v1, v2);
-				distances[i] = max * .7 + min * .3 + UltrasonicSensor.CORRECTION[0];
+				distances[i] = max * .7 + min * .3;
 				if(i!=3){
 					rotateLeft(90, false);
 				}
