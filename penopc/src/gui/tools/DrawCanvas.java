@@ -149,14 +149,14 @@ public class DrawCanvas extends Canvas{
 		
 
 		//ghost
-		/*if (robotPool.getMainRobot().isSim()){
-			x = (int) robotPool.getMainRobot().getSimX();
-			y = (int) robotPool.getMainRobot().getSimY();
+		if (robotPool.getMainRobot().isSim()){
+			x = (int) robotPool.getMainRobot().getSimX() - (int) robotPool.getMainRobot().getStartx();
+			y = (int) robotPool.getMainRobot().getSimY() - (int) robotPool.getMainRobot().getStarty();
 			double r = robotPool.getMainRobot().getSimAngle() + (Math.PI/2);
 			g.setColor(Color.CYAN);
 			g.drawLine((int) ((x * scale) + startX), (int) (startY - (y * scale)), (int) ((scale * x) + startX - (borderWidth * Math.cos(r))), (int) (startY - (scale * y) - (borderWidth * Math.sin(r))));
 			g.fillOval((int) ((x * scale) + (startX - halfBorderWidth)), (int) ((startY - halfBorderWidth) - (y * scale)), borderWidth, borderWidth);
-		}*/
+		}
 	}
 	
 	// Tekent alle bekende tegels op de map.

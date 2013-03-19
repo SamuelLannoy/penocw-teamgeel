@@ -1,6 +1,6 @@
 package field;
 
-public class PanelBorder extends Border {
+public class PanelBorder extends Border implements SolidBorder {
 
 	public PanelBorder(int x1, int y1, int x2, int y2) {
 		super(x1, y1, x2, y2);
@@ -21,6 +21,11 @@ public class PanelBorder extends Border {
 	
 	public String toString() {
 		return "panel border";
+	}
+
+	@Override
+	public Border newBorder(BorderPosition borderPos) {
+		return new PanelBorder(borderPos);
 	}
 
 }

@@ -1,10 +1,92 @@
 package field.fieldmerge;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import field.Barcode;
+import field.Border;
 import field.Field;
+import field.Position;
+import field.Tile;
+import field.UnsureBorder;
 
 public class FieldMerger {
 
-	public static Field MergeFields(Field field1, Field field2) {
-		return field2;
+	public static Field mergeFields(Field field1, Field field2) {
+		Field retF = new Field();
+		
+		List<BarcodeNode> bc1 = field1.getBarcodes();
+		List<BarcodeNode> bc2 = field2.getBarcodes();
+		
+		bc1.retainAll(bc2);
+		bc2.retainAll(bc1);
+		
+		if (bc1.size() >= 2) {
+			BarcodeNode barcodeNode1 = bc1.get(0);
+			
+			for (BarcodeNode barcodeNode2 : bc2) {
+				if (barcodeNode1.equals(barcodeNode2)) {
+					int diffX = barcodeNode1.getPosition().getX() - barcodeNode2.getPosition().getX();
+					int diffY = barcodeNode1.getPosition().getY() - barcodeNode2.getPosition().getY();
+					field2 = field2.moveX(diffX);
+					field2 = field2.moveY(diffY);
+				}
+			}
+			
+			bc2 = field2.getBarcodes();
+			bc2.retainAll(bc1);
+			
+			BarcodeNode barcodeNode1_2 = bc1.get(1);
+
+			for (BarcodeNode barcodeNode2 : bc2) {
+				if (barcodeNode1_2.equals(barcodeNode2)) {
+					double P12 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode1_2.getPosition());
+					System.out.println("rot " + P12);
+					double P13 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode2.getPosition());
+					System.out.println("rot " + P13);
+					double P23 = Position.euclDistance(barcodeNode1_2.getPosition(), barcodeNode2.getPosition());
+					System.out.println("rot " + P23 + " " + barcodeNode1_2.getPosition() + " " + barcodeNode2.getPosition());
+					int rotation = (int)(Math.acos((Math.pow(P12, 2) + Math.pow(P13, 2) - Math.pow(P23, 2)) / (2 * P12 * P13)) / Math.PI * 180 + .5);
+					System.out.println("rot " + rotation);
+					field2 = field2.rotate(rotation, barcodeNode1.getPosition());
+				}
+			}
+			
+
+			
+			for (Tile tile : field1.getTileMap()) {
+				if (retF.canHaveAsTile(tile.getPosition())) {
+					retF.addTile(tile);
+				}
+			}
+			for (Border border : field1.getBorderMap()) {
+				if (retF.canHaveAsBorder(border.getBorderPos())) {
+					retF.addBorder(border);
+				}
+			}
+			
+			
+			for (Tile tile : field2.getTileMap()) {
+				if (retF.canHaveAsTile(tile.getPosition())) {
+					retF.addTile(tile);
+				}
+			}
+			for (Border border : field2.getBorderMap()) {
+				if (retF.canHaveAsBorder(border.getBorderPos())) {
+					retF.addBorder(border);
+				} else {
+					if (retF.getBorderMap().getObjectAtId(border.getBorderPos()).getClass() != border.getClass()) {
+						retF.makeUnsure(border.getBorderPos());
+					}
+				}
+			}
+			
+			
+		} else {
+			// explore more
+			throw new IllegalStateException();
+		}
+		return retF;
 	}
 }

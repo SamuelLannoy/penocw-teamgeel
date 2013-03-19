@@ -25,9 +25,7 @@ import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
-import peno.htttp.Callback;
-import peno.htttp.Client;
-import peno.htttp.GameState;
+import peno.htttp.*;
 
 import messenger.HandlerImplementation;
 import messenger.Messenger;
@@ -66,9 +64,7 @@ public class Main extends JFrame {
 	private Timer debugTimer;
 	private Timer sensorTimer;
 	private HandlerImplementation handler;
-	private Client client;
-	
-	private boolean setNr = false;
+	private PlayerClient client;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -79,8 +75,7 @@ public class Main extends JFrame {
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
-			    	
-			    	
+
 			    	if (client != null && client.isPlaying()) { // TODO: move this to general case
 			    		try {
 							//client.foundObject();
@@ -142,15 +137,6 @@ public class Main extends JFrame {
 						} catch (NullPointerException e) {
 							// nothing
 						}
-			    	}
-			    	
-			    	if (client != null && client.isPlaying()) {
-			    		if (!setNr) {
-			    			int nr = client.getPlayerNumber();
-			    			setNr = true;
-							//robot.setObjectNr(nr);
-							DebugBuffer.addInfo("received object number: "+nr);
-			    		}
 			    	}
 			    }    
 			});
@@ -682,8 +668,8 @@ public class Main extends JFrame {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		handler = new HandlerImplementation(robotPool, playerID);
-		client = new Client(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);
+		/*handler = new HandlerImplementation(robotPool, playerID);
+		client = new PlayerClient(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);
 		
 		robotPool.getMainRobot().setClient(client);
 		
@@ -695,6 +681,9 @@ public class Main extends JFrame {
 				DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
 				try {
 					client.setReady(true);
+					//client.start();
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -704,7 +693,7 @@ public class Main extends JFrame {
 			public void onFailure(Throwable t) {
 				
 			}
-		});
+		});*/
 
 
 	}
