@@ -36,6 +36,7 @@ public class UltrasonicSensor {
 		sensor.reset();
 	}
 	
+	@Deprecated
 	public double getLeft() {
 		int degreesTurned = Motor.A.getTachoCount()%360; //altijd positief
 		if(degreesTurned != 0){
@@ -47,6 +48,7 @@ public class UltrasonicSensor {
 		return result + correction[1];
 	}
 	
+	@Deprecated
 	public double getRight() {
 		int degreesTurned = Motor.A.getTachoCount()%360; //altijd positief
 		if(degreesTurned != 0){
@@ -58,11 +60,13 @@ public class UltrasonicSensor {
 		return result + correction[3];
 	}
 	
+	@Deprecated
 	public double getDistanceAhead(){
 		//lookAhead();
 		return readValue()+correction[0];
 	}
 	
+	@Deprecated
 	public void lookAhead(){
 		int degreesTurned = Motor.A.getTachoCount()%360; //altijd positief
 		if(degreesTurned != 0){
@@ -70,6 +74,7 @@ public class UltrasonicSensor {
 		}
 	}
 	
+	@Deprecated
 	public boolean obstacleAhead(){
 		if(readValue() < dangerousDistance){
 			return true;
