@@ -296,7 +296,7 @@ public class Robot {
 				double v2 = UltrasonicSensor.getInstance().getLastVal();
 				double max = Math.max(v1, v2);
 				double min = Math.min(v1, v2);
-				distances[i] = max * .7 + min * .3 + UltrasonicSensor.CORRECTION[0];
+				distances[i] = max * .7 + min * .3 + UltrasonicSensor.CORRECTION[2];
 				if(i!=3){
 					rotateLeft(90, false);
 				}
