@@ -193,14 +193,14 @@ public class UltrasonicSensor {
 			}
 			switch (i) {
 				case 0:
-					rotate(100);
+					rotate(-100);
 					break;
 				case 1:
-					rotate(-200);
+					rotate(200);
 					break;
 			}
 		}
-		rotate(100);
+		rotate(-100);
 		return distances;
 	}
 	
