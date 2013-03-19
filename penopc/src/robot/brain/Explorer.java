@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import communication.SeesawStatus;
 import communication.Status;
 
 import field.*;
@@ -251,7 +252,34 @@ public class Explorer {
 						case PICKUP:
 							break;
 						case SEESAW:
-							
+							while (robot.getSeesawStatus() != SeesawStatus.ISOPEN);
+							if (robot.getSeesawStatus() == SeesawStatus.ISCLOSED) {
+								
+							} else if (robot.getSeesawStatus() == SeesawStatus.ISOVER) {
+								Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+								Tile lasttile = null;
+								for (int i = 0; i < 4; i++) {
+									lasttile = new Tile(pos);
+									if (field.canHaveAsTile(pos))
+										field.addTile(new Tile(pos));
+									
+									if (i != 3) {
+										if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirBack.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirBack.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
+									}
+								}
+
+								robot.setPosition(new robot.Position(0, 0, dirForw.toAngle()), lasttile);
+							}
 							
 							break;
 						default:

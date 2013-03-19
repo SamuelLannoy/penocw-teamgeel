@@ -109,15 +109,7 @@ public class LightSensor {
 							System.out.println("isScanningBarcode");
 							Robot.getInstance().setScanning(true);
 							Robot.getInstance().stop();
-							if(Robot.speed == 150){
-								Robot.getInstance().travel(-50,false);
-							}
-							else if (Robot.speed == 100){
-								Robot.getInstance().travel(-50,false);
-							}
-							else if (Robot.speed == 250){
-								Robot.getInstance().travel(-80,false);
-							}
+							Robot.getInstance().travel(-80,false);
 							
 							list.clear();
 							counterBlack = 0;

@@ -65,6 +65,8 @@ public class Main extends JFrame {
 	private Timer sensorTimer;
 	private PlayerHandlerImplementation handler;
 	private PlayerClient client;
+	private JFrame frame2;
+	private JPanel contentPane2;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -134,6 +136,22 @@ public class Main extends JFrame {
 						try {
 							//robot.updatePosition();
 							canvas.update(canvas.getGraphics());
+							if (robot.hasTeamMateField()){
+								if(canvas2 == null){
+									frame2 = new JFrame();
+									frame2.setBounds ( 0 , 0 , 500 ,500);
+									frame2.setVisible(true);
+									contentPane2 = new JPanel();
+									contentPane2.setBorder(new EmptyBorder(5, 5, 5, 5));
+									frame2.setContentPane(contentPane2);
+									canvas2 = new DrawCanvas(new RobotPool(robot.getTeamMate()));
+									canvas2.setBounds(0, 0, 500, 500);
+									canvas2.setBackground(new Color(160, 82, 45));
+									contentPane2.add(canvas2);
+								} else{
+									canvas2.update(canvas2.getGraphics());
+								}
+							}
 						} catch (NullPointerException e) {
 							// nothing
 						}
@@ -264,6 +282,7 @@ public class Main extends JFrame {
 	private JTextArea textArea_ultrasonic_back;
 	private JTextArea textArea_ultrasonic_front;
 	private DrawCanvas canvas;
+	private DrawCanvas canvas2;
 	private JMenuItem mntmAdvanced;
 	private BarCodeCanvas barcode_canvas;
 	private JButton btn_resume;

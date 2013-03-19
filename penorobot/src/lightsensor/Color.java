@@ -23,7 +23,7 @@ public enum Color {
 	public static Color getColor(int val) {
 		if (val <= 35) {
 			return BLACK;
-		} else if (val > 35 && val <= 80) {
+		} else if (val > 35 && val <= 78) {
 			return BROWN;
 		} else {
 			return WHITE;
