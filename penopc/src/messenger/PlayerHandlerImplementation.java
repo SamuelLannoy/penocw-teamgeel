@@ -8,12 +8,12 @@ import robot.DebugBuffer;
 import robot.Robot;
 import robot.RobotPool;
 
-public class HandlerImplementation implements PlayerHandler {
+public class PlayerHandlerImplementation implements PlayerHandler {
 	
 	RobotPool robotPool;
 	String ownId;
 
-	public HandlerImplementation(RobotPool pool, String ownId) {
+	public PlayerHandlerImplementation(RobotPool pool, String ownId) {
 		robotPool = pool;
 		this.ownId = ownId;
 	}

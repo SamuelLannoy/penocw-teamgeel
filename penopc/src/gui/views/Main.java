@@ -27,7 +27,7 @@ import javax.swing.border.EmptyBorder;
 
 import peno.htttp.*;
 
-import messenger.HandlerImplementation;
+import messenger.PlayerHandlerImplementation;
 import messenger.Messenger;
 import messenger.RabbitMQ;
 
@@ -63,7 +63,7 @@ public class Main extends JFrame {
 	private Timer mapTimer;
 	private Timer debugTimer;
 	private Timer sensorTimer;
-	private HandlerImplementation handler;
+	private PlayerHandlerImplementation handler;
 	private PlayerClient client;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
