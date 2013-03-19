@@ -27,6 +27,10 @@ public class BorderPosition {
 		return Math.max(getPosition1().getY(), getPosition2().getY());
 	}
 	
+	public boolean isHorizontal() {
+		return (getPosition1().getX() == getPosition2().getX());
+	}
+	
 	public Position getOtherPosition(Position pos) {
 		if (position1.equals(pos)) {
 			return getPosition2();
@@ -117,5 +121,23 @@ public class BorderPosition {
 				+ position2 + "]";
 	}
 	
-
+	public BorderPosition moveX(int move) {
+		return new BorderPosition(
+				new Position(getPosition1().getX() + move, getPosition1().getY()),
+				new Position(getPosition2().getX() + move, getPosition2().getY()));
+	}
+	
+	public BorderPosition moveY(int move) {
+		return new BorderPosition(
+				new Position(getPosition1().getX(), getPosition1().getY() + move),
+				new Position(getPosition2().getX(), getPosition2().getY() + move));
+	}
+	
+	public BorderPosition rotate(int rotation, Position pos) {
+		int[] newpos1 = Position.rotate(rotation, getPosition1(), pos);
+		int[] newpos2 = Position.rotate(rotation, getPosition2(), pos);
+		return new BorderPosition(
+				new Position(newpos1[0], newpos1[1]),
+				new Position(newpos2[0], newpos2[1]));
+	}
 }

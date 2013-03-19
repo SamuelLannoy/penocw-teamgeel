@@ -24,4 +24,9 @@ public class WhiteBorder extends Border {
 		return "white border";
 	}
 
+	@Override
+	public Border newBorder(BorderPosition borderPos) {
+		return new WhiteBorder(borderPos);
+	}
+
 }

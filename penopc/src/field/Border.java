@@ -36,6 +36,20 @@ public abstract class Border {
 	public abstract boolean isPassable();
 	
 	public boolean isHorizontal() {
-		return (getBorderPos().getPosition1().getX() == getBorderPos().getPosition2().getX());
+		return getBorderPos().isHorizontal();
+	}
+	
+	public abstract Border newBorder(BorderPosition borderPos);
+	
+	public Border moveX(int move) {
+		return newBorder(getBorderPos().moveX(move));
+	}
+	
+	public Border moveY(int move){
+		return newBorder(getBorderPos().moveY(move));
+	}
+	
+	public Border rotate(int rotation, Position pos) {
+		return newBorder(getBorderPos().rotate(rotation, pos));
 	}
 }

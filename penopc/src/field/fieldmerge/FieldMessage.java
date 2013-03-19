@@ -1,5 +1,6 @@
 package field.fieldmerge;
 
+import peno.htttp.PlayerClient;
 import field.Field;
 
 public abstract class FieldMessage implements Fieldable {
@@ -10,7 +11,7 @@ public abstract class FieldMessage implements Fieldable {
 	}
 	
 	public Field mergeWithOther(Fieldable fieldable) {
-		return FieldMerger.MergeFields(fieldable.toField(), this.toField());
+		return FieldMerger.mergeFields(fieldable.toField(), this.toField());
 	}
 
 }

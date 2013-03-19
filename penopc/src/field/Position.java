@@ -42,6 +42,10 @@ public class Position {
 		return Math.abs(pos.getX() - this.getX()) + Math.abs(pos.getY() - this.getY());
 	}
 	
+	public static double euclDistance(Position pos1, Position pos2) {
+		return Math.sqrt(Math.pow(pos1.getX() - pos2.getX(), 2) + Math.pow(pos1.getY() - pos2.getY(), 2));
+	}
+	
 	public Position getNorthPosition() {
 		return new Position(getX(), getY() + 1);
 	}
@@ -86,6 +90,25 @@ public class Position {
 	@Override
 	public String toString() {
 		return "Position x: " + Integer.toString(x) + " y: " + Integer.toString(y);
+	}
+	
+	public static int[] rotate(int rotation, Position pos1, Position center) {
+		float s = (float) Math.sin(rotation * Math.PI / 180);
+		float c = (float) Math.cos(rotation * Math.PI / 180);
+
+		// translate point back to origin:
+		int x = pos1.getX() - center.getX();
+		int y = pos1.getY() - center.getY();
+
+		// rotate point
+		float xnew = x * c - y * s;
+		float ynew = x * s + y * c;
+
+		// translate point back:
+		x = (int) (xnew + center.getX());
+		y = (int) (ynew + center.getY());
+		
+		return new int[] {x, y};
 	}
 
 }

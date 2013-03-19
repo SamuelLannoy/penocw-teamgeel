@@ -9,6 +9,7 @@ import java.util.List;
 import communication.Status;
 
 import field.*;
+import field.fieldmerge.FieldMerger;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -63,6 +64,13 @@ public class Explorer {
 		HashSet<Position> explored = new HashSet<Position>();
 		ExploreNode init = new ExploreNode(robot.getCurrTile(), null);
 		toExplore.add(init);
+		
+		for (Tile tile : robot.getField().getTileMap()) {
+			if (!robot.getField().isSure(tile.getPosition())) {
+				ExploreNode node = new ExploreNode(tile, null);
+				toExplore.add(node);
+			}
+		}
 		
 		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
 			boolean quit = false;
@@ -243,6 +251,8 @@ public class Explorer {
 						case PICKUP:
 							break;
 						case SEESAW:
+							
+							
 							break;
 						default:
 							break;
@@ -351,7 +361,29 @@ public class Explorer {
 		}
 
 		DebugBuffer.addInfo("finish");
-		if (robot.getStartTile() != null)
+		
+		if (!robot.hasTeamMate()) {
+			// try to find friend
+		}
+		
+		if (robot.hasTeamMate()) {
+			if (robot.hasTeamMateField()) {
+				Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
+				
+				// check merged field ?
+				
+				robot.setField(merged);
+			} else {
+				// request field
+			}
+			
+			
+			// TODO go to each other
+		}
+		
+		
+		
+		/*if (robot.getStartTile() != null)
 			DebugBuffer.addInfo("start " + robot.getStartTile().getPosition());
 		if (robot.getFinishTile() != null)
 			DebugBuffer.addInfo("stop " + robot.getFinishTile().getPosition());
@@ -390,7 +422,7 @@ public class Explorer {
 			}
 			robot.resetAStartTileList();
 			robot.scanOnlyLines(false);
-		}
+		}*/
 	}
 	
 	public static boolean isPaused() {

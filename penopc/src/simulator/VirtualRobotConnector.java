@@ -10,12 +10,17 @@ import java.util.Queue;
 
 import javax.swing.Timer;
 
+import communication.SeesawStatus;
+
 import field.*;
 import field.fromfile.FieldFactory;
 
 import robot.AbstractRobotConnector;
+import robot.Collision;
 import robot.DebugBuffer;
 import robot.Robot;
+import robot.RobotModel;
+import robot.RobotPool;
 import robot.SensorBuffer;
 import simulator.lightsensor.LightSensor;
 import simulator.lightsensor.LightSensorUpdate;
@@ -100,6 +105,8 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		tdistancey = y;
 		tRotation = angle;
 		this.angle = angle;
+		setStartx(x);
+		setStarty(y);
 	}
 
 	private double moveSpeed = 0.0;
@@ -308,6 +315,26 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public double getTDistanceY() {
 		return tdistancey;
 	}
+	
+	private double startx;
+	
+	private double starty;
+
+	public double getStartx() {
+		return startx;
+	}
+
+	public void setStartx(double startx) {
+		this.startx = startx;
+	}
+
+	public double getStarty() {
+		return starty;
+	}
+
+	public void setStarty(double starty) {
+		this.starty = starty;
+	}
 
 	public void move() {
 		int sign = 0;
@@ -342,11 +369,32 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	}
 	
 	private boolean checkCollision(double[][] corners) {
+		boolean collides = false;
+		
 		try {
-			return maze.collidesWithBorder(corners);
+			if (maze.collidesWithBorder(corners)) {
+				collides = true;
+			}
 		} catch (IllegalArgumentException e){
-			return false;
 		}
+		
+		if (robotCollision) {
+			if (robotPool != null) {
+				for (RobotModel robot : robotPool.getOtherRobots()) {
+					if (Collision.collides(robot, corners)) {
+						collides = true;
+					}
+				}
+			}
+		}
+		
+		return collides;
+	}
+	
+	private boolean robotCollision = true;
+	
+	public void setRobotCollision(boolean set) {
+		robotCollision = set;
 	}
 	
 	public void tick() {
@@ -366,6 +414,9 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 			currCmd.execute(this);
 		}
 		updatePassing();
+		if (robotPool != null) {
+			maze.updateField(getRobotPool());
+		}
 		//System.out.println(getDistanceXMoved() + "  " + getDistanceYMoved() + " " + getRotation());
 		//System.out.println(distanceXMoved + "  " + distanceYMoved + " " + rotation);
 	}
@@ -400,22 +451,6 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 			}
 		});
 		lsThr.start();
-		/*Thread lsThrVal = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while (true) {
-		    		LightSensor.getInstance().readValue();
-		    		try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		});
-		lsThrVal.start();*/
 	}
 
 	@Override
@@ -434,44 +469,11 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		if (maze == null) {
 
 			try {
-				maze = FieldFactory.fieldFromFile("//Users//elinetje2//Documents//2012-2013//Semester 2//P&O//demo2.txt");
+				maze = FieldFactory.fieldFromFile("C:\\demo2.txt");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			//maze.addBall(new Ball(1), new Position(0, 7));
-			/*maze = new Field();
-			maze.addTileWithBorders(new Tile(0, 0), true, false, true, true);
-			maze.addTileWithBorders(new Tile(1, 0), false, false, true, false);
-			maze.addTileWithBorders(new Tile(0, 1), true, false, true, true);
-			maze.addTileWithBorders(new Tile(1, 1), true, true, false, false);
-			maze.addTileWithBorders(new Tile(2, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(3, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(4, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(5, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(6, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(7, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(8, 0), true, false, true, false);
-			maze.addTileWithBorders(new Tile(9, 0), true, true, true, false);*/
-			/*maze.addTile(new Tile(0, 0));
-			maze.addTile(new Tile(0, 1));
-			maze.addTile(new Tile(1, 0));
-			maze.addTile(new Tile(1, 1));
-			maze.addTile(new Tile(2, 0));
-			maze.addBorder(new PanelBorder(0, 0, 0, 1));
-			maze.addBorder(new WhiteBorder(0, 0, 1, 0));
-			maze.addBorder(new WhiteBorder(1, 0, 1, 1));
-			maze.addBorder(new WhiteBorder(0, 1, 1, 1));
-			maze.addBorder(new PanelBorder(0, 0, 0, -1));
-			maze.addBorder(new PanelBorder(0, 0, -1, 0));
-			maze.addBorder(new PanelBorder(1, 0, 1, -1));
-			maze.addBorder(new WhiteBorder(1, 0, 2, 0));
-			maze.addBorder(new PanelBorder(0, 1, 0, 2));
-			maze.addBorder(new PanelBorder(0, 1, -1, 1));
-			maze.addBorder(new PanelBorder(1, 1, 1, 2));
-			maze.addBorder(new PanelBorder(1, 1, 2, 1));
-			maze.addBorder(new PanelBorder(2, 0, 2, 1));
-			maze.addBorder(new PanelBorder(2, 0, 2, -1));
-			maze.addBorder(new PanelBorder(2, 0, 3, 0));*/
 		}
 	}
 	
@@ -622,5 +624,22 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	@Override
 	public void setCmdMger(CommandManager cmdMger) {
 		
+	}
+	
+	private RobotPool robotPool;
+	
+	public RobotPool getRobotPool() {
+		return robotPool;
+	}
+
+	@Override
+	public void setRobotPool(RobotPool robotPool) {
+		this.robotPool = robotPool;
+	}
+
+	@Override
+	public SeesawStatus getSeesawStatus() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

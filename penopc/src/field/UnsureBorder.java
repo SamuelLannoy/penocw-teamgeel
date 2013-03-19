@@ -23,4 +23,9 @@ public class UnsureBorder extends Border {
 		return "unsure border";
 	}
 
+	@Override
+	public Border newBorder(BorderPosition borderPos) {
+		return new UnsureBorder(borderPos);
+	}
+
 }

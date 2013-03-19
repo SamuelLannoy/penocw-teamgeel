@@ -2,11 +2,15 @@ package field;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import field.fieldmerge.BarcodeNode;
 import field.fieldmerge.Fieldable;
 
 import robot.DebugBuffer;
+import robot.RobotModel;
+import robot.RobotPool;
 
 
 public class Field implements Fieldable {
@@ -32,6 +36,16 @@ public class Field implements Fieldable {
 		if (!canHaveAsTile(tile.getPosition()))
 			throw new IllegalArgumentException("given position already used " + tile.getPosition());
 		tileMap.addObject(tile.getPosition(), tile);
+	}
+	
+	public List<BarcodeNode> getBarcodes() {
+		List<BarcodeNode> ret = new ArrayList<BarcodeNode>(tileMap.getObjectCollection().size() / 5);
+		for (Tile tile : tileMap) {
+			if (tile.getBarcode() != null) {
+				ret.add(new BarcodeNode(tile.getBarcode(), tile.getPosition()));
+			}
+		}
+		return ret;
 	}
 	
 	public void addTileWithBorders(Tile tile, boolean top, boolean right, boolean bot, boolean left) {
@@ -81,7 +95,7 @@ public class Field implements Fieldable {
 		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
 	}
 	
-	public PanelBorder getFirstPanelInDirection(Tile tile, Direction dir) {
+	public SolidBorder getFirstPanelInDirection(Tile tile, Direction dir) {
 		boolean found = false;
 		Position currPos = tile.getPosition();
 		while (!found) {
@@ -89,8 +103,8 @@ public class Field implements Fieldable {
 			try {
 				Border border = null;
 				border = borderMap.getObjectAtId(pos);
-				if (border instanceof PanelBorder) {
-					return (PanelBorder)border;
+				if (border instanceof SolidBorder && !border.isPassable()) {
+					return (SolidBorder)border;
 				}
 			} catch (IllegalArgumentException e) {
 				return null;
@@ -295,11 +309,11 @@ public class Field implements Fieldable {
 	
 	public int distanceFromPanel(double x, double y, Direction dir) {
 		Tile tile = getCurrentTile(x, y);
-		Border border = getFirstPanelInDirection(tile, dir);
+		SolidBorder border = getFirstPanelInDirection(tile, dir);
 		if (border != null) {
 			double[] pass = {x, y};
 			double[] pos = convertToInTilePos(pass);
-			int dist = dir.getDistance(pos[0], pos[1], tile, border);
+			int dist = dir.getDistance(pos[0], pos[1], tile, border.getBorderPos());
 			return dist-2;
 		} else {
 			return 9999;
@@ -343,6 +357,51 @@ public class Field implements Fieldable {
 	@Override
 	public Field toField() {
 		return this;
+	}
+	
+	public Field moveX(int x) {
+		Field retF = new Field();
+		for (Tile tile : tileMap) {
+			retF.addTile(tile.moveX(x));
+		}
+		for (Border border : borderMap) {
+			retF.addBorder(border.moveX(x));
+		}
+		return retF;
+	}
+	
+	public Field moveY(int y) {
+		Field retF = new Field();
+		for (Tile tile : tileMap) {
+			retF.addTile(tile.moveY(y));
+		}
+		for (Border border : borderMap) {
+			retF.addBorder(border.moveY(y));
+		}
+		return retF;
+	}
+	
+	public Field rotate(int rotation, Position pos) {
+		Field retF = new Field();
+		for (Tile tile : tileMap) {
+			retF.addTile(tile.rotate(rotation, pos));
+		}
+		for (Border border : borderMap) {
+			retF.addBorder(border.rotate(rotation, pos));
+		}
+		return retF;
+	}
+	
+	public void updateField(RobotPool robotPool) {
+		for (RobotModel model : robotPool.getRobots()) {
+			// TODO
+		}
+	}
+	
+	public void makeUnsure(BorderPosition borderPos) {
+		if (borderMap.hasId(borderPos)) {
+			borderMap.overWrite(borderPos, new UnsureBorder(borderPos));
+		}
 	}
 	
 }

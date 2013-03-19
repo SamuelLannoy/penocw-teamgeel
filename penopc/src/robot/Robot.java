@@ -3,7 +3,7 @@ package robot;
 import java.io.IOException;
 import java.util.List;
 
-import peno.htttp.Client;
+import peno.htttp.PlayerClient;
 
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
@@ -19,6 +19,10 @@ import field.PanelBorder;
 import field.Tile;
 import field.UnsureBorder;
 import field.WhiteBorder;
+import field.fieldmerge.FieldConverter;
+import field.fieldmerge.FieldMerger;
+import field.fieldmerge.FieldMessage;
+import field.fromfile.FieldFactory;
 
 /**
  * @author  Samuel
@@ -31,14 +35,19 @@ public class Robot extends RobotModel{
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
-	private Client client;
+	private PlayerClient client;
+	private RobotPool robotPool;
 
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
 	}
 	
-	public void setClient(Client client) {
+	public void setClient(PlayerClient client) {
 		this.client = client;
+	}
+	
+	public void setRobotPool(RobotPool robotPool) {
+		this.robotPool = robotPool;
 	}
 	
 	public void drivePolygon(double length, int corners) throws IllegalArgumentException {
@@ -80,26 +89,21 @@ public class Robot extends RobotModel{
 		this.endTile = endTile;
 	}
 
-	public void initialize() throws CommunicationException {
+	public void initialize() throws CommunicationException, IOException {
 		robotConn.initialize();
 		currTile = new Tile(0, 0);
-		/*try {
-			setField(FieldFactory.fieldFromFile("C:\\demo2.txt"));
-			currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		
+		
+		/*Field mazex = FieldFactory.fieldFromFile("c:\\merge1.txt");
+		Field mazey = FieldFactory.fieldFromFile("c:\\merge2.txt");
+		
+		Field merged = FieldMerger.mergeFields(mazex, mazey);
+		
+		setField(merged);
+		currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));*/
+		
+		
 		getField().addTile(currTile);
-		/*List<Border> list = robotConn.getBorderSurroundings();
-		if (list != null) {
-			for (Border border : list) {
-				if (getField().canHaveAsBorder(border.getBorderPos()))
-				{
-					getField().addBorder(border);
-				}
-			}
-		}*/
 	}
 	
 	public void terminate() {
@@ -373,7 +377,9 @@ public class Robot extends RobotModel{
 		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
 			try {
-				client.foundObject();
+				if (client.isPlaying()) {
+					client.foundObject();
+				}
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -636,6 +642,14 @@ public class Robot extends RobotModel{
 		return ((ISimulator)robotConn).getTDistanceY();
 	}
 	
+	public double getStartx() {
+		return ((ISimulator)robotConn).getStartx();
+	}
+	
+	public double getStarty() {
+		return ((ISimulator)robotConn).getStarty();
+	}
+	
 	public double getSimAngle() {
 		return ((ISimulator)robotConn).getTRotation() * Math.PI / 180;
 	}
@@ -671,6 +685,27 @@ public class Robot extends RobotModel{
 	
 	public int getTeamNr() {
 		return robotConn.getTeam();
+	}
+	
+	public boolean hasTeamMate() {
+		return false;
+	}
+	
+	private FieldMessage fieldMsg;
+	
+	public void setFieldMessage(FieldMessage fieldMsg) {
+		this.fieldMsg = fieldMsg;
+	}
+	
+	public boolean hasTeamMateField() {
+		return fieldMsg != null;
+	}
+	
+	public Field getTeamMateField() {
+		if (!hasTeamMateField()) {
+			throw new IllegalStateException("teammate hasn't given field yet!");
+		}
+		return FieldConverter.convertToField(fieldMsg);
 	}
 	
 	private boolean hasFoundOwnBarcode;

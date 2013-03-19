@@ -6,10 +6,13 @@ import java.io.IOException;
 
 import javax.swing.Timer;
 
+import communication.SeesawStatus;
+
 import exception.CommunicationException;
 import field.Field;
 import field.fromfile.FieldFactory;
 import robot.Robot;
+import robot.RobotPool;
 
 public class SimulatorConnector implements ISimulator {
 	private Timer timer = new Timer(1, new ActionListener() {
@@ -252,4 +255,32 @@ public class SimulatorConnector implements ISimulator {
 		movMger.setSimLoc(x, y, angle);
 	}
 
+	@Override
+	public double getStartx() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getStarty() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private RobotPool robotPool;
+	
+	public RobotPool getRobotPool() {
+		return robotPool;
+	}
+
+	@Override
+	public void setRobotPool(RobotPool robotPool) {
+		this.robotPool = robotPool;
+	}
+
+	@Override
+	public SeesawStatus getSeesawStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

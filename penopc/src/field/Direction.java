@@ -13,8 +13,8 @@ public enum Direction {
 		}
 
 		@Override
-		public int getDistance(double x, double y, Tile tile, Border border) {
-			return (int)(20 - y) + 40*Math.abs(tile.getPosition().getY() - border.getBorderPos().getLowestY());
+		public int getDistance(double x, double y, Tile tile, BorderPosition borderPos) {
+			return (int)(20 - y) + 40*Math.abs(tile.getPosition().getY() - borderPos.getLowestY());
 		}
 
 		@Override
@@ -54,8 +54,8 @@ public enum Direction {
 		}
 
 		@Override
-		public int getDistance(double x, double y, Tile tile, Border border) {
-			return (int)(20 + y) + 40*Math.abs(tile.getPosition().getY() - border.getBorderPos().getHighestY());
+		public int getDistance(double x, double y, Tile tile, BorderPosition borderPos) {
+			return (int)(20 + y) + 40*Math.abs(tile.getPosition().getY() - borderPos.getHighestY());
 		}
 
 		@Override
@@ -95,8 +95,8 @@ public enum Direction {
 		}
 
 		@Override
-		public int getDistance(double x, double y, Tile tile, Border border) {
-			return (int)(20 + x) + 40*Math.abs(tile.getPosition().getX() - border.getBorderPos().getHighestX());
+		public int getDistance(double x, double y, Tile tile, BorderPosition borderPos) {
+			return (int)(20 + x) + 40*Math.abs(tile.getPosition().getX() - borderPos.getHighestX());
 		}
 
 		@Override
@@ -136,8 +136,8 @@ public enum Direction {
 		}
 
 		@Override
-		public int getDistance(double x, double y, Tile tile, Border border) {
-			return (int)(20 - x) + 40*Math.abs(tile.getPosition().getX() - border.getBorderPos().getLowestX());
+		public int getDistance(double x, double y, Tile tile, BorderPosition borderPos) {
+			return (int)(20 - x) + 40*Math.abs(tile.getPosition().getX() - borderPos.getLowestX());
 		}
 
 		@Override
@@ -229,7 +229,7 @@ public enum Direction {
 	
 	public abstract BorderPosition getBorderPositionInDirection(Position pos);
 	public abstract Position getPositionInDirection(Position pos);
-	public abstract int getDistance(double x, double y, Tile tile, Border border);
+	public abstract int getDistance(double x, double y, Tile tile, BorderPosition borderPos);
 	public abstract double toAngle();
 	public abstract Direction opposite();
 	public abstract int turnTo(Direction other);

@@ -2,6 +2,8 @@ package field.test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,9 +15,12 @@ import field.Direction;
 import field.Field;
 import field.PanelBorder;
 import field.Position;
+import field.SolidBorder;
 import field.Tile;
 import field.UnsureBorder;
 import field.WhiteBorder;
+import field.fieldmerge.FieldMerger;
+import field.fromfile.FieldFactory;
 
 public class FieldTest {
 
@@ -129,23 +134,20 @@ public class FieldTest {
 	@Test
 	public void getFirstPanelInDirection_normalCase1() {
 		Tile tile = maze.getCurrentTile(0,0);
-		PanelBorder border = maze.getFirstPanelInDirection(tile, Direction.TOP);
-		assertEquals(border.isPassable(), false);
+		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.TOP);
 		assertEquals(border.getBorderPos(), new BorderPosition(new Position(0, 0), new Position(0, 1)));
 	}
 	
 	@Test
 	public void getFirstPanelInDirection_normalCase2() {
 		Tile tile = maze.getCurrentTile(0,0);
-		PanelBorder border = maze.getFirstPanelInDirection(tile, Direction.RIGHT);
-		assertEquals(border.isPassable(), false);
+		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.RIGHT);
 		assertEquals(border.getBorderPos(), new BorderPosition(new Position(1, 0), new Position(2, 0)));
 	}
 	@Test
 	public void getFirstPanelInDirection_normalCase3() {
 		Tile tile = maze.getCurrentTile(0,40);
-		PanelBorder border = maze.getFirstPanelInDirection(tile, Direction.BOTTOM);
-		assertEquals(border.isPassable(), false);
+		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.BOTTOM);
 		assertEquals(border.getBorderPos(), new BorderPosition(new Position(0, 0), new Position(0, 1)));
 	}
 	
@@ -189,6 +191,31 @@ public class FieldTest {
 		mazex.addBorder(new WhiteBorder(0, 0, 0, 1));
 		mazex.addBorder(new UnsureBorder(0, 0, 0, 1));
 		assertTrue(mazex.getBorderMap().getObjectAtId(new BorderPosition(new Position(0, 0), new Position(0, 1))) instanceof WhiteBorder);
+	}
+
+	@Test
+	public void rotate() {
+		Tile center = new Tile(0, 0);
+		Tile tile1 = new Tile(3, -1);
+		Tile tile2 = new Tile(3, -1);
+		
+		tile1 = tile1.rotate(180, center.getPosition());
+		tile2 = tile2.rotate(90, center.getPosition());
+		tile2 = tile2.rotate(90, center.getPosition());
+		
+		assertEquals(tile1.getPosition(), tile2.getPosition());
+	}
+
+	@Test
+	public void fieldmerge() throws IOException {
+		Field mazex = FieldFactory.fieldFromFile("c:\\merge1.txt");
+		Field mazey = FieldFactory.fieldFromFile("c:\\merge2.txt");
+		
+		Field merged = FieldMerger.mergeFields(mazex, mazey);
+		
+		for (Tile tile : merged.getTileMap()) {
+			System.out.println(tile);
+		}
 	}
 
 }

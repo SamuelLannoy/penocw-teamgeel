@@ -2,12 +2,13 @@ package messenger;
 
 import java.util.Collection;
 
-import peno.htttp.Handler;
+import peno.htttp.DisconnectReason;
+import peno.htttp.PlayerHandler;
 import robot.DebugBuffer;
 import robot.Robot;
 import robot.RobotPool;
 
-public class HandlerImplementation implements Handler {
+public class HandlerImplementation implements PlayerHandler {
 	
 	RobotPool robotPool;
 	String ownId;
@@ -39,11 +40,11 @@ public class HandlerImplementation implements Handler {
 		DebugBuffer.addInfo("game stopped");
 	}
 
-	@Override
+	/*@Override
 	public void playerPosition(String playerID, double x, double y, double angle) {
 		robotPool.updateRobot(getPoolID(playerID), x, y, angle);
 		//DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
-	}
+	}*/
 
 	@Override
 	public void gamePaused() {
@@ -52,22 +53,34 @@ public class HandlerImplementation implements Handler {
 	}
 
 	@Override
-	public void playerJoined(String playerID) {
-		//robotPool.addRobot(new Robot(1), playerID);
-		DebugBuffer.addInfo("player " + playerID + " joined");
-		
+	public void gameRolled(int playerNumber) {
+		robotPool.getMainRobot().setObjectNr(playerNumber);
 	}
 
 	@Override
-	public void playerLeft(String playerID) {
-		//robotPool.removeRobot(playerID);
-		DebugBuffer.addInfo("player " + playerID + " left");
+	public void playerJoining(String playerID) {
+		DebugBuffer.addInfo("player " + playerID + " joining");
 	}
 
 	@Override
-	public void playerFoundObject(String playerID) {
+	public void playerDisconnected(String playerID, DisconnectReason reason) {
+		DebugBuffer.addInfo("player " + playerID + " disconnected because of " + reason.toString());
+	}
+
+	@Override
+	public void playerReady(String playerID, boolean isReady) {
+		DebugBuffer.addInfo("player " + playerID + " ready: " + isReady);
+	}
+
+	@Override
+	public void playerFoundObject(String playerID, int playerNumber) {
 		robotPool.getRobot(getPoolID(playerID)).setHasBall(true);
 		DebugBuffer.addInfo("player " + playerID + " found object");
+	}
+
+	@Override
+	public void playerJoined(String playerID) {
+		DebugBuffer.addInfo("player " + playerID + " joined");
 	}
 
 }
