@@ -693,6 +693,10 @@ public class Robot extends RobotModel{
 		return false;
 	}
 	
+	public Robot getTeamMate(){
+		//TODO
+		return null;
+	}
 	private FieldMessage fieldMsg;
 	
 	public void setFieldMessage(FieldMessage fieldMsg) {
