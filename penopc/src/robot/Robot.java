@@ -3,6 +3,8 @@ package robot;
 import java.io.IOException;
 import java.util.List;
 
+import communication.SeesawStatus;
+
 import peno.htttp.PlayerClient;
 
 import robot.brain.Explorer;
@@ -716,6 +718,10 @@ public class Robot extends RobotModel{
 
 	public void setHasFoundOwnBarcode(boolean hasFoundOwnBarcode) {
 		this.hasFoundOwnBarcode = hasFoundOwnBarcode;
+	}
+	
+	public SeesawStatus getSeesawStatus() {
+		return robotConn.getSeesawStatus();
 	}
 
 }

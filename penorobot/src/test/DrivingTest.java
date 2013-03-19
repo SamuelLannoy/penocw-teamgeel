@@ -10,7 +10,7 @@ public class DrivingTest {
 			System.out.println("Hello Team Geel");
 			Button.waitForAnyPress();
 
-			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.9, 126.5, Motor.B, Motor.C, false);
+			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.9, 129.5, Motor.B, Motor.C, false);
 			PILOT.setTravelSpeed(150);
 			PILOT.setRotateSpeed(50);
 			PILOT.setAcceleration(500);
