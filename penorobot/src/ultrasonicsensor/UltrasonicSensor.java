@@ -10,7 +10,7 @@ import lejos.nxt.SensorPort;
 public class UltrasonicSensor {
 	private static lejos.nxt.UltrasonicSensor sensor;
 	private static final int dangerousDistance = 50; //TODO 5 cm? 
-	public static final double[] CORRECTION = {4,-4,-9,9};
+	public static final double[] CORRECTION = {9,4,-9,-4};
 	
 	private static final UltrasonicSensor instance = new UltrasonicSensor();
 	
@@ -220,7 +220,7 @@ public class UltrasonicSensor {
 		double v2 = lastVal;
 		double max = Math.max(v1, v2);
 		double min = Math.min(v1, v2);
-		distances[0] = max * .7 + min * .3 + CORRECTION[2];
+		distances[0] = max * .7 + min * .3 + CORRECTION[0];
 		Buffer.addDistance((int)distances[0]);
 		Buffer.addDistance(-1);
 		Buffer.addDistance(-1);
