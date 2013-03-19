@@ -7,6 +7,7 @@ import communication.SeesawStatus;
 
 import lejos.nxt.Button;
 import lejos.nxt.Sound;
+import lightsensor.LightSensor;
 import lightsensor.LightSensorVigilante;
 import robot.Robot;
 import touchsensor.TouchSensor;
@@ -91,6 +92,7 @@ public class BarcodeAction {
 		// check stand van de wip
 		if(IRSeeker.getInstance().getValueAhead() > 5){ //TODO check of test goed werkt
 			Buffer.setSeesawStatus(SeesawStatus.ISOPEN);
+			LightSensorVigilante.pause();
 			double prev = Robot.speed;
 			Robot.getInstance().setTravelSpeed(250);
 			Robot.getInstance().travel(850,false);
@@ -100,6 +102,7 @@ public class BarcodeAction {
 			Buffer.setSeesawStatus(SeesawStatus.ISOVER);
 			Button.waitForAnyEvent(1000);
 			Buffer.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
+			LightSensorVigilante.resume();
 		}
 		else{
 			Buffer.setSeesawStatus(SeesawStatus.ISCLOSED);
