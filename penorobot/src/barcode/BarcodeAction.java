@@ -89,7 +89,7 @@ public class BarcodeAction {
 	
 	public static void seesaw(){
 		// check stand van de wip
-		if(IRSeeker.getInstance().getValueAhead() == 255){ //TODO check of test goed werkt
+		if(IRSeeker.getInstance().getValueAhead() > 0){ //TODO check of test goed werkt
 			Buffer.setSeesawStatus(SeesawStatus.ISOPEN);
 			double prev = Robot.speed;
 			Robot.getInstance().setTravelSpeed(250);
