@@ -13,6 +13,7 @@ public class IRSeeker {
 	 */
 	private IRSeeker(){
 		seeker = new lejos.nxt.addon.IRSeeker(SensorPort.S4);
+		seeker.setAddress(0x8);
 	}
 	
 	public static IRSeeker getInstance(){
