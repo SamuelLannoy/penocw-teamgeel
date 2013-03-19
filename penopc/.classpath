@@ -4,11 +4,11 @@
 	<classpathentry kind="con" path="org.lejos.nxt.ldt.LEJOS_LIBRARY_CONTAINER/pc"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/Ruben/Dropbox/PenOVerslagen/RabbitMQ/rabbitmq-java-client-bin-3.0.2/commons-cli-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ruben/Dropbox/PenOVerslagen/RabbitMQ/rabbitmq-java-client-bin-3.0.2/commons-io-1.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ruben/Dropbox/PenOVerslagen/RabbitMQ/rabbitmq-java-client-bin-3.0.2/junit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ruben/Dropbox/PenOVerslagen/RabbitMQ/rabbitmq-java-client-bin-3.0.2/rabbitmq-client.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ruben/Dropbox/PenOVerslagen/RabbitMQ/rabbitmq-java-client-bin-3.0.2/rabbitmq-client-tests.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/htttp-peno"/>
+	<classpathentry kind="lib" path="/Users/elinetje2/Documents/2012-2013/Semester 2/P&amp;O/RabbitMQ/rabbitmq-java-client-bin-3-1.0.2/commons-cli-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/elinetje2/Documents/2012-2013/Semester 2/P&amp;O/RabbitMQ/rabbitmq-java-client-bin-3-1.0.2/commons-io-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/elinetje2/Documents/2012-2013/Semester 2/P&amp;O/RabbitMQ/rabbitmq-java-client-bin-3-1.0.2/junit.jar"/>
+	<classpathentry kind="lib" path="/Users/elinetje2/Documents/2012-2013/Semester 2/P&amp;O/RabbitMQ/rabbitmq-java-client-bin-3-1.0.2/rabbitmq-client-tests.jar"/>
+	<classpathentry kind="lib" path="/Users/elinetje2/Documents/2012-2013/Semester 2/P&amp;O/RabbitMQ/rabbitmq-java-client-bin-3-1.0.2/rabbitmq-client.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
