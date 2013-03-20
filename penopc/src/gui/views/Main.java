@@ -241,7 +241,7 @@ public class Main extends JFrame {
 						textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
 						
 						//update infrared sensor data.
-						textArea_infrared.setText(""+SensorBuffer.getInfrared());
+						textArea_infrared.setText("Ahead: "+SensorBuffer.getInfrared());
 						
 						if (!SensorBuffer.getBarcodes().isEmpty()){
 							Barcode barcode = new Barcode(SensorBuffer.getBarcodes().get(0));
