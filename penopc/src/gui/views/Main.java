@@ -240,6 +240,8 @@ public class Main extends JFrame {
 						// update pressure sensor data.
 						textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
 						
+						//update infrared sensor data.
+						textArea_infrared.setText(""+SensorBuffer.getInfrared());
 						
 						if (!SensorBuffer.getBarcodes().isEmpty()){
 							Barcode barcode = new Barcode(SensorBuffer.getBarcodes().get(0));
@@ -295,6 +297,7 @@ public class Main extends JFrame {
 	private JTextArea teamMateTextArea;
 	private JTextArea otherTeamTextArea1;
 	private JTextArea otherTeamTextArea2;
+	private JTextArea textArea_infrared;
 
 	/**
 	 * Launch the application.
@@ -467,7 +470,7 @@ public class Main extends JFrame {
 		contentPane.add(btn_resume);
 		
 		JScrollPane scrollPane_multiscan = new JScrollPane();
-		scrollPane_multiscan.setBounds(266, 400, 202, 100);
+		scrollPane_multiscan.setBounds(266, 400, 202, 49);
 		contentPane.add(scrollPane_multiscan);
 		
 		textArea_multiscan = new JTextArea();
@@ -527,6 +530,15 @@ public class Main extends JFrame {
 		otherTeamTextArea2 = new JTextArea();
 		otherTeamTextArea2.setBounds(380, 100, 90, 24);
 		contentPane.add(otherTeamTextArea2);
+		
+		textArea_infrared = new JTextArea();
+		textArea_infrared.setText("");
+		textArea_infrared.setBounds(270, 480, 200, 30);
+		contentPane.add(textArea_infrared);
+		
+		Label label = new Label("infrared");
+		label.setBounds(286, 456, 62, 22);
+		contentPane.add(label);
 		
 	}
 	

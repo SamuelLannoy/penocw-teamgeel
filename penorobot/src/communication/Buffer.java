@@ -108,6 +108,19 @@ public class Buffer {
 	}
 	
 	/**
+	 * INFRARED SENSOR
+	 */
+	private static int infrared;
+	
+	public static int getInfrared(){
+		return infrared;
+	}
+	
+	public static void setInfrared(int infrared) {
+		Buffer.infrared = infrared;
+	}
+	
+	/**
 	 * DEBUG
 	 */
 	private static ArrayList<String> debug = new ArrayList<String>();

@@ -90,7 +90,7 @@ public class BarcodeAction {
 	
 	public static void seesaw(){
 		// check stand van de wip
-		Buffer.addDebug("IRValue: "+IRSeeker.getInstance().getValueAhead());
+		Buffer.setInfrared(IRSeeker.getInstance().getValueAhead());
 		if(IRSeeker.getInstance().getValueAhead() < 5){ //TODO check of test goed werkt
 			Buffer.setSeesawStatus(SeesawStatus.ISOPEN);
 			LightSensorVigilante.pause();

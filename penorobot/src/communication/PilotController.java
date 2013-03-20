@@ -185,6 +185,9 @@ public class PilotController {
 				dataOut.writeInt(pos);
 			}
 			
+			// Write data about the infrared sensor values
+			dataOut.writeInt(Buffer.getInfrared());
+			
 			// Write data about the light sensor values
 			ArrayList<Integer> lightValues = new ArrayList<Integer>();
 			synchronized(Buffer.getLightValues()) {

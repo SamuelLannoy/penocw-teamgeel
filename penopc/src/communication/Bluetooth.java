@@ -128,6 +128,10 @@ public class Bluetooth {
 				}
 				SensorBuffer.updateDistancesAD(distancesAD);
 				
+				// Receive data about the infrared sensor values
+				int infrared = dataIn.readInt();
+				SensorBuffer.updateInfrared(infrared);
+				
 				// Receive data about the light sensor values
 				int numberOfLightValues = dataIn.readInt();
 				ArrayList<Integer> lightValues = new ArrayList<Integer>();

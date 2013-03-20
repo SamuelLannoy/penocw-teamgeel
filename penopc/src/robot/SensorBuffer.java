@@ -157,4 +157,17 @@ public class SensorBuffer {
 		return touches;
 	}
 	
+	/**
+	 * INFRARED SENSOR
+	 */
+	private static int infrared;
+
+	public static void updateInfrared(int infrared) {
+		SensorBuffer.infrared = infrared;
+	}
+
+	public static int getInfrared() {
+		return infrared;
+	}
+	
 }
