@@ -28,8 +28,8 @@ public class Robot {
 		private int objectNr;
 		private int teamNr;
 		
-		public static final int DEFAULT_TRAVEL_SPEED = 175;
-		public static final int DEFAULT_ROTATE_SPEED = 150;
+		public static final int DEFAULT_TRAVEL_SPEED = 170;
+		public static final int DEFAULT_ROTATE_SPEED = 120;
 		public static final int DEFAULT_ACCELERATION = 500;
 		
 		public static double speed;
