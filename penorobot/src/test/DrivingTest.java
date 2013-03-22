@@ -10,51 +10,31 @@ public class DrivingTest {
 			System.out.println("Hello Team Geel");
 			Button.waitForAnyPress();
 
-			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.9, 129.5, Motor.B, Motor.C, false);
+			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.7, 128.65, Motor.B, Motor.C, false);
 			PILOT.setTravelSpeed(150);
 			PILOT.setRotateSpeed(50);
 			PILOT.setAcceleration(500);
 			
 			// Afstand rijden
-			/*while(true) {
+			while(true) {
 				System.out.println("Starting");
 				Button.waitForAnyPress(2000);
-				PILOT.travel(800);
+				for(int i = 0; i < 7; i++)
+					PILOT.travel(400);
 				Button.waitForAnyPress();
-				System.out.println("Starting");
-				Button.waitForAnyPress(2000);
-				PILOT.travel(1600);
-				Button.waitForAnyPress();
-				System.out.println("Starting");
-				Button.waitForAnyPress(2000);
-				PILOT.travel(2400);
-				Button.waitForAnyPress();
-			}*/
+			}
 			
 			// Draaien
 			
-			while(true) {
-				/*PILOT.rotate(900);
-				Button.waitForAnyPress();
-				System.out.println("Starting...");
-				Button.waitForAnyPress(2000);
-				
-				PILOT.rotate(1800);
-				Button.waitForAnyPress();
-				System.out.println("Starting...");
-				Button.waitForAnyPress(2000);
-				PILOT.rotate(2700);
-				Button.waitForAnyPress();
-				System.out.println("Starting...");
-				Button.waitForAnyPress(2000);
-				*/
-				for(int i = 0; i<20; i++)
-					PILOT.rotate(90);
-				Button.waitForAnyPress();
-				System.out.println("Starting...");
-				Button.waitForAnyPress(2000);
-				Button.waitForAnyPress();
-			}
+//			while(true) {
+//				System.out.println("Starting...");
+//				Button.waitForAnyPress(2000);
+//				for(int i = 0; i<20; i++)
+//					PILOT.rotate(90);
+//				for(int i = 0; i<20; i++)
+//					PILOT.rotate(-90);
+//				Button.waitForAnyPress();
+//			}
 
 			// Einde
 			//Button.waitForAnyPress();
