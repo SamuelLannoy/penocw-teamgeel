@@ -2,7 +2,7 @@ package test;
 
 import lejos.nxt.Button;
 import lejos.nxt.Motor;
-import lejos.robotics.navigation.DifferentialPilot;
+import robot.DifferentialPilot;
 
 public class DrivingTest {
 	
@@ -10,9 +10,10 @@ public class DrivingTest {
 			System.out.println("Hello Team Geel");
 			Button.waitForAnyPress();
 
-			DifferentialPilot PILOT = new DifferentialPilot(54.3, 54.7, 128.65, Motor.B, Motor.C, false);
-			PILOT.setTravelSpeed(150);
-			PILOT.setRotateSpeed(50);
+			// Standaard differentialpilot: 54.3, 54.7, 128.65
+			DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128, Motor.B, Motor.C, false);
+			PILOT.setTravelSpeed(170);
+			PILOT.setRotateSpeed(100);
 			PILOT.setAcceleration(500);
 			
 			// Afstand rijden
