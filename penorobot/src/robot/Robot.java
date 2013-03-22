@@ -18,7 +18,7 @@ import lightsensor.LightSensor;
  */
 public class Robot {
 		// Volgens verslag: 54.3, 54.9, 129.8
-		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128, Motor.B, Motor.C, false);
+		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 127.93, Motor.B, Motor.C, false);
 		private static Robot instance = new Robot();
 		private boolean isScanning;
 		private boolean isCentering;
