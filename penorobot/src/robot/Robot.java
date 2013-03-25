@@ -381,7 +381,7 @@ public class Robot {
 			sendBarcode(barcode);
 			if(barcode.getBarcodeType().equals(BarcodeType.OBJECT)){
 				if(barcode.getObjectNr() == Robot.getInstance().getObjectNr()){
-					Buffer.setTeamNr(barcode.getTeamNr());	
+					Robot.getInstance().setTeamNr(barcode.getTeamNr());	
 					Buffer.addDebug("Teamnr Sent: "+barcode.getTeamNr());
 				}
 					
