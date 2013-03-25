@@ -220,7 +220,7 @@ public class Robot {
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
-			while (buffer<50) {
+			while (buffer<25) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 

@@ -20,7 +20,6 @@ public class LightSensorVigilante extends Thread {
 	 */
 	public static void pause() {
 		pause = true;
-		System.out.println("vigilantepauze + " + pause);
 	}
 	
 	/**
@@ -52,6 +51,8 @@ public class LightSensorVigilante extends Thread {
 		onlyLines = false;
 	}
 	
+	boolean pauseTemp = false;
+	
 	/**
 	 * Constantly scans for lines and barcodes (depending on the variable
 	 * onlyLines) and updates the buffer to what the lightsensor scanned.
@@ -59,7 +60,13 @@ public class LightSensorVigilante extends Thread {
 	public void run() {
 		while (true) {
 			Button.waitForAnyPress(5);
+			if (pause && !pauseTemp) {
+				Buffer.addDebug("Vigilante Pause " + pause);
+				pauseTemp = true;
+				
+			}
 			if (!pause) {
+				pauseTemp = false;
 				LightSensorUpdate update = null;
 				boolean curOnlyLines = onlyLines; //not possible to change this variable if a scan is in progress
 				//boolean curNoLines = noLines;

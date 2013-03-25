@@ -819,13 +819,25 @@ public class Robot extends RobotModel{
 	}
 	
 	public void moveAcrossSeesaw() {
-		moveForward(850);
+		moveForward(400);
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		moveForward(200);
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		moveForward(200);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		moveForward(750);
+		moveForward(800);
 	}
 
 	public int getObjectNr() {

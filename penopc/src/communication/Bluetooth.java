@@ -183,7 +183,8 @@ public class Bluetooth {
 				boolean teamKnown = dataIn.readBoolean();
 				int teamNr = dataIn.readInt();
 				
-				if(teamKnown){
+				if(teamNr != -1){
+					//System.out.println("nr: " + teamNr);
 					Status.updateObjectInfo(teamNr);
 				}
 				
