@@ -41,9 +41,7 @@ public class DrivingTest {
 						def=def+0.1;
 					System.out.println("parameter is: "+def);
 				}
-				PILOT = new robot.DifferentialPilot(54.3, 54.7, def, Motor.B, Motor.C, false);
-						
-				}				
+				PILOT = new robot.DifferentialPilot(54.3, 54.7, def, Motor.B, Motor.C, false);				
 				System.out.println("Starting...");
 				Button.waitForAnyPress(2000);
 				for(int i = 0; i<20; i++)
