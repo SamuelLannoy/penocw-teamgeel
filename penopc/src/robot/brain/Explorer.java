@@ -195,6 +195,12 @@ public class Explorer {
 								
 							}*/
 							
+							robot.getCurrTile().getBarcode();
+							
+							
+							
+							
+							
 							Direction dirForwLocal = dirForw;
 							Direction dirBackLocal = dirBack;
 
@@ -261,6 +267,7 @@ public class Explorer {
 							boolean over = false;
 							if (!robot.isSim()) {
 								while (robot.getSeesawStatus() != SeesawStatus.ISOPEN);
+								over = true;
 							} else {
 								if (robot.getSeesawStatus() == SeesawStatus.ISOPEN) {
 									robot.setSeesawMode(true);
