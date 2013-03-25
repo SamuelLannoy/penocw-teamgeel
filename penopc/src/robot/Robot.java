@@ -422,7 +422,7 @@ public class Robot extends RobotModel{
 		//System.out.println("add " + pos);
 		//if (robotConn instanceof VirtualRobotConnector && ((VirtualRobotConnector)robotConn).passedWhiteBorder()) {
 		passedWhiteBorder();
-		if (passedWhite/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
+		if (passedWhite && !isSeesawMode()/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
 			passedWhite = false;
 			// TODO: possible problem: seesaw with only one tile at ending
 			currEndSeesaw = 0;
