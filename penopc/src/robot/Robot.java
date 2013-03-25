@@ -827,4 +827,8 @@ public class Robot extends RobotModel{
 		}
 		moveForward(750);
 	}
+
+	public int getObjectNr() {
+		return robotConn.getObjectNr();
+	}
 }
