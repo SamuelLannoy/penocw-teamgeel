@@ -30,28 +30,18 @@ public class DrivingTest {
 			boolean alot=false;
 			double def = 127.93;
 			while(true) {
-				if(higher){
-					if(alot){
-						PILOT = new robot.DifferentialPilot(54.3, 54.7, def+1, Motor.B, Motor.C, false);
-						def=def+1;
+				double bleh;
+				System.out.println(def);
+				while(!Button.ENTER.isDown()){
+					Button.waitForAnyPress();
+					if(Button.LEFT.isDown()){
+						def = def-0.1;
 					}
-						
-					else{
-						PILOT = new robot.DifferentialPilot(54.3, 54.7, def+0.1, Motor.B, Motor.C, false);
+					else if(Button.RIGHT.isDown())
 						def=def+0.1;
-					}
-						
+					System.out.println("parameter is: "+def);
 				}
-				else{
-					if(alot){
-						PILOT = new robot.DifferentialPilot(54.3, 54.7, def-1, Motor.B, Motor.C, false);
-						def=def-1;
-					}
-						
-					else{
-						PILOT = new robot.DifferentialPilot(54.3, 54.7, def-0.1, Motor.B, Motor.C, false);
-						def=def-0.1;
-					}
+				PILOT = new robot.DifferentialPilot(54.3, 54.7, def, Motor.B, Motor.C, false);
 						
 				}				
 				System.out.println("Starting...");
@@ -63,11 +53,7 @@ public class DrivingTest {
 				for(int i = 0; i<20; i++)
 					PILOT.rotate(-90);
 				Button.waitForAnyPress();
-				if(Button.LEFT.isPressed())
-					higher=true;
-				Button.waitForAnyPress();
-				if(Button.RIGHT.isPressed())
-					alot=true;
+				
 			}
 
 			// Einde
