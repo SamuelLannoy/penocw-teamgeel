@@ -52,4 +52,8 @@ public abstract class Border {
 	public Border rotate(int rotation, Position pos) {
 		return newBorder(getBorderPos().rotate(rotation, pos));
 	}
+
+	public Boolean isSeeSawBorder() {
+		return this instanceof SeesawBorder;
+	}
 }
