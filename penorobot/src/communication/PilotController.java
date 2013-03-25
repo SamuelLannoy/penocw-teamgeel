@@ -106,7 +106,7 @@ public class PilotController {
 			public void run() {
 				while(true){
 					try {
-						Thread.sleep(100);
+						Thread.sleep(TIME_OUT);
 					} catch (InterruptedException e) {
 					}
 					UltrasonicSensor.getInstance().readValue();
@@ -118,7 +118,7 @@ public class PilotController {
 			public void run() {
 				while(true){
 					try {
-						Thread.sleep(100);
+						Thread.sleep(TIME_OUT);
 					} catch (InterruptedException e) {
 					}
 					Buffer.setInfrared(IRSeeker.getInstance().getValueAhead());
