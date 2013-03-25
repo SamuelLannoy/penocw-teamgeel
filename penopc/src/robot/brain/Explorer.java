@@ -108,6 +108,14 @@ public class Explorer {
 						//robot.scanOnlyLines(false);
 						//DebugBuffer.addInfo("turning off barcode read");
 					}
+					// een tegel op het pad heeft de barcode van een wip.
+					// het pad wordt tot dan afgelegd en vervolgens opnieuw berekend.
+					Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
+					if (tile.getBarcode() != null && (tile.getBarcode().getDecimal() == 11 || tile.getBarcode().getDecimal() == 13 ||
+							tile.getBarcode().getDecimal() == 15 || tile.getBarcode().getDecimal() == 17 || tile.getBarcode().getDecimal() == 19 ||
+							tile.getBarcode().getDecimal() == 21)){
+							break;
+					}
 					robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
 				}
 				//DebugBuffer.addInfo("turning on barcode read");
@@ -115,6 +123,43 @@ public class Explorer {
 				waitTillRobotStops(robot, 250);
 				waitTillRobotStops(robot, 250);
 				robot.scanOnlyLines(false);
+				// de wip was open en de robot is erover gegaan. 
+				// Zet de robot op de positie na de wip.
+				if(robot.getSeesawStatus() == SeesawStatus.ISOVER){
+					Tile startTile = tileList.get(tileList.size()-1);
+					int x = startTile.getPosition().getX();
+					int y = startTile.getPosition().getX();
+					Position temp = new Position(x + 1, y);
+					BorderPosition tempBor = new BorderPosition(startTile.getPosition(),temp);
+					if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
+						x = x + 3;
+					} else {
+						temp = new Position(x - 1, y);
+						tempBor = new BorderPosition(startTile.getPosition(),temp);
+						if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
+							x = x - 3;
+						} else {
+							temp = new Position(x, y + 1);
+							tempBor = new BorderPosition(startTile.getPosition(),temp);
+							if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
+								y = y + 3;
+							} else {
+								temp = new Position(x, y - 1);
+								tempBor = new BorderPosition(startTile.getPosition(),temp);
+								if(field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
+									y = y - 3;
+								}
+							}
+						}
+					}
+					robot.Position endPos = new robot.Position(x,y,robot.getPosition().getRotation());
+					robot.setPosition(endPos);
+					// TODO setposition robot
+					Pathfinder.findShortestPath(robot, current.getTile());
+				// de wip was gesloten en de robot is blijven staan.
+				} else if(robot.getSeesawStatus() == SeesawStatus.ISCLOSED){
+					Pathfinder.findShortestPath(robot, current.getTile());
+				}
 				if (tileList.size() > 2) {
 					robot.hasWrongBarcode();
 					robot.hasCorrectBarcode();
