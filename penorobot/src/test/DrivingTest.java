@@ -11,7 +11,7 @@ public class DrivingTest {
 			Button.waitForAnyPress();
 
 			// Standaard differentialpilot: 54.3, 54.7, 128.65
-			DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 127.93, Motor.B, Motor.C, false);
+			DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128.3, Motor.B, Motor.C, false);
 			PILOT.setTravelSpeed(170);
 			PILOT.setRotateSpeed(100);
 			PILOT.setAcceleration(500);
