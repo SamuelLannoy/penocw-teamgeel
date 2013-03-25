@@ -314,6 +314,40 @@ public class Explorer {
 							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 							check = false;
+							System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
+							System.out.println("OurObjectNr"+robot.getObjectNr());
+							System.out.println("Barcode: "+robot.getCurrTile().getBarcode());
+							if(Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2) == robot.getObjectNr()){
+								robot.pauseLightSensor();
+								robot.getCurrTile().getBarcode();
+								robot.turnLeft(90);
+								robot.startMovingForward();
+								while(!SensorBuffer.getTouched()){}
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+								robot.stopMoving();
+								robot.moveBackward(100);
+								robot.turnRight(90);
+								robot.startMovingForward();
+								while(!SensorBuffer.getTouched()){};
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+								robot.stopMoving();
+								robot.moveBackward(100);
+								robot.turnLeft(180);
+								robot.moveForward(400);
+								robot.resumeLightSensor();
+								robot.setHasBall(true);
+							}
+							
 							break;
 						case CHECKPOINT:
 							break;
@@ -324,34 +358,7 @@ public class Explorer {
 							break;
 						case PICKUP:
 							
-							robot.pauseLightSensor();
-							robot.getCurrTile().getBarcode();
-							robot.turnLeft(90);
-							robot.startMovingForward();
-							while(!SensorBuffer.getTouched()){}
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-							robot.stopMoving();
-							robot.moveBackward(100);
-							robot.turnRight(90);
-							robot.startMovingForward();
-							while(!SensorBuffer.getTouched()){};
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-							robot.stopMoving();
-							robot.moveBackward(100);
-							robot.turnLeft(180);
-							robot.moveForward(400);
-							robot.resumeLightSensor();
-							robot.setHasBall(true);
+							
 							
 							break;
 						case SEESAW:

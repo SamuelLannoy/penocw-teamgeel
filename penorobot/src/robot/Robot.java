@@ -2,6 +2,7 @@ package robot;
 
 import barcode.Barcode;
 import barcode.BarcodeParser;
+import barcode.BarcodeType;
 
 import communication.Buffer;
 import communication.PilotController;
@@ -378,6 +379,10 @@ public class Robot {
 		public void sendAndExecuteBarcode(Barcode barcode) {
 //			barcode.execute();
 			sendBarcode(barcode);
+			if(barcode.getBarcodeType().equals(BarcodeType.OBJECT)){
+				if(barcode.getObjectNr() == Robot.getInstance().getObjectNr())
+					Buffer.setTeamNr(barcode.getTeamNr());	
+			}
 		}
 		
 		public void sendBarcode(Barcode barcode) {
