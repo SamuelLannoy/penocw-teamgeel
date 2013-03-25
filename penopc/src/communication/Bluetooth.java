@@ -183,8 +183,8 @@ public class Bluetooth {
 				boolean teamKnown = dataIn.readBoolean();
 				int teamNr = dataIn.readInt();
 				
-				if(hasBall && teamKnown){
-					Status.updateObjectInfo(hasBall, teamNr);
+				if(teamKnown){
+					Status.updateObjectInfo(teamNr);
 				}
 				
 				//Receive seesaw open or closed

@@ -60,8 +60,7 @@ public class Status {
 		Status.isFinishTile = isFinishTile;
 	}
 	
-	public static void updateObjectInfo(boolean hasBall, int teamNr){
-		Status.hasBall = hasBall;
+	public static void updateObjectInfo(int teamNr){
 		Status.teamNr = teamNr;
 	}
 	
