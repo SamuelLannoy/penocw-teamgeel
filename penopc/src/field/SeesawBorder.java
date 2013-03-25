@@ -36,5 +36,10 @@ public class SeesawBorder extends Border implements SolidBorder {
 		border.isDown = this.isDown;
 		return border;
 	}
+	
+	@Override
+	public String toString() {
+		return "seesaw border";
+	}
 
 }

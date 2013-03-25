@@ -111,8 +111,16 @@ public class DrawCanvas extends Canvas{
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
-		int x = (int) currentRobot.getPosition().getPosX() + currentRobot.getCurrTile().getPosition().getX() * 40;
-		int y = (int) currentRobot.getPosition().getPosY() + currentRobot.getCurrTile().getPosition().getY() * 40;
+		int x = (int)( currentRobot.getPosition().getPosX()
+				+ currentRobot.getCurrTile().getPosition().getX() * 40);
+		int y = (int)( currentRobot.getPosition().getPosY()
+				+ currentRobot.getCurrTile().getPosition().getY() * 40);
+		double r = currentRobot.getPosition().getRotationRadian() + (Math.PI/2);
+		if (currentRobot != robotPool.getMainRobot()){
+			x -= robotPool.getMainRobot().getStartPos().getPosX();
+			y -= robotPool.getMainRobot().getStartPos().getPosY();
+			r -= robotPool.getMainRobot().getStartPos().getRotationRadian();
+		}
 		double[] xs = currentRobot.getCornersX();
 		double[] ys = currentRobot.getCornersY();
 		int[] drawXs = new int[4];
@@ -121,7 +129,6 @@ public class DrawCanvas extends Canvas{
 			drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
 			drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
 		}
-		double r = currentRobot.getPosition().getRotationRadian() + (Math.PI/2);
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
 		System.out.println("scale " + scale );*/

@@ -25,11 +25,14 @@ import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import com.rabbitmq.client.Connection;
+
 import peno.htttp.*;
 
 import messenger.PlayerHandlerImplementation;
 import messenger.Messenger;
 import messenger.RabbitMQ;
+import messenger.SpectatorHandlerImplementation;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -49,7 +52,7 @@ import gui.tools.PlotCanvas;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	
-	private final static String BROADCAST_ID = "teamGeel";
+	private final static String BROADCAST_ID = "Exchange";
 	private final static String LOBBY_ID = "Exchange";
 	
 	private JPanel contentPane;
@@ -64,7 +67,9 @@ public class Main extends JFrame {
 	private Timer debugTimer;
 	private Timer sensorTimer;
 	private PlayerHandlerImplementation handler;
+	private SpectatorHandlerImplementation sHandler;
 	private PlayerClient client;
+	private SpectatorClient sClient;
 	private JFrame frame2;
 	private JPanel contentPane2;
 	
@@ -76,17 +81,6 @@ public class Main extends JFrame {
 						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
 						last_movement_window.setText(robot.getPosition() + "\n");
-			    	}
-
-			    	if (client != null && client.isPlaying()) { // TODO: move this to general case
-			    		try {
-							//client.foundObject();
-			    			client.updatePosition(robotPool.getMainRobot().getSimX(), robotPool.getMainRobot().getSimY(), robotPool.getMainRobot().getSimAngleGr());
-						} catch (IllegalStateException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
 			    	}
 			    }    
 			});
@@ -155,6 +149,22 @@ public class Main extends JFrame {
 						} catch (NullPointerException e) {
 							// nothing
 						}
+						
+
+				    	if (client != null && client.isPlaying()) { 
+				    		try {
+				    			client.updatePosition(
+				    					robotPool.getMainRobot().getCurrTile().getPosition().getX() * 40 +
+				    					robotPool.getMainRobot().getPosition().getPosX(),
+				    					robotPool.getMainRobot().getCurrTile().getPosition().getY() * 40 +
+				    					robotPool.getMainRobot().getPosition().getPosY(),
+				    					robotPool.getMainRobot().getPosition().getRotation());
+							} catch (IllegalStateException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				    	}
 			    	}
 			    }    
 			});
@@ -678,7 +688,7 @@ public class Main extends JFrame {
 
 	
 	public void init() throws IOException {
-		String playerID = teamMateTextArea.getText(); // TODO: proper text field
+		String playerID = teamMateTextArea.getText();
 		
 		robotPool = new RobotPool(robot);
 		robot.initialize();
@@ -699,8 +709,11 @@ public class Main extends JFrame {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		/*handler = new HandlerImplementation(robotPool, playerID);
-		client = new PlayerClient(RabbitMQ.createConnection(), handler, BROADCAST_ID, playerID);
+		handler = new PlayerHandlerImplementation(robotPool, playerID);
+		sHandler = new SpectatorHandlerImplementation(robotPool, playerID);
+		Connection conn = RabbitMQ.createConnection();
+		client = new PlayerClient(conn, handler, BROADCAST_ID, playerID);
+		sClient = new SpectatorClient(conn, sHandler, BROADCAST_ID);
 		
 		robotPool.getMainRobot().setClient(client);
 		
@@ -712,6 +725,8 @@ public class Main extends JFrame {
 				DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
 				try {
 					client.setReady(true);
+					//DebugBuffer.addInfo("x " + client.isFull() + " x " + client.canStart());
+					
 					//client.start();
 				} catch (IllegalStateException e) {
 					e.printStackTrace();
@@ -724,7 +739,9 @@ public class Main extends JFrame {
 			public void onFailure(Throwable t) {
 				
 			}
-		});*/
+		});
+		
+		sClient.start();
 
 
 	}

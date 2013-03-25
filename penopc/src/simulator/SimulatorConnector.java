@@ -283,4 +283,10 @@ public class SimulatorConnector implements ISimulator {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void setSeesawStatus(SeesawStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
 }

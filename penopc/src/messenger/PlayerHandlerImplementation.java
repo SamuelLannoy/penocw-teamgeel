@@ -1,21 +1,36 @@
 package messenger;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+
+import field.Field;
+import field.fromfile.FieldFactory;
 
 import peno.htttp.DisconnectReason;
 import peno.htttp.PlayerHandler;
+import peno.htttp.Tile;
 import robot.DebugBuffer;
+import robot.Position;
 import robot.Robot;
+import robot.RobotModel;
 import robot.RobotPool;
 
 public class PlayerHandlerImplementation implements PlayerHandler {
 	
 	RobotPool robotPool;
 	String ownId;
+	Field field;
 
 	public PlayerHandlerImplementation(RobotPool pool, String ownId) {
+		super();
 		robotPool = pool;
 		this.ownId = ownId;
+		try {
+			field = FieldFactory.fieldFromFile("C:\\demo2.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private String getPoolID(String playerID) {
@@ -53,8 +68,24 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	}
 
 	@Override
-	public void gameRolled(int playerNumber) {
-		robotPool.getMainRobot().setObjectNr(playerNumber);
+	public void gameRolled(int playerNumber, int objectNr) {
+		robotPool.getMainRobot().setObjectNr(objectNr);
+		robotPool.getMainRobot().setPlayerNr(playerNumber+1);
+		
+		field.Tile tile = new field.Tile(field.getStartPos(playerNumber+1));
+		
+		/*robotPool.getMainRobot().setPosition(
+				new Position(0,0,field.getStartDir(playerNumber+1).toAngle()),
+				tile);*/
+		robotPool.getMainRobot().setStartPos(new Position(tile.getPosition().getX() * 40,
+				tile.getPosition().getY() * 40,
+				field.getStartDir(playerNumber+1).toAngle()));
+		if (robotPool.getMainRobot().isSim()) {
+			//DebugBuffer.addInfo("real pos = " + tile.getPosition());
+			robotPool.getMainRobot().setSimLoc(tile.getPosition().getX() * 40,
+					tile.getPosition().getY() * 40,
+					field.getStartDir(playerNumber+1).toAngle());
+		}
 	}
 
 	@Override
@@ -81,6 +112,30 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void playerJoined(String playerID) {
 		DebugBuffer.addInfo("player " + playerID + " joined");
+	}
+
+	@Override
+	public void teamConnected(String partnerID) {
+		/*robotPool.getMainRobot().setTeamMate(
+				robotPool.getRobot(partnerID));*/
+	}
+
+	@Override
+	public void teamTilesReceived(List<Tile> tiles) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void gameWon(int teamNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void teamPosition(double x, double y, double angle) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
