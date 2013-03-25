@@ -1,7 +1,5 @@
 package robot.brain;
 
-import infrared.IRSeeker;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -9,10 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lejos.nxt.Button;
-import lightsensor.LightSensorVigilante;
 
-import communication.Buffer;
-import communication.PilotController;
 import communication.SeesawStatus;
 import communication.Status;
 
@@ -22,7 +17,6 @@ import field.fieldmerge.FieldMerger;
 import robot.DebugBuffer;
 import robot.Robot;
 import robot.SensorBuffer;
-import touchsensor.TouchSensor;
 
 public class Explorer {
 	
