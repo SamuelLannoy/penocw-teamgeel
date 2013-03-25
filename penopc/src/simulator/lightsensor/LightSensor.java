@@ -103,7 +103,12 @@ public class LightSensor {
 						Border border = connector.getMaze().getSeesawBorder(tile);
 						if (border.isPassable()) {
 							connector.setSeesawStatus(SeesawStatus.ISOPEN);
-							DebugBuffer.addInfo("moving");
+							/*DebugBuffer.addInfo("moving");
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 							connector.moveForward(1200);
 							while (!connector.isMoving()) {
 								try {
@@ -112,7 +117,7 @@ public class LightSensor {
 									e.printStackTrace();
 								}
 							}
-							connector.setSeesawStatus(SeesawStatus.ISOPEN);
+							connector.setSeesawStatus(SeesawStatus.ISOVER);*/
 						} else {
 							connector.setSeesawStatus(SeesawStatus.ISCLOSED);
 						}
