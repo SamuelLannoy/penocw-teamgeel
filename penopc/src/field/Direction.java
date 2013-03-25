@@ -233,4 +233,18 @@ public enum Direction {
 	public abstract double toAngle();
 	public abstract Direction opposite();
 	public abstract int turnTo(Direction other);
+	
+	public static Direction fromString(String in) {
+		if (in.equals("N")) {
+			return TOP;
+		} else if (in.equals("E")) {
+			return RIGHT;
+		} else if (in.equals("S")) {
+			return BOTTOM;
+		} else if (in.equals("W")) {
+			return LEFT;
+		} else {
+			return null;
+		}
+	}
 }

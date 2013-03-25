@@ -88,4 +88,14 @@ public class RobotModel {
 	public void setHasBall(boolean hasBall) {
 		this.hasBall = hasBall;
 	}
+	
+	private int playerNr;
+
+	public int getPlayerNr() {
+		return playerNr;
+	}
+
+	public void setPlayerNr(int playerNr) {
+		this.playerNr = playerNr;
+	}
 }

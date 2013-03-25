@@ -1,11 +1,17 @@
 package simulator.lightsensor;
 
+import communication.SeesawStatus;
+
 import robot.DebugBuffer;
 import robot.SensorBuffer;
 import simulator.VirtualRobotConnector;
 import field.Barcode;
 import field.BarcodeType;
+import field.Border;
+import field.Direction;
 import field.Field;
+import field.SeesawBorder;
+import field.Tile;
 
 public class LightSensor {
 	private static LightSensor lightSensor;
@@ -64,7 +70,7 @@ public class LightSensor {
 				//System.out.println("1 " + "wit");
 			}
 			else if (maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())){
-				DebugBuffer.addInfo("ON BARCODE");
+				//DebugBuffer.addInfo("ON BARCODE");
 				if (!wasOnBarcode) {
 					wasOnBarcode = true;
 					SensorBuffer.addLightUpdate(1);
@@ -73,7 +79,7 @@ public class LightSensor {
 					if (bc.getDecimal() <= 7) {
 						SensorBuffer.addBarcodeType(BarcodeType.OBJECT.toString());
 						if ((bc.getDecimal() % 4) == connector.getObjectNr()) {
-							DebugBuffer.addInfo("TEST");
+							//DebugBuffer.addInfo("TEST");
 							if (!connector.hasBall()) {
 								//connector.turnLeft(180);
 								//connector.setSimAngle((connector.getTRotation() + 180) % 360);
@@ -93,6 +99,23 @@ public class LightSensor {
 					} else if (bc.getDecimal() >= 55){
 						SensorBuffer.addBarcodeType(BarcodeType.CHECKPOINT.toString());
 					} else if (bc.getDecimal() > 7 && bc.getDecimal() < 55) {
+						Tile tile = connector.getMaze().getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY());
+						Border border = connector.getMaze().getSeesawBorder(tile);
+						if (border.isPassable()) {
+							connector.setSeesawStatus(SeesawStatus.ISOPEN);
+							DebugBuffer.addInfo("moving");
+							connector.moveForward(1200);
+							while (!connector.isMoving()) {
+								try {
+									Thread.sleep(200);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+							connector.setSeesawStatus(SeesawStatus.ISOPEN);
+						} else {
+							connector.setSeesawStatus(SeesawStatus.ISCLOSED);
+						}
 						SensorBuffer.addBarcodeType(BarcodeType.SEESAW.toString());
 					} else {
 						SensorBuffer.addBarcodeType(BarcodeType.ILLEGAL.toString());

@@ -50,6 +50,9 @@ public class Robot extends RobotModel{
 	
 	public void setRobotPool(RobotPool robotPool) {
 		this.robotPool = robotPool;
+		if (isSim()) {
+			((ISimulator)robotConn).setRobotPool(robotPool);
+		}
 	}
 	
 	public void drivePolygon(double length, int corners) throws IllegalArgumentException {
@@ -95,6 +98,8 @@ public class Robot extends RobotModel{
 		robotConn.initialize();
 		currTile = new Tile(0, 0);
 		
+		/*setField(FieldFactory.fieldFromFile("c:\\demo2.txt"));
+		currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));*/
 		
 		/*Field mazex = FieldFactory.fieldFromFile("c:\\merge1.txt");
 		Field mazey = FieldFactory.fieldFromFile("c:\\merge2.txt");
@@ -419,6 +424,8 @@ public class Robot extends RobotModel{
 		passedWhiteBorder();
 		if (passedWhite/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
 			passedWhite = false;
+			// TODO: possible problem: seesaw with only one tile at ending
+			currEndSeesaw = 0;
 			//System.out.println("LINE");
 			Direction dir = Direction.fromPos(getPosition());
 			field.Position newPos = dir.getPositionInDirection(currTile.getPosition());
@@ -430,6 +437,27 @@ public class Robot extends RobotModel{
 			} else {
 				currTile = getField().getTileMap().getObjectAtId(newPos);
 			}
+			/*if (isSeesawMode()) {
+				Direction dirForw = Direction.fromAngle(getPosition().getRotation());
+				Direction dirLeft = Direction.fromAngle(getPosition().getRotation() - 90); 
+				Direction dirRight = Direction.fromAngle(getPosition().getRotation() + 90);
+				Direction dirBack = Direction.fromAngle(getPosition().getRotation() + 180);
+				
+				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(newPos)))
+					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(newPos)));
+				
+				if (field.canHaveAsBorder(dirBack.getBorderPositionInDirection(newPos)))
+					field.addBorder(new WhiteBorder(dirBack.getBorderPositionInDirection(newPos)));
+				
+				if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newPos)))
+					field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newPos)));
+				
+				if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newPos)))
+					field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newPos)));
+				
+				if (field.canHaveAsTile(dirForw.getPositionInDirection(newPos)))
+					field.addTile(new Tile(dirForw.getPositionInDirection(newPos)));
+			}*/
 			/*if ((robotConn instanceof VirtualRobotConnector && ((VirtualRobotConnector)robotConn).getField().getTileMap().getObjectAtId(newPos).getBarcode() != null)){
 				currTile.setBarcode(((VirtualRobotConnector)robotConn).getField().getTileMap().getObjectAtId(newPos).getBarcode());
 				if (currTile.getBarcode().equals(new Barcode(1,1,0,1,1,1))) {
@@ -445,7 +473,25 @@ public class Robot extends RobotModel{
 				field.addBorder(new WhiteBorder(dir.opposite().getBorderPositionInDirection(newPos)));
 			getPosition().resetPosition(dir);
 		}
+		/*if (isSeesawMode()) {
+			if (currTile.getBarcode() != null) {
+				currEndSeesaw = currTile.getBarcode().getDecimal();
+				setSeesawMode(false);
+			}
+		} else {
+			if (currTile.getBarcode() != null) {
+				//DebugBuffer.addInfo("BARCODE");
+				int dec = currTile.getBarcode().getDecimal();
+				if (dec != currEndSeesaw) {
+					if (dec == 11 || dec == 13 || dec == 15 || dec == 17 || dec == 19 || dec == 21) {
+						setSeesawMode(true);
+					}
+				}
+			}
+		}*/
 	}
+	
+	private int currEndSeesaw;
 	
 	public void scanOnlyLines(boolean flag) {
 		robotConn.scanOnlyLines(flag);
@@ -693,10 +739,6 @@ public class Robot extends RobotModel{
 		return false;
 	}
 	
-	public Robot getTeamMate(){
-		//TODO
-		return null;
-	}
 	private FieldMessage fieldMsg;
 	
 	public void setFieldMessage(FieldMessage fieldMsg) {
@@ -714,6 +756,16 @@ public class Robot extends RobotModel{
 		return FieldConverter.convertToField(fieldMsg);
 	}
 	
+	private Robot teamMate;
+	
+	public Robot getTeamMate() {
+		return teamMate;
+	}
+
+	public void setTeamMate(Robot teamMate) {
+		this.teamMate = teamMate;
+	}
+
 	private boolean hasFoundOwnBarcode;
 
 	public boolean hasFoundOwnBarcode() {
@@ -727,5 +779,24 @@ public class Robot extends RobotModel{
 	public SeesawStatus getSeesawStatus() {
 		return robotConn.getSeesawStatus();
 	}
+	
+	private Position startPos;
 
+	public Position getStartPos() {
+		return startPos;
+	}
+
+	public void setStartPos(Position startPos) {
+		this.startPos = startPos;
+	}
+	
+	private boolean seesawMode = false;
+
+	public boolean isSeesawMode() {
+		return seesawMode;
+	}
+
+	public void setSeesawMode(boolean seesawMode) {
+		this.seesawMode = seesawMode;
+	}
 }
