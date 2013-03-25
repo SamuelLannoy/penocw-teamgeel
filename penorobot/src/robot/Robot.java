@@ -376,7 +376,7 @@ public class Robot {
 		}
 
 		public void sendAndExecuteBarcode(Barcode barcode) {
-			barcode.execute();
+//			barcode.execute();
 			sendBarcode(barcode);
 		}
 		
