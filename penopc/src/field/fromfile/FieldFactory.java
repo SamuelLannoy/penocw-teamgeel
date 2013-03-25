@@ -34,10 +34,20 @@ public class FieldFactory {
 						MazePart part = MazePart.getPartFromString(parts[0]);
 						Tile tile = new Tile(i, currY);
 						//System.out.println("x: " + i + " y: " + currY);
-						if (parts.length >= 3 && !parts[2].isEmpty()) {
-							tile.setBarcode(new Barcode(Integer.parseInt(parts[2])));
-						}
 						field.addTile(tile);
+						if (parts.length >= 3 && !parts[2].isEmpty()) {
+							if (parts[2].equals("V")) {
+								field.addBall(new Ball(1), tile.getPosition());
+							} else if (parts[2].startsWith("S")) {
+								String start = parts[2];
+								int id = Integer.parseInt(start.substring(1, 2));
+								field.setStartPos(id, tile.getPosition());
+								String dir = start.substring(2, 3);
+								field.setStartDir(id, Direction.fromString(dir));
+							} else {
+								tile.setBarcode(new Barcode(Integer.parseInt(parts[2])));
+							}
+						}
 						String param = parts.length >= 2 ? parts[1] : "";
 						List<Border> borders = part.getBorders(param, tile);
 						//System.out.println("" + borders + " param: " + param);
@@ -50,6 +60,7 @@ public class FieldFactory {
 			
 		}
 		in.close();
+		field.initSeesaw();
 		return field;
 	}
 }

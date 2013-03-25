@@ -66,5 +66,5 @@ public class Tile {
 		ret.setBarcode(getBarcode());
 		return ret;
 	}
-
+	
 }

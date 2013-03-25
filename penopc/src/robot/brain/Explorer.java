@@ -252,11 +252,96 @@ public class Explorer {
 						case PICKUP:
 							break;
 						case SEESAW:
-							while (robot.getSeesawStatus() != SeesawStatus.ISOPEN);
+							//field.addBorder(new SeesawBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
+							
+							
+							//DebugBuffer.addInfo("waiting for seesaw");
+							//while (robot.getSeesawStatus() != SeesawStatus.ISOPEN);
+							/*if (robot.getSeesawStatus() != SeesawStatus.ISCLOSED &&
+									robot.getSeesawStatus() != SeesawStatus.ISOVER) {
+								waitTillRobotStops(robot, 250);
+								waitTillRobotStops(robot, 250);
+							}
+							DebugBuffer.addInfo("seesaw done");*/
+							check = false;
 							if (robot.getSeesawStatus() == SeesawStatus.ISCLOSED) {
-								
-							} else if (robot.getSeesawStatus() == SeesawStatus.ISOVER) {
+								Tile btile = robot.getCurrTile();
 								Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+								for (int i = 0; i < 4; i++) {
+									if (field.canHaveAsTile(pos))
+										field.addTile(new Tile(pos));
+									
+									if (i == 2) {
+										int bcode = btile.getBarcode().getDecimal();
+										int ncode = 0;
+										if (bcode == 11 || bcode == 15 || bcode == 19) {
+											ncode = bcode + 2;
+										} else if (bcode == 13 || bcode == 17 || bcode == 21) {
+											ncode = bcode - 2;
+										}
+										field.getTileMap().getObjectAtId(pos).setBarcode(new Barcode(ncode));
+									}
+									
+									if (i != 3) {
+										if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirBack.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirBack.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
+									}
+									pos = dirForw.getPositionInDirection(pos);
+								}
+							} else if (robot.getSeesawStatus() == SeesawStatus.ISOVER) {
+								/*Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+								int bcode = robot.getCurrTile().getBarcode().getDecimal();
+								robot.scanOnlyLines(true);
+								Tile lasttile = null;
+								Tile slasttile = null;
+								for (int i = 0; i < 4; i++) {
+									lasttile = new Tile(pos);
+									if (i != 3)
+										slasttile = lasttile;
+									robot.moveForward(400);
+									waitTillRobotStops(robot, 250);
+
+									if (field.canHaveAsTile(pos))
+										field.addTile(new Tile(pos));
+
+									if (i == 2) {
+										int ncode = 0;
+										if (bcode == 11 || bcode == 15 || bcode == 19) {
+											ncode = bcode + 2;
+										} else if (bcode == 13 || bcode == 17 || bcode == 21) {
+											ncode = bcode - 2;
+										}
+										field.getTileMap().getObjectAtId(pos).setBarcode(new Barcode(ncode));
+									}
+									
+									if (i != 3) {
+										if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirBack.getBorderPositionInDirection(pos)))
+											field.addBorder(new WhiteBorder(dirBack.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
+										
+										if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
+											field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
+									}
+								}*/
+								/*ExploreNode newNode = new ExploreNode(lasttile, slasttile);
+								toExplore.add(lasttile);
+								robot.scanOnlyLines(false);*/
+								
+								/*Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
 								Tile lasttile = null;
 								for (int i = 0; i < 4; i++) {
 									lasttile = new Tile(pos);
@@ -278,9 +363,8 @@ public class Explorer {
 									}
 								}
 
-								robot.setPosition(new robot.Position(0, 0, dirForw.toAngle()), lasttile);
+								robot.setPosition(new robot.Position(0, 0, dirForw.toAngle()), lasttile);*/
 							}
-							
 							break;
 						default:
 							break;

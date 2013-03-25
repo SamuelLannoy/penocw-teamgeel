@@ -1,5 +1,7 @@
 package simulator;
 
+import communication.SeesawStatus;
+
 import field.Field;
 import robot.AbstractRobotConnector;
 import robot.RobotPool;
@@ -23,4 +25,6 @@ public interface ISimulator extends AbstractRobotConnector {
 	
 	public abstract RobotPool getRobotPool();
 	public abstract void setRobotPool(RobotPool robotPool);
+	
+	public abstract void setSeesawStatus(SeesawStatus status);
 }

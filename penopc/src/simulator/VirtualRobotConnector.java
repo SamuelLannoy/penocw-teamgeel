@@ -107,6 +107,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		this.angle = angle;
 		setStartx(x);
 		setStarty(y);
+		DebugBuffer.addInfo("pos " + x + " " + y + " " + angle);
 	}
 
 	private double moveSpeed = 0.0;
@@ -382,6 +383,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 			if (robotPool != null) {
 				for (RobotModel robot : robotPool.getOtherRobots()) {
 					if (Collision.collides(robot, corners)) {
+						System.out.println("collision");
 						collides = true;
 					}
 				}
@@ -391,7 +393,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		return collides;
 	}
 	
-	private boolean robotCollision = true;
+	private boolean robotCollision = false;
 	
 	public void setRobotCollision(boolean set) {
 		robotCollision = set;
@@ -637,9 +639,15 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		this.robotPool = robotPool;
 	}
 
+	private SeesawStatus status;
+	
 	@Override
 	public SeesawStatus getSeesawStatus() {
-		// TODO Auto-generated method stub
-		return null;
+		return status;
+	}
+
+	@Override
+	public void setSeesawStatus(SeesawStatus status) {
+		this.status = status;
 	}
 }

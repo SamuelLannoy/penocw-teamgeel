@@ -2,8 +2,10 @@ package field;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import field.fieldmerge.BarcodeNode;
 import field.fieldmerge.Fieldable;
@@ -26,6 +28,25 @@ public class Field implements Fieldable {
 	private ObjectMap<Position, Ball> ballMap = new ObjectMap<Position, Ball>();
 	private ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>();
 	
+	public void initSeesaw() {
+		for (Tile tile : tileMap) {
+			DebugBuffer.addInfo("a " + tile.getPosition() + " " + hasSeesawBorder(tile) + " " + tile.getBarcode());
+			if (hasSeesawBorder(tile) && tile.getBarcode() != null) {
+				SeesawBorder border = getSeesawBorder(tile);
+				DebugBuffer.addInfo("b " + tile.getPosition());
+				if (tile.getBarcode().getDecimal() == 11 ||
+						tile.getBarcode().getDecimal() == 15 ||
+						tile.getBarcode().getDecimal() == 19) {
+					DebugBuffer.addInfo("c " + tile.getPosition());
+					border.setDown();
+				} else if (tile.getBarcode().getDecimal() == 13 ||
+						tile.getBarcode().getDecimal() == 17 ||
+						tile.getBarcode().getDecimal() == 21) {
+					border.setUp();
+				}
+			}
+		}
+	}
 	
 	public void clear() {
 		tileMap = new ObjectMap<Position, Tile>();
@@ -119,7 +140,9 @@ public class Field implements Fieldable {
 	}
 	
 	public void addBorder(Border border) {
-		if (!borderMap.hasId(border.getBorderPos()) || borderMap.getObjectAtId(border.getBorderPos()) instanceof UnsureBorder) {
+		if (!borderMap.hasId(border.getBorderPos()) ||
+				borderMap.getObjectAtId(border.getBorderPos()) instanceof UnsureBorder ||
+				border instanceof SeesawBorder) {
 			borderMap.overWrite(border.getBorderPos(), border);
 		}else {
 			if (!canHaveAsBorder(border.getBorderPos()))
@@ -130,8 +153,8 @@ public class Field implements Fieldable {
 	
 	public void addBorders(Collection<Border> borders) {
 		for (Border border : borders) {
-			if (canHaveAsBorder(border.getBorderPos())) {
-				borderMap.addObject(border.getBorderPos(), border);
+			if (canHaveAsBorder(border.getBorderPos()) || border instanceof SeesawBorder) {
+				addBorder(border);
 			}
 		}
 	}
@@ -267,7 +290,7 @@ public class Field implements Fieldable {
 		Tile tile = getCurrentTile(xpos, ypos);
 		Border border = getBorderOfPos(tile, xpos, ypos);
 		if (border != null) {
-			return border instanceof WhiteBorder;
+			return border instanceof WhiteBorder || border instanceof SeesawBorder;
 		}
 		
 		return false;
@@ -394,7 +417,20 @@ public class Field implements Fieldable {
 	
 	public void updateField(RobotPool robotPool) {
 		for (RobotModel model : robotPool.getRobots()) {
-			// TODO
+			if (getStartPos(model.getPlayerNr()) != null) {
+				Tile tile = getCurrentTile(model.getCurrTile().getPosition().getX() * 40
+						+ model.getPosition().getPosX()
+						+ getStartPos(model.getPlayerNr()).getX() * 40,
+						model.getCurrTile().getPosition().getY() * 40
+						+ model.getPosition().getPosY()
+						+ getStartPos(model.getPlayerNr()).getY() * 40);
+				if (isSeesawTile(tile)) {
+					SeesawBorder border = getSeesawBorder(tile);
+					if (!border.isPassable()) {
+						border.setDown();
+					}
+				}
+			}
 		}
 	}
 	
@@ -404,4 +440,50 @@ public class Field implements Fieldable {
 		}
 	}
 	
+	private Map<Integer, Position> startPos = new HashMap<Integer, Position>();
+	private Map<Integer, Direction> startDir = new HashMap<Integer, Direction>();
+	
+	public void setStartPos(int i, Position pos) {
+		startPos.put(i, pos);
+	}
+	
+	public void setStartDir(int i, Direction dir) {
+		startDir.put(i, dir);
+	}
+	
+	public Position getStartPos(int i) {
+		return startPos.get(i);
+	}
+	
+	public Direction getStartDir(int i) {
+		return startDir.get(i);
+	}
+	
+	public peno.htttp.Tile toTileMessage(Position pos) {
+		return null;
+	}
+	
+	public boolean hasSeesawBorder(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Border border = getBorderInDirection(tile, dir);
+			if (border instanceof SeesawBorder) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isSeesawTile(Tile tile) {
+		return (hasSeesawBorder(tile) && tile.getBarcode() == null);
+	}
+	
+	public SeesawBorder getSeesawBorder(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Border border = getBorderInDirection(tile, dir);
+			if (border instanceof SeesawBorder) {
+				return (SeesawBorder)border;
+			}
+		}
+		throw new IllegalArgumentException("no seesaw border on tile " + tile.getPosition());
+	}
 }
