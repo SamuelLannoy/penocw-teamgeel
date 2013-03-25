@@ -324,11 +324,6 @@ public class Explorer {
 							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 							check = false;
-<<<<<<< HEAD
-							
-							
-=======
->>>>>>> branch 'master' of https://github.com/lannoysamuel/teamgeel-sem2.git
 							break;
 						case CHECKPOINT:
 							break;
