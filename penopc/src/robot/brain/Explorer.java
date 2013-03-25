@@ -201,13 +201,16 @@ public class Explorer {
 				waitTillRobotStops(robot, 2000);
 			}*/
 			robot.resetAStartTileList();
-			
+
 			boolean correct = robot.hasCorrectBarcode();
 			boolean wrong = robot.hasWrongBarcode();
 			//DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
 			/*if (correct || wrong) {
 				DebugBuffer.addInfo("barcode detected!");
 			}*/
+			System.out.println("correct "+correct);
+			System.out.println("wrong "+wrong);
+
 			if (correct || wrong || robot.isScanning()) {
 				//DebugBuffer.addInfo("barcode detected!");
 				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
@@ -270,6 +273,9 @@ public class Explorer {
 							Direction dirBackLocal = dirBack;
 
 							Tile newT;
+							System.out.println("Teamnr: "+robot.getTeamNr());
+							System.out.println("Gevonden: "+robot.hasFoundOwnBarcode());
+
 							if (robot.getTeamNr() != -1 && !robot.hasFoundOwnBarcode()) {
 								robot.setHasFoundOwnBarcode(true);
 								robot.stopMoving();
@@ -291,6 +297,41 @@ public class Explorer {
 									newTilePos = dirForwLocal.getPositionInDirection(robot.getCurrTile().getPosition());
 									if (field.canHaveAsTile(newTilePos))
 										field.addTile(new Tile(newTilePos));
+									
+									System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
+									System.out.println("OurObjectNr"+robot.getObjectNr());
+									System.out.println("Barcode: "+robot.getCurrTile().getBarcode());
+									if(Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2) == robot.getObjectNr()){
+										robot.pauseLightSensor();
+										robot.getCurrTile().getBarcode();
+										robot.turnLeft(90);
+										robot.startMovingForward();
+										while(!SensorBuffer.getTouched()){}
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+										robot.stopMoving();
+										robot.moveBackward(100);
+										robot.turnRight(90);
+										robot.startMovingForward();
+										while(!SensorBuffer.getTouched()){};
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+										robot.stopMoving();
+										robot.moveBackward(100);
+										robot.turnLeft(180);
+										robot.moveForward(400);
+										robot.resumeLightSensor();
+										robot.setHasBall(true);
+									}
+									
 								}
 								newT = robot.getField().getTileMap().getObjectAtId(newTilePos);
 							} else {
@@ -314,39 +355,7 @@ public class Explorer {
 							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 							check = false;
-							System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
-							System.out.println("OurObjectNr"+robot.getObjectNr());
-							System.out.println("Barcode: "+robot.getCurrTile().getBarcode());
-							if(Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2) == robot.getObjectNr()){
-								robot.pauseLightSensor();
-								robot.getCurrTile().getBarcode();
-								robot.turnLeft(90);
-								robot.startMovingForward();
-								while(!SensorBuffer.getTouched()){}
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-								robot.stopMoving();
-								robot.moveBackward(100);
-								robot.turnRight(90);
-								robot.startMovingForward();
-								while(!SensorBuffer.getTouched()){};
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-								robot.stopMoving();
-								robot.moveBackward(100);
-								robot.turnLeft(180);
-								robot.moveForward(400);
-								robot.resumeLightSensor();
-								robot.setHasBall(true);
-							}
+							
 							
 							break;
 						case CHECKPOINT:
@@ -473,7 +482,7 @@ public class Explorer {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								DebugBuffer.addInfo("INFRARED VALUE: " + SensorBuffer.getInfrared());
+								System.out.println(("INFRARED VALUE: " + SensorBuffer.getInfrared()));
 								if(SensorBuffer.getInfrared() < 4 ){
 									//Status.setSeesawStatus(SeesawStatus.ISOPEN);
 									//TODO PAUSE lightsensorvigilante
