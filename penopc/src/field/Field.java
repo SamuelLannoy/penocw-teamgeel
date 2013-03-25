@@ -342,6 +342,7 @@ public class Field implements Fieldable {
 			return 9999;
 		}
 	}
+
 	
 	public List<Tile> getPassableNeighbours(Tile tile) {
 		List<Tile> ret = new ArrayList<Tile>();

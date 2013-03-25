@@ -289,4 +289,16 @@ public class SimulatorConnector implements ISimulator {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void pauseLightSensor() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resumeLightSensor() {
+		// TODO Auto-generated method stub
+		
+	}
 }

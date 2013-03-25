@@ -1,5 +1,7 @@
 package communication;
 
+import lejos.nxt.LightSensor;
+import lightsensor.LightSensorVigilante;
 import robot.Robot;
 
 /**
@@ -118,6 +120,21 @@ public enum Encoding {
 	SETOBJECTNR{
 		public void execute(double param1, double param2, boolean flag) {
 			Robot.getInstance().setObjectNr(param1);
+		}
+	},
+	PAUSELIGHTSENSOR{
+		@Override
+		public void execute(double param1, double param2,
+				boolean immediateReturn) {
+			LightSensorVigilante.pause();
+			
+		}
+	},
+	RESUMELIGHTSENSOR{
+		@Override
+		public void execute(double param1, double param2,
+				boolean immediateReturn) {
+			LightSensorVigilante.resume();
 		}
 	};
 	

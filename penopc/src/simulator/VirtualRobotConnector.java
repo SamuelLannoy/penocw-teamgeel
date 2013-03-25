@@ -650,4 +650,16 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public void setSeesawStatus(SeesawStatus status) {
 		this.status = status;
 	}
+
+	@Override
+	public void pauseLightSensor() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resumeLightSensor() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -13,6 +13,10 @@ import field.*;
 public class Pathfinder {
 	
 	public static List<Tile> findShortestPath(Robot robot, Tile endTile) {
+		return findShortestPath(robot, endTile, false);
+	}
+	
+	public static List<Tile> findShortestPath(Robot robot, Tile endTile, boolean ignoreSeesaw) {
 		Field field = robot.getField();
 		
 		int h = endTile.getPosition().manhattanDistance(robot.getCurrTile().getPosition());
@@ -29,6 +33,12 @@ public class Pathfinder {
 			}
 			List<Tile> toAdd = field.getPassableNeighbours(current.getTile());
 			for (Tile tile : toAdd) {
+				//ignore seesaw
+				/*if (ignoreSeesaw && current.equals(start) && tile.getPosition()
+						.equals(obj)) {
+					
+				}*/
+				
 				int cAdd = current.getC() + 1;
 				int hAdd = endTile.getPosition().manhattanDistance(tile.getPosition());
 				Node add = new Node(tile, cAdd, hAdd, current);

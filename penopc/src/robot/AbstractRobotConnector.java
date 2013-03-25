@@ -44,5 +44,8 @@ public interface AbstractRobotConnector {
 	public abstract void setObjectNr(int nr);
 	
 	public abstract SeesawStatus getSeesawStatus();
+	
+	public abstract void pauseLightSensor();
+	public abstract void resumeLightSensor();
 
 }

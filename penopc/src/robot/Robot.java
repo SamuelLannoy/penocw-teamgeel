@@ -799,4 +799,22 @@ public class Robot extends RobotModel{
 	public void setSeesawMode(boolean seesawMode) {
 		this.seesawMode = seesawMode;
 	}
+	
+	public void pauseLightSensor() {
+		robotConn.pauseLightSensor();
+	}
+	
+	public void resumeLightSensor() {
+		robotConn.resumeLightSensor();
+	}
+	
+	public void moveAcrossSeesaw() {
+		moveForward(850);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		moveForward(750);
+	}
 }
