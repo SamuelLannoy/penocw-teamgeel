@@ -10,11 +10,13 @@ public class DrivingTest {
 			System.out.println("Hello Team Geel");
 			Button.waitForAnyPress();
 
+			DifferentialPilot PILOT;
+			
 			// Standaard differentialpilot: 54.3, 54.7, 128.65
-			DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128.3, Motor.B, Motor.C, false);
+			/*DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128.3, Motor.B, Motor.C, false);
 			PILOT.setTravelSpeed(170);
 			PILOT.setRotateSpeed(100);
-			PILOT.setAcceleration(500);
+			PILOT.setAcceleration(500);*/
 			
 			// Afstand rijden
 //			while(true) {
@@ -28,11 +30,14 @@ public class DrivingTest {
 			// Draaien
 			boolean higher=false;
 			boolean alot=false;
-			double def = 127.93;
+			double def = 128.3;
 			while(true) {
 				if(higher){
 					if(alot){
 						PILOT = new robot.DifferentialPilot(54.3, 54.7, def+1, Motor.B, Motor.C, false);
+						PILOT.setTravelSpeed(170);
+						PILOT.setRotateSpeed(100);
+						PILOT.setAcceleration(500);
 						def=def+1;
 					}
 						
@@ -54,6 +59,7 @@ public class DrivingTest {
 					}
 						
 				}				
+				System.out.println(def);
 				System.out.println("Starting...");
 				Button.waitForAnyPress(2000);
 				for(int i = 0; i<20; i++)
