@@ -97,7 +97,7 @@ public class Explorer {
 			//System.out.println("list: " + tileList.toString());
 			robot.setAStartTileList(tileList);
 			if (tileList.size() > 1) {
-				if (tileList.size() > 2)
+				if (tileList.size() > 2) // TODO: fucked by wip?
 					robot.scanOnlyLines(true);
 				robot.travelToNextTile(tileList.get(1));
 				robot.scanOnlyLines(true);
