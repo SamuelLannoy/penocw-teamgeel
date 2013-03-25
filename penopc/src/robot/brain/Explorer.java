@@ -92,105 +92,74 @@ public class Explorer {
 				break;
 			//DebugBuffer.addInfo("explore " + current.getTile().getPosition());
 
-			boolean passedSeesaw = false;
+			boolean ignoreSeesaw = false;
 
-			List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile());
-			//System.out.println("list: " + tileList.toString());
-			robot.setAStartTileList(tileList);
-			if (tileList.size() > 1) {
-				/*if (tileList.size() > 2) // TODO: fucked by wip?
-					robot.scanOnlyLines(true);*/
-				robot.travelToNextTile(tileList.get(1));
-				//robot.scanOnlyLines(true);
-				//DebugBuffer.addInfo("turning off barcode read");
-				for (int i = 1; i < tileList.size() - 2; i++) {
-					//DebugBuffer.addInfo("traveling to " + tileList.get(i+1).getPosition());
-					if (i == tileList.size() - 2){
-						//robot.scanOnlyLines(false);
-						//DebugBuffer.addInfo("turning off barcode read");
-					}
-					// een tegel op het pad heeft de barcode van een wip.
-					// het pad wordt tot dan afgelegd en vervolgens opnieuw berekend.
-					Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
-					if (tile.getBarcode() != null && (tile.getBarcode().getDecimal() == 11 || tile.getBarcode().getDecimal() == 13 ||
-							tile.getBarcode().getDecimal() == 15 || tile.getBarcode().getDecimal() == 17 || tile.getBarcode().getDecimal() == 19 ||
-							tile.getBarcode().getDecimal() == 21)){
+			//while (!robot.getCurrTile().getPosition().equals(current.getTile().getPosition())) {
+				List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile(), ignoreSeesaw);
+				//System.out.println("list: " + tileList.toString());
+				robot.setAStartTileList(tileList);
+				if (tileList.size() > 1) {
+					boolean brokeLoop = false;
+					robot.travelToNextTile(tileList.get(1));
+					for (int i = 1; i < tileList.size() - 2; i++) {
+						//DebugBuffer.addInfo("traveling to " + tileList.get(i+1).getPosition());
+
+						// een tegel op het pad heeft de barcode van een wip.
+						// het pad wordt tot dan afgelegd en vervolgens opnieuw berekend.
+
+						//TODO:add
+						/*Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
+						if (tile.getBarcode() != null && (tile.getBarcode().getDecimal() == 11 || tile.getBarcode().getDecimal() == 13 ||
+								tile.getBarcode().getDecimal() == 15 || tile.getBarcode().getDecimal() == 17 || tile.getBarcode().getDecimal() == 19 ||
+								tile.getBarcode().getDecimal() == 21)){
+							brokeLoop = true;
 							break;
+						}*/
+						robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
 					}
-					robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
-				}
-				//DebugBuffer.addInfo("turning on barcode read");
-				waitTillRobotStops(robot, 500);
-				waitTillRobotStops(robot, 250);
-				waitTillRobotStops(robot, 250);
-				//robot.scanOnlyLines(false);
-				// de wip was open en de robot is erover gegaan. 
-				// Zet de robot op de positie na de wip.
-				Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-				if (SensorBuffer.getInfrared() < 4) {
-					Tile tile = robot.getCurrTile();
-					
-					robot.moveAcrossSeesaw();
+					//DebugBuffer.addInfo("turning on barcode read");
+					waitTillRobotStops(robot, 500);
 					waitTillRobotStops(robot, 250);
 					waitTillRobotStops(robot, 250);
-					waitTillRobotStops(robot, 250);
-					
-					Position afterWipPos = dirForw.getPositionInDirection(tile.getPosition());
-					afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-					afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-					afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-					robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
-					
-				} else {
-				}
-				
-				
-				if(robot.getSeesawStatus() == SeesawStatus.ISOVER){
-					Tile startTile = tileList.get(tileList.size()-1);
-					int x = startTile.getPosition().getX();
-					int y = startTile.getPosition().getX();
-					Position temp = new Position(x + 1, y);
-					BorderPosition tempBor = new BorderPosition(startTile.getPosition(),temp);
-					if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
-						x = x + 3;
+					//robot.scanOnlyLines(false);
+					//TODO:add
+					// de wip was open en de robot is erover gegaan. 
+					// Zet de robot op de positie na de wip.
+					/*if (brokeLoop) {
+						waitTillRobotStops(robot, 1000);
+					}
+					Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
+
+					/*if (SensorBuffer.getInfrared() < 4) {
+						Tile tile = robot.getCurrTile();
+
+						robot.moveAcrossSeesaw();
+						waitTillRobotStops(robot, 250);
+						waitTillRobotStops(robot, 250);
+						waitTillRobotStops(robot, 250);
+
+						Position afterWipPos = dirForw.getPositionInDirection(tile.getPosition());
+						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+						robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
+						ignoreSeesaw = false;
 					} else {
-						temp = new Position(x - 1, y);
-						tempBor = new BorderPosition(startTile.getPosition(),temp);
-						if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
-							x = x - 3;
-						} else {
-							temp = new Position(x, y + 1);
-							tempBor = new BorderPosition(startTile.getPosition(),temp);
-							if (field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
-								y = y + 3;
-							} else {
-								temp = new Position(x, y - 1);
-								tempBor = new BorderPosition(startTile.getPosition(),temp);
-								if(field.getBorderMap().getObjectAtId(tempBor) instanceof SeesawBorder){
-									y = y - 3;
-								}
-							}
-						}
+						ignoreSeesaw = true;
+					}*/
+
+
+					if (tileList.size() > 2) {
+						robot.hasWrongBarcode();
+						robot.hasCorrectBarcode();
 					}
-					
-					robot.Position endPos = new robot.Position(x,y,robot.getPosition().getRotation());
-					robot.setPosition(endPos);
-					// TODO setposition robot
-					Pathfinder.findShortestPath(robot, current.getTile());
-				// de wip was gesloten en de robot is blijven staan.
-				} else if(robot.getSeesawStatus() == SeesawStatus.ISCLOSED){
-					Pathfinder.findShortestPath(robot, current.getTile());
+					int r = tileList.size() - 1;
+					robot.travelToNextTile(tileList.get(r));
+					waitTillRobotStops(robot, 250);
+
+					DebugBuffer.addInfo("done moving!");
 				}
-				if (tileList.size() > 2) {
-					robot.hasWrongBarcode();
-					robot.hasCorrectBarcode();
-				}
-				int r = tileList.size() - 1;
-				robot.travelToNextTile(tileList.get(r));
-				waitTillRobotStops(robot, 250);
-				
-				DebugBuffer.addInfo("done moving!");
-			}
+			//}
 			Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 			System.out.println("dirforw " + dirForw);
 			Direction dirLeft = Direction.fromAngle(robot.getPosition().getRotation() - 90); 
@@ -314,40 +283,6 @@ public class Explorer {
 							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
 								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 							check = false;
-							System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
-							System.out.println("OurObjectNr"+robot.getObjectNr());
-							System.out.println("Barcode: "+robot.getCurrTile().getBarcode());
-							if(Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2) == robot.getObjectNr()){
-								robot.pauseLightSensor();
-								robot.getCurrTile().getBarcode();
-								robot.turnLeft(90);
-								robot.startMovingForward();
-								while(!SensorBuffer.getTouched()){}
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-								robot.stopMoving();
-								robot.moveBackward(100);
-								robot.turnRight(90);
-								robot.startMovingForward();
-								while(!SensorBuffer.getTouched()){};
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-								robot.stopMoving();
-								robot.moveBackward(100);
-								robot.turnLeft(180);
-								robot.moveForward(400);
-								robot.resumeLightSensor();
-								robot.setHasBall(true);
-							}
-							
 							break;
 						case CHECKPOINT:
 							break;
@@ -358,7 +293,34 @@ public class Explorer {
 							break;
 						case PICKUP:
 							
-							
+							robot.pauseLightSensor();
+							robot.getCurrTile().getBarcode();
+							robot.turnLeft(90);
+							robot.startMovingForward();
+							while(!SensorBuffer.getTouched()){}
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+							robot.stopMoving();
+							robot.moveBackward(100);
+							robot.turnRight(90);
+							robot.startMovingForward();
+							while(!SensorBuffer.getTouched()){};
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+							robot.stopMoving();
+							robot.moveBackward(100);
+							robot.turnLeft(180);
+							robot.moveForward(400);
+							robot.resumeLightSensor();
+							robot.setHasBall(true);
 							
 							break;
 						case SEESAW:
