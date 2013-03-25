@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import field.Field;
+import field.fieldmerge.TileConverter;
 import field.fromfile.FieldFactory;
 
 import peno.htttp.DisconnectReason;
@@ -116,25 +117,24 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamConnected(String partnerID) {
-		/*robotPool.getMainRobot().setTeamMate(
-				robotPool.getRobot(partnerID));*/
+		robotPool.getMainRobot().setTeamMateID(partnerID);
 	}
 
 	@Override
 	public void teamTilesReceived(List<Tile> tiles) {
-		// TODO Auto-generated method stub
-		
+		Field tField = robotPool.getMainRobot().getTeamMateField();
+		for (Tile tile : tiles) {
+			TileConverter.convertToFieldTile(tile, tField);
+		}
 	}
 
 	@Override
 	public void gameWon(int teamNumber) {
-		// TODO Auto-generated method stub
-		
+		DebugBuffer.addInfo("victory for " + teamNumber);
 	}
 
 	@Override
 	public void teamPosition(double x, double y, double angle) {
-		// TODO Auto-generated method stub
 		
 	}
 

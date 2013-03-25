@@ -731,10 +731,6 @@ public class Robot extends RobotModel{
 		robotConn.setObjectNr(nr);
 	}
 	
-	public int getObjectNr(){
-		return robotConn.getObjectNr();
-	}
-	
 	public int getTeamNr() {
 		return robotConn.getTeam();
 	}
@@ -768,6 +764,16 @@ public class Robot extends RobotModel{
 
 	public void setTeamMate(Robot teamMate) {
 		this.teamMate = teamMate;
+	}
+	
+	private String teamMateID;
+
+	public String getTeamMateNr() {
+		return teamMateID;
+	}
+
+	public void setTeamMateID(String teamMateID) {
+		this.teamMateID = teamMateID;
 	}
 
 	private boolean hasFoundOwnBarcode;

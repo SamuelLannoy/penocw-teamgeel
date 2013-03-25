@@ -34,10 +34,11 @@ public class Pathfinder {
 			List<Tile> toAdd = field.getPassableNeighbours(current.getTile());
 			for (Tile tile : toAdd) {
 				//ignore seesaw
-				/*if (ignoreSeesaw && current.equals(start) && tile.getPosition()
-						.equals(obj)) {
-					
-				}*/
+				Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
+				if (ignoreSeesaw && current.equals(start) && tile.getPosition()
+						.equals(dirForw.getPositionInDirection(current.getPos()))) {
+					break;
+				}
 				
 				int cAdd = current.getC() + 1;
 				int hAdd = endTile.getPosition().manhattanDistance(tile.getPosition());
