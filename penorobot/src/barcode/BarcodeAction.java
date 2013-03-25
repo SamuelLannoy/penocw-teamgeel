@@ -101,7 +101,7 @@ public class BarcodeAction {
 			Robot.getInstance().travel(750,false);
 			Robot.getInstance().setTravelSpeed(prev);
 			Buffer.setSeesawStatus(SeesawStatus.ISOVER);
-			Button.waitForAnyEvent(1000);
+			Button.waitForAnyEvent(5000);
 			Buffer.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
 			LightSensorVigilante.resume();
 		}
