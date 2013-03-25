@@ -114,11 +114,24 @@ public class PilotController {
 			}
 		});
 		
+		Thread infrared = new Thread(new Runnable() {
+			public void run() {
+				while(true){
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+					}
+					Buffer.setInfrared(IRSeeker.getInstance().getValueAhead());
+				}
+			}
+		});
+		
 		ultrasonicSensor.start();
 		read.start();
 		write.start();
 		lightSensorVigilante.start();
 		touchSensorVigilante.start();
+		infrared.start();
 	}
 	
 	public void writeData() {
