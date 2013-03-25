@@ -308,13 +308,23 @@ public class Explorer {
 							robot.turnLeft(90);
 							robot.startMovingForward();
 							while(!SensorBuffer.getTouched()){}
+						try {
 							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 							robot.stopMoving();
 							robot.moveBackward(100);
 							robot.turnRight(90);
 							robot.startMovingForward();
 							while(!SensorBuffer.getTouched()){};
+						try {
 							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 							robot.stopMoving();
 							robot.moveBackward(100);
 							robot.turnLeft(180);
@@ -422,7 +432,12 @@ public class Explorer {
 								
 								
 								//TODO teken wip
-								Thread.sleep(1000);
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								if(SensorBuffer.getInfrared() > 4 ){
 									Status.setSeesawStatus(SeesawStatus.ISOPEN);
 									borderFirst.setDown();
@@ -430,7 +445,12 @@ public class Explorer {
 									//TODO PAUSE lightsensorvigilante
 									//TODO speed verlagen
 									robot.moveForward(850);
-									Thread.sleep(1000);
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 									robot.moveForward(750);
 									//TODO speed terugzetten
 									Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
