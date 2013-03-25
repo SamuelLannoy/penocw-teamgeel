@@ -380,8 +380,11 @@ public class Robot {
 //			barcode.execute();
 			sendBarcode(barcode);
 			if(barcode.getBarcodeType().equals(BarcodeType.OBJECT)){
-				if(barcode.getObjectNr() == Robot.getInstance().getObjectNr())
+				if(barcode.getObjectNr() == Robot.getInstance().getObjectNr()){
 					Buffer.setTeamNr(barcode.getTeamNr());	
+					Buffer.addDebug("Teamnr Sent: "+barcode.getTeamNr());
+				}
+					
 			}
 		}
 		
