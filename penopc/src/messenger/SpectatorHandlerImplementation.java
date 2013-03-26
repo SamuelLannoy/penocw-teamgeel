@@ -69,7 +69,7 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	@Override
 	public void playerUpdate(String playerID, int playerNumber, double x,
 			double y, double angle, boolean foundObject) {
-		playerNumber = playerNumber+1;
+		//playerNumber = playerNumber+1;
 		robotPool.updateRobot(getPoolID(playerID),
 				x + field.getStartPos(playerNumber).getX() * 40,
 				y + field.getStartPos(playerNumber).getY() * 40,

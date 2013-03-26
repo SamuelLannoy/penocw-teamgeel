@@ -22,6 +22,7 @@ import robot.Robot;
 import robot.RobotModel;
 import robot.RobotPool;
 import robot.SensorBuffer;
+import simulator.infraredsensor.InfraredSensor;
 import simulator.lightsensor.LightSensor;
 import simulator.lightsensor.LightSensorUpdate;
 import simulator.touchsensor.TouchSensor;
@@ -42,6 +43,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	    public void actionPerformed(ActionEvent evt) {
 	    		tick();
 	    		TouchSensor.getInstance().isPressed();
+	    		InfraredSensor.getInstance().getInfrared();
 	        }
 	    });
 

@@ -35,16 +35,19 @@ public class InfraredSensor {
 	}
 	
 	public int getInfrared(){
-		Boolean isSeesawTile = maze.isSeesawTile(maze.getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY()));
+		Boolean isSeesawTile = maze.hasSeesawBorder(maze.getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY()));
 		Boolean isOnBarcode = maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY());
 		Boolean isFacedToSeesaw = maze.getBorderInDirection(maze.getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY()), Direction.fromAngle(connector.getTRotation())).isSeeSawBorder();
 		Boolean seesawIsUp = !maze.getBorderInDirection(maze.getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY()), Direction.fromAngle(connector.getTRotation())).isPassable();
+		//System.out.println(isSeesawTile + " " + isOnBarcode + " " + isFacedToSeesaw + " " + seesawIsUp);
 		if (isSeesawTile && isOnBarcode && isFacedToSeesaw && seesawIsUp) {
 			lastInfrared = 20;
+			SensorBuffer.updateInfrared(20);
 			return 20;
 			//TODO randomize values?
 		} else {
 			lastInfrared = 0;
+			SensorBuffer.updateInfrared(0);
 			return 0;
 		}
 	}

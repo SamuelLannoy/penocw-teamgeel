@@ -79,17 +79,6 @@ public class LightSensor {
 					if (bc.getDecimal() <= 7) {
 						SensorBuffer.addBarcodeType(BarcodeType.OBJECT.toString());
 						if ((bc.getDecimal() % 4) == connector.getObjectNr()) {
-							//DebugBuffer.addInfo("TEST");
-							if (!connector.hasBall()) {
-								//connector.turnLeft(180);
-								//connector.setSimAngle((connector.getTRotation() + 180) % 360);
-								connector.setHasBall(true);
-								
-								/*connector.moveForward(60);
-								connector.moveBackward(10);
-								connector.turnLeft(180);
-								connector.moveForward(20);*/
-							}
 							if (bc.getDecimal() <= 3) {
 								connector.setTeamNr(0);
 							} else if (bc.getDecimal() <= 7) {
@@ -103,21 +92,6 @@ public class LightSensor {
 						Border border = connector.getMaze().getSeesawBorder(tile);
 						if (border.isPassable()) {
 							connector.setSeesawStatus(SeesawStatus.ISOPEN);
-							/*DebugBuffer.addInfo("moving");
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							connector.moveForward(1200);
-							while (!connector.isMoving()) {
-								try {
-									Thread.sleep(200);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-							}
-							connector.setSeesawStatus(SeesawStatus.ISOVER);*/
 						} else {
 							connector.setSeesawStatus(SeesawStatus.ISCLOSED);
 						}

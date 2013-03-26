@@ -71,21 +71,22 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void gameRolled(int playerNumber, int objectNr) {
 		robotPool.getMainRobot().setObjectNr(objectNr);
-		robotPool.getMainRobot().setPlayerNr(playerNumber+1);
+		//playerNumber += 1;
+		robotPool.getMainRobot().setPlayerNr(playerNumber);
 		
-		field.Tile tile = new field.Tile(field.getStartPos(playerNumber+1));
+		field.Tile tile = new field.Tile(field.getStartPos(playerNumber));
 		
 		/*robotPool.getMainRobot().setPosition(
 				new Position(0,0,field.getStartDir(playerNumber+1).toAngle()),
 				tile);*/
 		robotPool.getMainRobot().setStartPos(new Position(tile.getPosition().getX() * 40,
 				tile.getPosition().getY() * 40,
-				field.getStartDir(playerNumber+1).toAngle()));
+				field.getStartDir(playerNumber).toAngle()));
 		if (robotPool.getMainRobot().isSim()) {
 			//DebugBuffer.addInfo("real pos = " + tile.getPosition());
 			robotPool.getMainRobot().setSimLoc(tile.getPosition().getX() * 40,
 					tile.getPosition().getY() * 40,
-					field.getStartDir(playerNumber+1).toAngle());
+					field.getStartDir(playerNumber).toAngle());
 		}
 	}
 
