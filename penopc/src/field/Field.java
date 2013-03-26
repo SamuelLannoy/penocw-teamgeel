@@ -363,6 +363,11 @@ public class Field implements Fieldable {
 		return ret;
 	}
 	
+	/**
+	 * returns true when this tile has a border defined in every direction
+	 * @param pos
+	 * @return
+	 */
 	public boolean isExplored(Position pos) {
 		return getBorderMap().hasId(Direction.TOP.getBorderPositionInDirection(pos)) && 
 				getBorderMap().hasId(Direction.BOTTOM.getBorderPositionInDirection(pos)) && 
@@ -370,6 +375,11 @@ public class Field implements Fieldable {
 				getBorderMap().hasId(Direction.LEFT.getBorderPositionInDirection(pos));
 	}
 	
+	/**
+	 * true when no gray borders are on this tile
+	 * @param pos
+	 * @return
+	 */
 	public boolean isSure(Position pos) {
 		return isExplored(pos) &&
 				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.TOP) instanceof UnsureBorder) &&

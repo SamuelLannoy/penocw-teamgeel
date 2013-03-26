@@ -50,27 +50,18 @@ public class Explorer {
 	}
 	
 	public static void explore(final Robot robot, EndingCondition endCond) {
-		/*if (!robot.isSim()) {
-			//robot.setOnCenterTile();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			while (Status.isCentering()) {
-				
-			}
-			waitTillRobotStops(robot, 1000);
-			//DebugBuffer.addInfo("resetting pos");
-			robot.zeroPos();
-		}*/
 		
 		Field field = robot.getField();
+		// list of nodes that need to be explored
 		LinkedList<ExploreNode> toExplore = new LinkedList<ExploreNode>();
+		// list of tiles that are explored
 		HashSet<Position> explored = new HashSet<Position>();
+		// first explore tile defined
 		ExploreNode init = new ExploreNode(robot.getCurrTile(), null);
+		// add to toexplore list
 		toExplore.add(init);
 		
+		// add all tiles that have gray borders or that need to be explored
 		for (Tile tile : robot.getField().getTileMap()) {
 			if (!robot.getField().isSure(tile.getPosition())
 					&& !robot.getField().isExplored(tile.getPosition())) {
@@ -79,9 +70,14 @@ public class Explorer {
 			}
 		}
 		
+		// main loop : stop when explore list or last tile has been met due to ending condition
 		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
-			boolean quit = false;
+			// pop first
 			ExploreNode current = toExplore.removeFirst();
+			
+			
+			boolean quit = false;
+			// TODO: do not remove if straight tile
 			while  (robot.getField().isSure(current.getTile().getPosition())) {
 				if (toExplore.size() > 0) {
 					DebugBuffer.addInfo("exploring " + current.getTile().getPosition());
@@ -102,8 +98,11 @@ public class Explorer {
 				List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile(), ignoreSeesaw);
 				//System.out.println("list: " + tileList.toString());
 				robot.setAStartTileList(tileList);
+				// tileList.size() == 1 wanneer je al op de tegel zelf staat
 				if (tileList.size() > 1) {
+					// wordt true gezet wanneer een wip in A ster pad zit
 					boolean brokeLoop = false;
+					// give all commands to robot to move to tile
 					robot.travelToNextTile(tileList.get(1));
 					for (int i = 1; i < tileList.size() - 2; i++) {
 						//DebugBuffer.addInfo("traveling to " + tileList.get(i+1).getPosition());
@@ -119,6 +118,9 @@ public class Explorer {
 							brokeLoop = true;
 							break;
 						}*/
+						// i - 1 => tegel waar je vandaan komt
+						// i => tegel waar je op staat
+						// i + 1 => tegel waar je op moet staan
 						robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
 					}
 					//DebugBuffer.addInfo("turning on barcode read");
@@ -153,10 +155,13 @@ public class Explorer {
 					}*/
 
 
+					
+					// reset barcode value
 					if (tileList.size() > 2) {
 						robot.hasWrongBarcode();
 						robot.hasCorrectBarcode();
 					}
+					// travel to last tile
 					int r = tileList.size() - 1;
 					robot.travelToNextTile(tileList.get(r));
 					waitTillRobotStops(robot, 250);
@@ -173,91 +178,74 @@ public class Explorer {
 				robot.travelToNextTile(tile);
 				waitTillRobotStops(robot, 2000);
 			}*/
+			// reset gui variable for astar
 			robot.resetAStartTileList();
 
+			// ask barcode correctness
 			boolean correct = robot.hasCorrectBarcode();
 			boolean wrong = robot.hasWrongBarcode();
-			//DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
-			/*if (correct || wrong) {
-				DebugBuffer.addInfo("barcode detected!");
-			}*/
-			System.out.println("correct "+correct);
-			System.out.println("wrong "+wrong);
-
+			
+			// barcode has been detected
 			if (correct || wrong || robot.isScanning()) {
-				//DebugBuffer.addInfo("barcode detected!");
+				
+				// adding known borders for barcode
+
 				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
-				
-				Position newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
-				System.out.println("newtilepos " + newTilePos);
-				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addTile(new Tile(newTilePos));
-				
 				if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
 				if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
 					field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
+				
+				// new tile after barcode
+				Position newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+				System.out.println("newtilepos " + newTilePos);
+				
+				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
+					field.addTile(new Tile(newTilePos));
+				
+				// is not scanning anymore
 				if (!robot.isScanning()) {
 					if (correct) {
+						// has received correct => wait till it appears onscreen
 						while (robot.getCurrTile().getBarcode() == null);
 					} else {
+						// if wrong barcode wait 5s
 						waitTillRobotStops(robot, 5000);
 					}
-				} else {
-					// experimental
+				} else { // still scanning
 					DebugBuffer.addInfo("still scanning!");
-					//robot.moveForward(20);
-					//waitTillRobotStops(robot, 100);
 					waitTillRobotStops(robot, 5000);
-					
-					//while (!correct && !wrong) {
-					//while (robot.isScanning()) {
-						correct = robot.hasCorrectBarcode();
-						wrong = robot.hasWrongBarcode();
-						//System.out.println("waiting for barcode result");
-					//}
-					
-					//DebugBuffer.addInfo("barcode check " + robot.isScanning() + " c " + correct + " w " + wrong);
+
+					// reupdate correct / wrong
+					correct = robot.hasCorrectBarcode();
+					wrong = robot.hasWrongBarcode();
 				}
 
+				//check is false when next tile (in direction of robot) need not be explored
+				// this is the case when we cross the seesaw or when we come across any object barcode
 				boolean check = true;
 				
-				if (correct) {
+				if (correct) {// correcte barcode
 					DebugBuffer.addInfo("correct barcode");
 					
+					// get barcode of current tile
 					Barcode code = robot.getCurrTile().getBarcode();
 					
 					DebugBuffer.addInfo("test: " + code.getType());
 					
+					// do action based on the barcode type
 					switch (code.getType()) {
 						case OBJECT:
-							/*if (robot.getTeamNr() == -1 || (robot.hasBall() && robot.getTeamNr() != -1)){
 
-								
-							} else {
-								
-							}*/
-							
-							//TODO bepalen of PICKUP OF
-							
-							//TODO wat doet dit?
-							Direction dirForwLocal = dirForw;
-							Direction dirBackLocal = dirBack;
-
-							//Tile newT;
-
-							/*try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e1) {
-								e1.printStackTrace();
-							}*/
 
 							System.out.println("Teamnr: "+robot.getTeamNr());
 							System.out.println("Gevonden: "+robot.hasFoundOwnBarcode());
 							
+							// keep current tile of robot as reference
 							Tile tile = robot.getCurrTile();
 							
+							// pick up our object
 							if (robot.getTeamNr() != -1 && !robot.hasFoundOwnBarcode()) {
 								System.out.println("PICKUP");
 								robot.setHasFoundOwnBarcode(true);
@@ -279,22 +267,10 @@ public class Explorer {
 								
 								
 								
-								Direction temp = dirForw;
-								dirForwLocal = dirBack;
-								dirBackLocal = temp;
 								
-								//Position pos = dirBackLocal.getPositionInDirection(robot.getCurrTile().getPosition());
-								//pos = dirBackLocal.getPositionInDirection(pos);
-								//Tile tile = robot.getField().getTileMap().getObjectAtId(pos);
-								
-								
-								robot.setPosition(new robot.Position(0, 0, dirBackLocal.toAngle()), robot.getCurrTile());
-								
-								
-								//pos = dirForwLocal.getPositionInDirection(pos);
-								//pos = dirForwLocal.getPositionInDirection(pos);
 								System.out.println("adding tile: " + newTilePos);
-								//if (!robot.isSim()) {
+
+								// add new tile where object is located
 								newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
 								if (field.canHaveAsTile(newTilePos))
 									field.addTile(new Tile(newTilePos));
@@ -302,7 +278,9 @@ public class Explorer {
 								System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
 								System.out.println("OurObjectNr"+robot.getObjectNr());
 								System.out.println("Barcode: "+robot.getCurrTile().getBarcode());
-								//if(Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2) == robot.getObjectNr()){
+								
+								// execute pickup
+								
 								robot.pauseLightSensor();
 								robot.getCurrTile().getBarcode();
 								/*robot.turnLeft(90);
@@ -337,12 +315,13 @@ public class Explorer {
 								robot.moveForward(800);
 								robot.resumeLightSensor();
 								robot.setHasBall(true);
-								//}
+								// execute pickup
 
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 								
 								DebugBuffer.addInfo("OUT: my team is " + robot.getTeamNr());
+								// send object found + join team via rabbitmq
 								robot.getClient().hasFoundObject();
 								try {
 									robot.getClient().joinTeam(robot.getTeamNr());
@@ -352,15 +331,15 @@ public class Explorer {
 									e.printStackTrace();
 								}
 
+								
+								
 								robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
 										field.getTileMap().getObjectAtId(
 												dirBack.getPositionInDirection(tile.getPosition())));
-
-								//}
-								newT = robot.getField().getTileMap().getObjectAtId(newTilePos);
 							} else {
 								System.out.println("WRONG OBJ");
 								
+								// adding tile where object is located
 								Tile newT = new Tile(dirForw.getPositionInDirection(tile.getPosition()));
 
 								if (field.canHaveAsTile(newT.getPosition()))
@@ -376,6 +355,7 @@ public class Explorer {
 									field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 								
 								if (!robot.isSim()) {
+									// execute move away from wrong object
 									robot.pauseLightSensor();
 									robot.scanOnlyLines(true);
 									DebugBuffer.addInfo("PAUSE");
@@ -397,9 +377,10 @@ public class Explorer {
 													dirBack.getPositionInDirection(tile.getPosition())));
 									
 								}
-								
+
+								//check is false when next tile (in direction of robot) need not be explored
+								// this is the case when we cross the seesaw or when we come across any object barcode
 								check = false;
-								
 							}
 							System.out.println("tile: " + robot.getCurrTile().getPosition());
 							break;
@@ -408,22 +389,20 @@ public class Explorer {
 						case ILLEGAL:
 							break;
 						case OTHERPLAYERBARCODE:
-							//TODO teken boorden en voeg volgende niet toe
 							break;
 						case PICKUP:
 							
 							break;
 						case SEESAW:
-
-							//field.addBorder(new SeesawBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
 							robot.pauseLightSensor();
 
 							DebugBuffer.addInfo("SEESAW");
 
+							// keep current tile as reference
 							Tile btile = robot.getCurrTile();
 							Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
-							//SeesawBorder borderFirst = null;
-							//SeesawBorder borderLast = null;
+
+							// calculate code at other end
 							int bcode = btile.getBarcode().getDecimal();
 							int ncode = 0;
 							if (bcode == 11 || bcode == 15 || bcode == 19) {
@@ -432,7 +411,7 @@ public class Explorer {
 								ncode = bcode - 2;
 							}
 
-							//2de tegel
+							//2de tegel wip tekenen
 							if (field.canHaveAsTile(pos))
 								field.addTile(new Tile(pos));
 							if (field.canHaveAsTile(pos))
@@ -448,7 +427,7 @@ public class Explorer {
 
 							pos = dirForw.getPositionInDirection(pos);
 
-							//3de tegel
+							//3de tegel wip tekenen
 							if (field.canHaveAsTile(pos))
 								field.addTile(new Tile(pos));
 							if (field.canHaveAsTile(pos))
@@ -467,7 +446,7 @@ public class Explorer {
 							pos = dirForw.getPositionInDirection(pos);
 
 
-							//4de tegel
+							//4de tegel wip tekenen
 							Tile pLastTile = new Tile(pos);
 							if (field.canHaveAsTile(pos))
 								field.addTile(pLastTile);
@@ -487,40 +466,36 @@ public class Explorer {
 
 							pos = dirForw.getPositionInDirection(pos);
 
-							//4de tegel
+							//5de tegel wip tekenen
 							Tile lastTile = new Tile(pos);
 							if (field.canHaveAsTile(pos))
 								field.addTile(lastTile);
 
 
 
-							//TODO teken wip
+							// wait for infrared values
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							System.out.println(("INFRARED VALUE: " + SensorBuffer.getInfrared()));
+							// < 4 => open
 							if(SensorBuffer.getInfrared() < 4 ){
-								//Status.setSeesawStatus(SeesawStatus.ISOPEN);
-								//TODO PAUSE lightsensorvigilante
-								//TODO speed verlagen
+								
+								// execute move across seesaw
 								DebugBuffer.addInfo("MOVING");
 
 								robot.moveAcrossSeesaw();
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
-								//TODO speed terugzetten
-								//Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
-								//TODO resume lightsensorvigilante
 
 								robot.setCurrTile(lastTile);
 								robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), robot.getCurrTile());
 
 								toExplore.add(new ExploreNode(lastTile, pLastTile));
-							}
+							}// seesaw closed
 							else{
 								Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
 							}
@@ -531,7 +506,8 @@ public class Explorer {
 					}
 					
 				} else if (wrong) {
-					DebugBuffer.addInfo("wrong barcode");
+					throw new IllegalStateException("robot heeft foute barcode gelezen");
+					/*DebugBuffer.addInfo("wrong barcode");
 					robot.moveForward(40);
 					waitTillRobotStops(robot, 200);
 					robot.moveBackward(270);
@@ -543,11 +519,10 @@ public class Explorer {
 						correct = robot.hasCorrectBarcode();
 						wrong = robot.hasWrongBarcode();
 						System.out.println("waiting for barcode result");
-					}
-					/*correct = robot.hasCorrectBarcode();
-					wrong = robot.hasWrongBarcode();*/
+					}*/
 				}
 				
+				// add tile in direction of robot
 				if (check) {
 					Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
 					ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
@@ -557,27 +532,33 @@ public class Explorer {
 				}
 			} else {
 
+				// if border at back is defined do new tile scan
 				Direction dirx = Direction.fromAngle(robot.getPosition().getRotation() + 180);
 				if (field.getBorderMap().hasId(dirx.getBorderPositionInDirection(current.getTile().getPosition())) &&
 						!(field.getBorderInDirection(current.getTile(), dirx) instanceof UnsureBorder)) {
 					robot.newTileScan();
 
-				} else {
+				} else { // else scan 360
 					robot.scanSonar();
 				}
 
 				System.out.println("scan command given " + current.getTile() + " rt " + robot.getCurrTile());
 
+				// wait till tile border results have been given
 				while (!field.isExplored(current.getTile().getPosition())) {
 					waitTillRobotStops(robot, 1000);
 				}
 				System.out.println("done scanning");
 
+				// check for gray borders in every direction
 				for (Direction dir : Direction.values()) {
 					if (field.getBorderInDirection(current.getTile(), dir) instanceof UnsureBorder) {
+						// turn and move to gray border
 						robot.turnToAngle(dir.toAngle());
 						robot.moveForward(55);
 						waitTillRobotStops(robot, 1000);
+						// scan border again, time outs with 3 tries
+						// after 3 tries add white border with new tile
 						int counter = 0;
 						while (field.getBorderInDirection(current.getTile(), dir) instanceof UnsureBorder) {
 							robot.checkScan();
@@ -591,14 +572,16 @@ public class Explorer {
 							}
 							counter++;
 						}
+						// move back
 						robot.moveBackward(55);
 						waitTillRobotStops(robot, 1000);
 					}
+					
+					// if a white border was scanned add a new tile and add it to explore list
 					if (field.getBorderInDirection(current.getTile(), dir) instanceof WhiteBorder) {
 						Position pos = dir.getPositionInDirection(current.getTile().getPosition());
 						ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
 						if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
-							//System.out.println("add " + pos);
 							toExplore.add(newNode);
 						}
 					}
@@ -606,6 +589,7 @@ public class Explorer {
 			}
 
 			
+			// sort tiles on a* length
 			Collections.sort(toExplore, new Comparator<ExploreNode>() {
 
 				@Override
@@ -627,6 +611,7 @@ public class Explorer {
 			robot.hasCorrectBarcode();
 			robot.hasWrongBarcode();
 			
+			// if pause was selected wait here
 			while (pause) {
 				
 			}
@@ -635,10 +620,12 @@ public class Explorer {
 		DebugBuffer.addInfo("finish");
 
 		DebugBuffer.addInfo("looking for friend");
+		// wait till teammate is set
 		while (!robot.hasTeamMate()) { }
 		
 		DebugBuffer.addInfo("found friend");
 		DebugBuffer.addInfo("sending tiles to friend");
+		// make collection of tilesmsges
 		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(field.getTileMap().getKeys().size());
 		for (Tile tile : field.getTileMap()) {
 			peno.htttp.Tile toadd = TileConverter.convertToTileMsg(tile, field);
@@ -646,18 +633,21 @@ public class Explorer {
 				tilesMsg.add(toadd);
 		}
 		try {
+			// send tiles
 			robot.getClient().sendTiles(tilesMsg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		DebugBuffer.addInfo("waiting for team tiles");
+		// wait till teammate has sent tiles
 		while (!robot.receivedTeamTiles()) { }
 		DebugBuffer.addInfo("received team tiles");
 		
 		try {
+			// merge fields
 			Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
-
+			// set field
 			robot.setField(merged);
 		} catch (IllegalStateException e) {
 			// explore more
@@ -667,50 +657,6 @@ public class Explorer {
 
 
 		// TODO go to each other
-
-
-		
-		
-		/*if (robot.getStartTile() != null)
-			DebugBuffer.addInfo("start " + robot.getStartTile().getPosition());
-		if (robot.getFinishTile() != null)
-			DebugBuffer.addInfo("stop " + robot.getFinishTile().getPosition());
-		if (robot.getStartTile() != null && robot.getFinishTile() != null) {
-			if (!robot.isSim()) {
-				robot.setMoveSpeed(250);
-				robot.setTurnSpeed(100);
-			}
-			robot.scanOnlyLines(true);
-			List<Tile> tileList = Pathfinder.findShortestPath(robot, robot.getStartTile());
-			robot.setAStartTileList(tileList);
-			DebugBuffer.addInfo("moving to start");
-			if (tileList.size() > 1) {
-				robot.travelToNextTile(tileList.get(1));
-				for (int i = 1; i < tileList.size() - 1; i++) {
-					robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
-				}
-				waitTillRobotStops(robot, 1000);
-				waitTillRobotStops(robot, 500);
-				waitTillRobotStops(robot, 500);
-				DebugBuffer.addInfo("done moving to start");
-			}
-			DebugBuffer.addInfo("moving to finish");
-			robot.resetAStartTileList();
-			tileList = Pathfinder.findShortestPath(robot, robot.getFinishTile());
-			robot.setAStartTileList(tileList);
-			if (tileList.size() > 1) {
-				robot.travelToNextTile(tileList.get(1));
-				for (int i = 1; i < tileList.size() - 1; i++) {
-					robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
-				}
-				waitTillRobotStops(robot, 1000);
-				waitTillRobotStops(robot, 500);
-				waitTillRobotStops(robot, 500);
-				DebugBuffer.addInfo("done moving to finish");
-			}
-			robot.resetAStartTileList();
-			robot.scanOnlyLines(false);
-		}*/
 	}
 	
 	public static boolean isPaused() {

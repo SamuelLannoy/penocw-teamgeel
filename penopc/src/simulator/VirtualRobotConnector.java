@@ -48,7 +48,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	    });
 
 	public VirtualRobotConnector() {
-		this(0.1, 1);
+		this(.5, 2);
 	}
 
 	public VirtualRobotConnector(double mvSpeed, double trnSpeed) {
