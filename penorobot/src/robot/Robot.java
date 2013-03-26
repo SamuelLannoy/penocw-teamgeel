@@ -245,7 +245,7 @@ public class Robot {
 			PILOT.stop();
 			double arc2 = PILOT.getAngleIncrement();
 			PILOT.reset();
-			PILOT.rotate(-((arc2+5)/ 2));
+			PILOT.rotate(-((arc2+7)/ 2));
 			
 			Robot.getInstance().backward();
 			buffer = 0;

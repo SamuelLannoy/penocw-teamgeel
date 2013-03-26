@@ -1,5 +1,6 @@
 package robot.brain;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -27,8 +28,8 @@ public class Explorer {
 
 			@Override
 			public boolean isLastTile(Robot robot) {
-				return false;
-				//return robot.hasBall();
+				//return false;
+				return robot.hasBall();
 			}
 			
 		});
@@ -337,6 +338,16 @@ public class Explorer {
 
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
+								
+								DebugBuffer.addInfo("OUT: my team is " + robot.getTeamNr());
+								robot.getClient().hasFoundObject();
+								try {
+									robot.getClient().joinTeam(robot.getTeamNr());
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 
 								robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
 										field.getTileMap().getObjectAtId(
@@ -361,33 +372,33 @@ public class Explorer {
 								if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
 									field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
 								
-								robot.pauseLightSensor();
-								robot.scanOnlyLines(true);
-								DebugBuffer.addInfo("PAUSE");
-								try {
-									Thread.sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-								robot.moveForward(200);
-								waitTillRobotStops(robot, 250);
-								robot.turnLeft(180);
-								waitTillRobotStops(robot, 250);
-								robot.moveForward(750);
-								waitTillRobotStops(robot, 250);
-								DebugBuffer.addInfo("RESUME");
-								robot.scanOnlyLines(false);
-								robot.resumeLightSensor();
-								
-
 								if (!robot.isSim()) {
-									robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
+									robot.pauseLightSensor();
+									robot.scanOnlyLines(true);
+									DebugBuffer.addInfo("PAUSE");
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+									robot.moveForward(200);
+									waitTillRobotStops(robot, 250);
+									robot.turnLeft(180);
+									waitTillRobotStops(robot, 250);
+									robot.moveForward(750);
+									waitTillRobotStops(robot, 250);
+									DebugBuffer.addInfo("RESUME");
+									robot.scanOnlyLines(false);
+									robot.resumeLightSensor();robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
 											field.getTileMap().getObjectAtId(
 													dirBack.getPositionInDirection(tile.getPosition())));
+									
 								}
+								
+								check = false;
+								
 							}
 							System.out.println("tile: " + robot.getCurrTile().getPosition());
-							check = false;
 							break;
 						case CHECKPOINT:
 							break;
@@ -620,9 +631,13 @@ public class Explorer {
 
 		DebugBuffer.addInfo("finish");
 		
-		if (!robot.hasTeamMate()) {
+		while (!robot.hasTeamMate()) {
 			// try to find friend
 		}
+		
+		DebugBuffer.addInfo("found friend");
+		DebugBuffer.addInfo("sending tiles to friend");
+		//robot.getClient().sendTiles(tiles);
 		
 		if (robot.hasTeamMate()) {
 			if (robot.hasTeamMateField()) {

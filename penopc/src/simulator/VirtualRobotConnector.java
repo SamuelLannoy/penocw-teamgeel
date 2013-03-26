@@ -653,15 +653,15 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		this.status = status;
 	}
 
+	private boolean pausedLightSensor = false;
+	
 	@Override
 	public void pauseLightSensor() {
-		// TODO Auto-generated method stub
-		
+		pausedLightSensor = true;
 	}
 
 	@Override
 	public void resumeLightSensor() {
-		// TODO Auto-generated method stub
-		
+		pausedLightSensor = false;
 	}
 }

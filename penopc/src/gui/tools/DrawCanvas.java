@@ -8,6 +8,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 
@@ -172,6 +173,7 @@ public class DrawCanvas extends Canvas{
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
               //  RenderingHints.VALUE_ANTIALIAS_ON); 
 		synchronized(field.getTileMap()){
+			try {
 		for (Tile currentTile : field.getTileMap()){
 			int x = currentTile.getPosition().getX();
 			int y = currentTile.getPosition().getY();
@@ -296,6 +298,9 @@ public class DrawCanvas extends Canvas{
 				}**/
 			}
 		}
+			} catch (ConcurrentModificationException e) {
+				
+			}
 		}
 	}
 	
