@@ -446,6 +446,7 @@ public class Field implements Fieldable {
 	
 	public void setStartPos(int i, Position pos) {
 		startPos.put(i, pos);
+		DebugBuffer.addInfo("adding " + pos  + " to " + i);
 	}
 	
 	public void setStartDir(int i, Direction dir) {

@@ -130,8 +130,8 @@ public class Main extends JFrame {
 						try {
 							//robot.updatePosition();
 							canvas.update(canvas.getGraphics());
-							if (robot.hasTeamMateField()){
-								if(canvas2 == null){
+							if (robot.receivedTeamTiles()){
+								if(frame2 == null){
 									frame2 = new JFrame();
 									frame2.setBounds ( 0 , 0 , 500 ,500);
 									frame2.setVisible(true);

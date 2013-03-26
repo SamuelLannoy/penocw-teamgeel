@@ -157,6 +157,13 @@ public enum MazePart {
 			}
 			return map;
 		}
+	}, UNKOWN {
+
+		@Override
+		public List<Border> getBorders(String orientation, Tile tile) {
+			return new ArrayList<Border>();
+		}
+		
 	};
 	
 	public abstract List< Border> getBorders(String orientation, Tile tile);
@@ -223,13 +230,13 @@ public enum MazePart {
 		}
 		if (bcount == 3){
 			if (borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Deadend.N";
-			} else if (borders.get(Direction.RIGHT) instanceof WhiteBorder) {
-				return "Deadend.E";
-			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
 				return "Deadend.S";
-			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder) {
+			} else if (borders.get(Direction.RIGHT) instanceof WhiteBorder) {
 				return "Deadend.W";
+			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
+				return "Deadend.N";
+			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder) {
+				return "Deadend.E";
 			}
 		}
 		if (scount == 1){

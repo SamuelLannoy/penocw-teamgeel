@@ -74,6 +74,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		//playerNumber += 1;
 		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
 		robotPool.getMainRobot().setPlayerNr(playerNumber);
+
 		
 		field.Tile tile = new field.Tile(field.getStartPos(playerNumber));
 		

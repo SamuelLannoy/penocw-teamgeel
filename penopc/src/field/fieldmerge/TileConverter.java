@@ -35,14 +35,26 @@ public class TileConverter {
 	public static peno.htttp.Tile convertToTileMsg(Tile tile, Field field) {
 		Map<Direction, Border> borders = new HashMap<Direction, Border>();
 		
+		try {
 		borders.put(Direction.TOP, field.getTopBorderOfTile(tile));
 		borders.put(Direction.BOTTOM, field.getBottomBorderOfTile(tile));
 		borders.put(Direction.LEFT, field.getLeftBorderOfTile(tile));
 		borders.put(Direction.RIGHT, field.getRightBorderOfTile(tile));
 		
+		String sentToken = MazePart.getToken(borders, tile);
+		System.out.println("sent: " + sentToken);
+		
 		return new peno.htttp.Tile(tile.getPosition().getX(),
 				tile.getPosition().getY(),
-				MazePart.getToken(borders, tile));
+				sentToken);
+		
+		} catch (IllegalArgumentException e) {
+
+			
+			return new peno.htttp.Tile(tile.getPosition().getX(),
+					tile.getPosition().getY(),
+					"unkown");
+		}
 	}
 	
 	

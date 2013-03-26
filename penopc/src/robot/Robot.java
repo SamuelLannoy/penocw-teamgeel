@@ -743,21 +743,14 @@ public class Robot extends RobotModel{
 		return getTeamMateNr() != null && !getTeamMateNr().equals("");
 	}
 	
-	private FieldMessage fieldMsg;
-	
-	public void setFieldMessage(FieldMessage fieldMsg) {
-		this.fieldMsg = fieldMsg;
-	}
+	private Field teamMateField = new Field();
 	
 	public boolean hasTeamMateField() {
-		return fieldMsg != null;
+		return teamMateField != null;
 	}
 	
 	public Field getTeamMateField() {
-		if (!hasTeamMateField()) {
-			throw new IllegalStateException("teammate hasn't given field yet!");
-		}
-		return FieldConverter.convertToField(fieldMsg);
+		return teamMateField;
 	}
 	
 	private Robot teamMate;
@@ -778,6 +771,10 @@ public class Robot extends RobotModel{
 
 	public void setTeamMateID(String teamMateID) {
 		this.teamMateID = teamMateID;
+		Robot tm = new Robot(1);
+		setTeamMate(tm);
+		tm.setField(teamMateField);
+		//tm.setCurrTile(teamMateField.getTileMap().getObjectAtId(new field.Position(0, 0)));
 	}
 	
 	private boolean receivedTeamTiles;

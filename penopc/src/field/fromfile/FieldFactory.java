@@ -29,6 +29,7 @@ public class FieldFactory {
 				if (!strLine.isEmpty() && !strLine.startsWith("#")) {
 					String[] sections = strLine.split("( |\t)+");
 					for (int i = 0; i < dimX; i++) {
+						//System.out.println("line: "+sections[i]);
 						String[] parts = sections[i].split("\\.");
 						//System.out.println("section: " + sections[i] + " parts " + parts.length);
 						MazePart part = MazePart.getPartFromString(parts[0]);
@@ -46,6 +47,16 @@ public class FieldFactory {
 								field.setStartDir(id, Direction.fromString(dir));
 							} else {
 								tile.setBarcode(new Barcode(Integer.parseInt(parts[2])));
+							}
+						}
+						if (parts.length == 2) {
+							if (parts[1].startsWith("S") && parts[1].length() > 1) {
+								String start = parts[1];
+								//System.out.println("tt " + start);
+								int id = Integer.parseInt(start.substring(1, 2));
+								field.setStartPos(id, tile.getPosition());
+								String dir = start.substring(2, 3);
+								field.setStartDir(id, Direction.fromString(dir));
 							}
 						}
 						String param = parts.length >= 2 ? parts[1] : "";
