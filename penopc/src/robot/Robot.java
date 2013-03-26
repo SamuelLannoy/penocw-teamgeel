@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import communication.SeesawStatus;
+import communication.Status;
 
 import peno.htttp.PlayerClient;
 
@@ -819,25 +820,39 @@ public class Robot extends RobotModel{
 	}
 	
 	public void moveAcrossSeesaw() {
-		moveForward(400);
-		try {
-			Thread.sleep(250);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		moveForward(200);
-		try {
-			Thread.sleep(250);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		moveForward(200);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Explorer.waitTillRobotStops(this, 500);
 		moveForward(800);
+//		try {
+//			Thread.sleep(250);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(200);
+//		try {
+//			Thread.sleep(250);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(200);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(800);
+		DebugBuffer.addInfo("going in");
+		Explorer.waitTillRobotStops(this, 5000);
+		moveForward(400);
+		Explorer.waitTillRobotStops(this, 400);
+		this.orientOnWhiteLine(false);
+		Explorer.waitTillRobotStops(this, 400);
+		moveForward(175);
+		Explorer.waitTillRobotStops(this, 400);
+		DebugBuffer.addInfo("going out");
+//		this.setOnCenterTile();
+//		Explorer.waitTillRobotStops(this, 250);
+//		while(Status.isCentering());
+//		Explorer.waitTillRobotStops(this, 250);
 	}
 
 	public int getObjectNr() {
