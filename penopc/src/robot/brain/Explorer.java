@@ -1,6 +1,8 @@
 package robot.brain;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -14,6 +16,7 @@ import communication.Status;
 
 import field.*;
 import field.fieldmerge.FieldMerger;
+import field.fieldmerge.TileConverter;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -630,30 +633,36 @@ public class Explorer {
 		}
 
 		DebugBuffer.addInfo("finish");
-		
-		while (!robot.hasTeamMate()) {
-			// try to find friend
-		}
+
+		DebugBuffer.addInfo("looking for friend");
+		while (!robot.hasTeamMate()) { }
 		
 		DebugBuffer.addInfo("found friend");
 		DebugBuffer.addInfo("sending tiles to friend");
-		//robot.getClient().sendTiles(tiles);
-		
-		if (robot.hasTeamMate()) {
-			if (robot.hasTeamMateField()) {
-				Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
-				
-				// check merged field ?
-				
-				robot.setField(merged);
-			} else {
-				// request field
-			}
-			
-			
-			// TODO go to each other
+		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(field.getTileMap().getKeys().size());
+		for (Tile tile : field.getTileMap()) {
+			tilesMsg.add(TileConverter.convertToTileMsg(tile, field));
 		}
+		try {
+			robot.getClient().sendTiles(tilesMsg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		DebugBuffer.addInfo("waiting for team tiles");
+		while (!robot.receivedTeamTiles()) { }
+		DebugBuffer.addInfo("received team tiles");
 		
+		Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
+
+		// check merged field ?
+
+		robot.setField(merged);
+
+
+		// TODO go to each other
+
+
 		
 		
 		/*if (robot.getStartTile() != null)

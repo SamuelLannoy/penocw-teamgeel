@@ -127,6 +127,8 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		for (Tile tile : tiles) {
 			TileConverter.convertToFieldTile(tile, tField);
 		}
+		
+		robotPool.getMainRobot().setReceivedTeamTiles(true);
 	}
 
 	@Override

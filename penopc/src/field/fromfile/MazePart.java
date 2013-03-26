@@ -165,7 +165,7 @@ public enum MazePart {
 		return valueOf(string.toUpperCase());
 	}
 	
-	public String getToken(Map<Direction, Border> borders, Tile tile) {
+	public static String getToken(Map<Direction, Border> borders, Tile tile) {
 		if (borders.size() != 4)
 			throw new IllegalArgumentException();
 		int wcount = 0, bcount = 0, scount = 0, gcount = 0;

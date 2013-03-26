@@ -779,6 +779,16 @@ public class Robot extends RobotModel{
 	public void setTeamMateID(String teamMateID) {
 		this.teamMateID = teamMateID;
 	}
+	
+	private boolean receivedTeamTiles;
+
+	public boolean receivedTeamTiles() {
+		return receivedTeamTiles;
+	}
+
+	public void setReceivedTeamTiles(boolean receivedTeamTiles) {
+		this.receivedTeamTiles = receivedTeamTiles;
+	}
 
 	private boolean hasFoundOwnBarcode;
 

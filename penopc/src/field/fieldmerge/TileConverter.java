@@ -1,8 +1,11 @@
 package field.fieldmerge;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import field.Border;
+import field.Direction;
 import field.Field;
 import field.Position;
 import field.Tile;
@@ -27,6 +30,19 @@ public class TileConverter {
 		Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
 		
 		field.addBorders(borders);
+	}
+	
+	public static peno.htttp.Tile convertToTileMsg(Tile tile, Field field) {
+		Map<Direction, Border> borders = new HashMap<Direction, Border>();
+		
+		borders.put(Direction.TOP, field.getTopBorderOfTile(tile));
+		borders.put(Direction.BOTTOM, field.getBottomBorderOfTile(tile));
+		borders.put(Direction.LEFT, field.getLeftBorderOfTile(tile));
+		borders.put(Direction.RIGHT, field.getRightBorderOfTile(tile));
+		
+		return new peno.htttp.Tile(tile.getPosition().getX(),
+				tile.getPosition().getY(),
+				MazePart.getToken(borders, tile));
 	}
 	
 	
