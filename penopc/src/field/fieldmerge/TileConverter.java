@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import field.Barcode;
 import field.Border;
 import field.Direction;
 import field.Field;
@@ -27,6 +28,11 @@ public class TileConverter {
 			added = field.getTileMap().getObjectAtId(tilePos);
 		}
 		
+		if (split.length >= 3) {
+			int nr = Integer.parseInt(split[2]);
+			added.setBarcode(new Barcode(nr));
+		}
+		
 		Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
 		
 		field.addBorders(borders);
@@ -43,6 +49,8 @@ public class TileConverter {
 		
 		String sentToken = MazePart.getToken(borders, tile);
 		System.out.println("sent: " + sentToken);
+		if (sentToken.equals(""))
+			return null;
 		
 		return new peno.htttp.Tile(tile.getPosition().getX(),
 				tile.getPosition().getY(),
@@ -53,7 +61,7 @@ public class TileConverter {
 			
 			return new peno.htttp.Tile(tile.getPosition().getX(),
 					tile.getPosition().getY(),
-					"unkown");
+					"unknown");
 		}
 	}
 	

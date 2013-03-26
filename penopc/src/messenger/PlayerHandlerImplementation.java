@@ -89,6 +89,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 			robotPool.getMainRobot().setSimLoc(tile.getPosition().getX() * 40,
 					tile.getPosition().getY() * 40,
 					field.getStartDir(playerNumber).toAngle());
+			robotPool.getMainRobot().setPosition(new robot.Position(0, 0, field.getStartDir(playerNumber).toAngle()));
 		}
 	}
 

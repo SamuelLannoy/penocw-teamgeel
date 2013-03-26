@@ -429,6 +429,7 @@ public class Field implements Fieldable {
 					SeesawBorder border = getSeesawBorder(tile);
 					if (!border.isPassable()) {
 						border.setDown();
+						DebugBuffer.addInfo("SETTING DOWN");
 					}
 				}
 			}

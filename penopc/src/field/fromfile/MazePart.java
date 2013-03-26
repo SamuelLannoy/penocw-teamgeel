@@ -157,7 +157,7 @@ public enum MazePart {
 			}
 			return map;
 		}
-	}, UNKOWN {
+	}, UNKNOWN {
 
 		@Override
 		public List<Border> getBorders(String orientation, Tile tile) {
@@ -169,12 +169,15 @@ public enum MazePart {
 	public abstract List< Border> getBorders(String orientation, Tile tile);
 	
 	public static MazePart getPartFromString(String string) {
+		System.out.println("converting: " + string);
 		return valueOf(string.toUpperCase());
 	}
 	
 	public static String getToken(Map<Direction, Border> borders, Tile tile) {
 		if (borders.size() != 4)
 			throw new IllegalArgumentException();
+		String retString = "";
+		
 		int wcount = 0, bcount = 0, scount = 0, gcount = 0;
 		for (Border border : borders.values()) {
 			if (border instanceof WhiteBorder)
@@ -187,74 +190,78 @@ public enum MazePart {
 				scount++;
 		}
 		if (bcount == 4)
-			return "closed";
+			retString = "closed";
 		if (wcount == 4)
-			return "cross";
+			retString = "cross";
 		if (wcount == 3){
 			if (borders.get(Direction.TOP) instanceof PanelBorder) {
-				return "T.N";
+				retString = "T.N";
 			} else if (borders.get(Direction.RIGHT) instanceof PanelBorder) {
-				return "T.E";
+				retString = "T.E";
 			} else if (borders.get(Direction.BOTTOM) instanceof PanelBorder) {
-				return "T.S";
+				retString = "T.S";
 			} else if (borders.get(Direction.LEFT) instanceof PanelBorder) {
-				return "T.W";
+				retString = "T.W";
 			}
 		}
 		if (wcount == 2){
 			if (borders.get(Direction.TOP) instanceof WhiteBorder &&
 					borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
-				return "Straight.N";
+				retString = "Straight.N";
 			} else if (borders.get(Direction.RIGHT) instanceof WhiteBorder &&
 					borders.get(Direction.LEFT) instanceof WhiteBorder) {
-				return "Straight.E";
+				retString = "Straight.E";
 			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder &&
 					borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Straight.S";
+				retString = "Straight.S";
 			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder &&
 					borders.get(Direction.RIGHT) instanceof WhiteBorder) {
-				return "Straight.W";
+				retString = "Straight.W";
+			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder &&
+					borders.get(Direction.RIGHT) instanceof WhiteBorder) {
+				retString = "Corner.N";
+			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder &&
+					borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
+				retString = "Corner.E";
 			} else if (borders.get(Direction.TOP) instanceof WhiteBorder &&
 					borders.get(Direction.LEFT) instanceof WhiteBorder) {
-				return "Corner.N";
+				retString = "Corner.S";
 			} else if (borders.get(Direction.RIGHT) instanceof WhiteBorder &&
 					borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Corner.E";
-			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder &&
-					borders.get(Direction.RIGHT) instanceof WhiteBorder) {
-				return "Corner.S";
-			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder &&
-					borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Corner.W";
+				retString = "Corner.W";
 			}
 		}
 		if (bcount == 3){
 			if (borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Deadend.S";
+				retString = "Deadend.S";
 			} else if (borders.get(Direction.RIGHT) instanceof WhiteBorder) {
-				return "Deadend.W";
+				retString = "Deadend.W";
 			} else if (borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
-				return "Deadend.N";
+				retString = "Deadend.N";
 			} else if (borders.get(Direction.LEFT) instanceof WhiteBorder) {
-				return "Deadend.E";
+				retString = "Deadend.E";
 			}
 		}
 		if (scount == 1){
 			if (borders.get(Direction.TOP) instanceof SeesawBorder &&
 					borders.get(Direction.BOTTOM) instanceof WhiteBorder) {
-				return "Seesaw.N";
+				retString = "Seesaw.N";
 			} else if (borders.get(Direction.RIGHT) instanceof SeesawBorder &&
 					borders.get(Direction.LEFT) instanceof WhiteBorder) {
-				return "Seesaw.E";
+				retString = "Seesaw.E";
 			} else if (borders.get(Direction.BOTTOM) instanceof SeesawBorder &&
 					borders.get(Direction.TOP) instanceof WhiteBorder) {
-				return "Seesaw.S";
+				retString = "Seesaw.S";
 			} else if (borders.get(Direction.LEFT) instanceof SeesawBorder &&
 					borders.get(Direction.RIGHT) instanceof WhiteBorder) {
-				return "Seesaw.W";
+				retString = "Seesaw.W";
 			}
 		}
 		
-		return "";
+		if (tile.getBarcode() != null) {
+			retString += "." + tile.getBarcode().getDecimal();
+		}
+		
+		return retString;
 	}
 }

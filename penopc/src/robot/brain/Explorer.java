@@ -98,8 +98,7 @@ public class Explorer {
 
 			boolean ignoreSeesaw = false;
 
-			while (!robot.getCurrTile().getPosition().equals(current.getTile().getPosition())) {
-				System.out.println(robot.getCurrTile().getPosition() + " test "+ current.getTile().getPosition());
+			//while (!robot.getCurrTile().getPosition().equals(current.getTile().getPosition())) {
 				List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile(), ignoreSeesaw);
 				//System.out.println("list: " + tileList.toString());
 				robot.setAStartTileList(tileList);
@@ -113,13 +112,13 @@ public class Explorer {
 						// het pad wordt tot dan afgelegd en vervolgens opnieuw berekend.
 
 						//TODO:add
-						Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
+						/*Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
 						if (tile.getBarcode() != null && (tile.getBarcode().getDecimal() == 11 || tile.getBarcode().getDecimal() == 13 ||
 								tile.getBarcode().getDecimal() == 15 || tile.getBarcode().getDecimal() == 17 || tile.getBarcode().getDecimal() == 19 ||
 								tile.getBarcode().getDecimal() == 21)){
 							brokeLoop = true;
 							break;
-						}
+						}*/
 						robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
 					}
 					//DebugBuffer.addInfo("turning on barcode read");
@@ -130,11 +129,12 @@ public class Explorer {
 					//TODO:add
 					// de wip was open en de robot is erover gegaan. 
 					// Zet de robot op de positie na de wip.
-					if (brokeLoop) {
+					/*if (brokeLoop) {
 						waitTillRobotStops(robot, 1000);
-					
+					}
 					Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-					if (SensorBuffer.getInfrared() < 4) {
+
+					/*if (SensorBuffer.getInfrared() < 4) {
 						Tile tile = robot.getCurrTile();
 
 						robot.moveAcrossSeesaw();
@@ -150,8 +150,8 @@ public class Explorer {
 						ignoreSeesaw = false;
 					} else {
 						ignoreSeesaw = true;
-					}
-					}
+					}*/
+
 
 					if (tileList.size() > 2) {
 						robot.hasWrongBarcode();
@@ -163,7 +163,7 @@ public class Explorer {
 
 					DebugBuffer.addInfo("done moving!");
 				}
-			}
+			//}
 			Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 			System.out.println("dirforw " + dirForw);
 			Direction dirLeft = Direction.fromAngle(robot.getPosition().getRotation() - 90); 
@@ -641,7 +641,9 @@ public class Explorer {
 		DebugBuffer.addInfo("sending tiles to friend");
 		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(field.getTileMap().getKeys().size());
 		for (Tile tile : field.getTileMap()) {
-			tilesMsg.add(TileConverter.convertToTileMsg(tile, field));
+			peno.htttp.Tile toadd = TileConverter.convertToTileMsg(tile, field);
+			if (toadd != null)
+				tilesMsg.add(toadd);
 		}
 		try {
 			robot.getClient().sendTiles(tilesMsg);
@@ -653,11 +655,15 @@ public class Explorer {
 		while (!robot.receivedTeamTiles()) { }
 		DebugBuffer.addInfo("received team tiles");
 		
-		Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
+		try {
+			Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
+
+			robot.setField(merged);
+		} catch (IllegalStateException e) {
+			// explore more
+		}
 
 		// check merged field ?
-
-		robot.setField(merged);
 
 
 		// TODO go to each other

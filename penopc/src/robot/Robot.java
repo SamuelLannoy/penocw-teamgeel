@@ -785,6 +785,7 @@ public class Robot extends RobotModel{
 
 	public void setReceivedTeamTiles(boolean receivedTeamTiles) {
 		this.receivedTeamTiles = receivedTeamTiles;
+		getTeamMate().setPosition(new Position(0, 0, 0), new Tile(new field.Position(0,0)));
 	}
 
 	private boolean hasFoundOwnBarcode;
