@@ -823,25 +823,33 @@ public class Robot extends RobotModel{
 	}
 	
 	public void moveAcrossSeesaw() {
-		moveForward(400);
-		try {
-			Thread.sleep(250);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		moveForward(200);
-		try {
-			Thread.sleep(250);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		moveForward(200);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		moveForward(800);
+		Explorer.waitTillRobotStops(this, 2500);
+		moveForward(400);
+		Explorer.waitTillRobotStops(this, 400);
+		this.orientOnWhiteLine(false);
+		Explorer.waitTillRobotStops(this, 400);
+		moveForward(190);
+		Explorer.waitTillRobotStops(this, 400);
+//		moveForward(400);
+//		try {
+//			Thread.sleep(250);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(200);
+//		try {
+//			Thread.sleep(250);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(200);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		moveForward(800);
 	}
 
 	public int getObjectNr() {
