@@ -72,6 +72,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	public void gameRolled(int playerNumber, int objectNr) {
 		robotPool.getMainRobot().setObjectNr(objectNr);
 		//playerNumber += 1;
+		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
 		robotPool.getMainRobot().setPlayerNr(playerNumber);
 		
 		field.Tile tile = new field.Tile(field.getStartPos(playerNumber));

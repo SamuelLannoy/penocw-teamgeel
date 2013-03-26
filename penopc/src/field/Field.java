@@ -30,14 +30,14 @@ public class Field implements Fieldable {
 	
 	public void initSeesaw() {
 		for (Tile tile : tileMap) {
-			DebugBuffer.addInfo("a " + tile.getPosition() + " " + hasSeesawBorder(tile) + " " + tile.getBarcode());
+			//DebugBuffer.addInfo("a " + tile.getPosition() + " " + hasSeesawBorder(tile) + " " + tile.getBarcode());
 			if (hasSeesawBorder(tile) && tile.getBarcode() != null) {
 				SeesawBorder border = getSeesawBorder(tile);
-				DebugBuffer.addInfo("b " + tile.getPosition());
+				//DebugBuffer.addInfo("b " + tile.getPosition());
 				if (tile.getBarcode().getDecimal() == 11 ||
 						tile.getBarcode().getDecimal() == 15 ||
 						tile.getBarcode().getDecimal() == 19) {
-					DebugBuffer.addInfo("c " + tile.getPosition());
+					//DebugBuffer.addInfo("c " + tile.getPosition());
 					border.setDown();
 				} else if (tile.getBarcode().getDecimal() == 13 ||
 						tile.getBarcode().getDecimal() == 17 ||
