@@ -34,7 +34,7 @@ public class BarcodeParser {
 	
 	private static List<Integer> getLegalNrsDecimal(){
 		ArrayList<Integer> nrs = new ArrayList<Integer>();
-		nrs.add(1); nrs.add(2); nrs.add(3); nrs.add(4); nrs.add(5); nrs.add(6); nrs.add(7);
+		nrs.add(0); nrs.add(1); nrs.add(2); nrs.add(3); nrs.add(4); nrs.add(5); nrs.add(6); nrs.add(7);
 		nrs.add(9); nrs.add(10); nrs.add(11); nrs.add(13); nrs.add(14); nrs.add(15); nrs.add(17);
 		nrs.add(19); nrs.add(21); nrs.add(22); nrs.add(23); nrs.add(27); nrs.add(29); nrs.add(31);
 		nrs.add(35); nrs.add(37); nrs.add(39); nrs.add(43); nrs.add(47); nrs.add(55);
