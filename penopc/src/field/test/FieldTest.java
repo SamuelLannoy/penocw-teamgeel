@@ -206,16 +206,4 @@ public class FieldTest {
 		assertEquals(tile1.getPosition(), tile2.getPosition());
 	}
 
-	@Test
-	public void fieldmerge() throws IOException {
-		Field mazex = FieldFactory.fieldFromFile("c:\\merge1.txt");
-		Field mazey = FieldFactory.fieldFromFile("c:\\merge2.txt");
-		
-		Field merged = FieldMerger.mergeFields(mazex, mazey);
-		
-		for (Tile tile : merged.getTileMap()) {
-			System.out.println(tile);
-		}
-	}
-
 }

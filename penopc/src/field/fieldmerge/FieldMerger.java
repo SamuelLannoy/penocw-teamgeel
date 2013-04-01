@@ -1,20 +1,19 @@
 package field.fieldmerge;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-import field.Barcode;
+import robot.Robot;
+
 import field.Border;
 import field.Field;
 import field.Position;
 import field.Tile;
-import field.UnsureBorder;
 
 public class FieldMerger {
 
-	public static Field mergeFields(Field field1, Field field2) {
+	public static Field mergeFields(Robot robot, Field field2) {
 		Field retF = new Field();
+		Field field1 = robot.getField();
 		
 		List<BarcodeNode> bc1 = field1.getBarcodes();
 		List<BarcodeNode> bc2 = field2.getBarcodes();
@@ -31,6 +30,9 @@ public class FieldMerger {
 					int diffY = barcodeNode1.getPosition().getY() - barcodeNode2.getPosition().getY();
 					field2 = field2.moveX(diffX);
 					field2 = field2.moveY(diffY);
+					System.out.println("x " + diffX + " y " + diffY);
+					robot.setTranslX(diffX);
+					robot.setTranslY(diffY);
 				}
 			}
 			
@@ -50,6 +52,7 @@ public class FieldMerger {
 					int rotation = (int)(Math.acos((Math.pow(P12, 2) + Math.pow(P13, 2) - Math.pow(P23, 2)) / (2 * P12 * P13)) / Math.PI * 180 + .5);
 					System.out.println("rot " + rotation);
 					field2 = field2.rotate(rotation, barcodeNode1.getPosition());
+					robot.setRotation(rotation);
 				}
 			}
 			

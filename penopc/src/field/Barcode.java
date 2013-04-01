@@ -118,7 +118,18 @@ public class Barcode {
 		}
 		
 		return sb.toString();
-		
+	}
+	
+	public boolean isSeesaw() {
+		return getDecimal() >= 11 && getDecimal() <= 25;
+	}
+	
+	public boolean isObject() {
+		return getDecimal() >= 0 && getDecimal() <= 7;
+	}
+	
+	public boolean isCheckPoint() {
+		return getDecimal() >= 26;
 	}
 	
 }

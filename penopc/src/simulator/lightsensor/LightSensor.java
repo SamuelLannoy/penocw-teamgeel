@@ -85,9 +85,9 @@ public class LightSensor {
 								connector.setTeamNr(1);
 							}
 						}
-					} else if (bc.getDecimal() >= 55){
+					} else if (bc.getDecimal() >= 26){
 						SensorBuffer.addBarcodeType(BarcodeType.CHECKPOINT.toString());
-					} else if (bc.getDecimal() > 7 && bc.getDecimal() < 55) {
+					} else if (bc.getDecimal() > 7 && bc.getDecimal() < 26) {
 						Tile tile = connector.getMaze().getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY());
 						Border border = connector.getMaze().getSeesawBorder(tile);
 						if (border.isPassable()) {

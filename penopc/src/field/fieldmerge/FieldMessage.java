@@ -11,7 +11,7 @@ public abstract class FieldMessage implements Fieldable {
 	}
 	
 	public Field mergeWithOther(Fieldable fieldable) {
-		return FieldMerger.mergeFields(fieldable.toField(), this.toField());
+		return null;//FieldMerger.mergeFields(fieldable.toField(), this.toField());
 	}
 
 }

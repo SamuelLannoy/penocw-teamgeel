@@ -93,91 +93,68 @@ public class Explorer {
 			//DebugBuffer.addInfo("explore " + current.getTile().getPosition());
 
 			boolean ignoreSeesaw = false;
-
-			//while (!robot.getCurrTile().getPosition().equals(current.getTile().getPosition())) {
+			boolean reachedDestination = false;
+			
+			while (!reachedDestination) {
 				List<Tile> tileList = Pathfinder.findShortestPath(robot, current.getTile(), ignoreSeesaw);
-				//System.out.println("list: " + tileList.toString());
 				robot.setAStartTileList(tileList);
-				// tileList.size() == 1 wanneer je al op de tegel zelf staat
-				if (tileList.size() > 1) {
-					// wordt true gezet wanneer een wip in A ster pad zit
-					boolean brokeLoop = false;
-					// give all commands to robot to move to tile
-					robot.travelToNextTile(tileList.get(1));
-					for (int i = 1; i < tileList.size() - 2; i++) {
-						//DebugBuffer.addInfo("traveling to " + tileList.get(i+1).getPosition());
-
-						// een tegel op het pad heeft de barcode van een wip.
-						// het pad wordt tot dan afgelegd en vervolgens opnieuw berekend.
-
-						//TODO:add
-						/*Tile tile = robot.getField().getTileMap().getObjectAtId(tileList.get(i).getPosition());
-						if (tile.getBarcode() != null && (tile.getBarcode().getDecimal() == 11 || tile.getBarcode().getDecimal() == 13 ||
-								tile.getBarcode().getDecimal() == 15 || tile.getBarcode().getDecimal() == 17 || tile.getBarcode().getDecimal() == 19 ||
-								tile.getBarcode().getDecimal() == 21)){
-							brokeLoop = true;
-							break;
-						}*/
-						// i - 1 => tegel waar je vandaan komt
-						// i => tegel waar je op staat
-						// i + 1 => tegel waar je op moet staan
-						robot.travelFromTileToTile(tileList.get(i), tileList.get(i+1), tileList.get(i-1));
-					}
-					//DebugBuffer.addInfo("turning on barcode read");
+	
+				if (tileList.size() > 2) {
+					robot.hasWrongBarcode();
+					robot.hasCorrectBarcode();
+				}
+				
+				int i = 0;
+				for (Tile tile : tileList) {
+					robot.travelToNextTile(tile);
 					waitTillRobotStops(robot, 500);
 					waitTillRobotStops(robot, 250);
 					waitTillRobotStops(robot, 250);
-					//robot.scanOnlyLines(false);
-					//TODO:add
-					// de wip was open en de robot is erover gegaan. 
-					// Zet de robot op de positie na de wip.
-					/*if (brokeLoop) {
-						waitTillRobotStops(robot, 1000);
-					}
-					Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-
-					/*if (SensorBuffer.getInfrared() < 4) {
-						Tile tile = robot.getCurrTile();
-
-						robot.moveAcrossSeesaw();
-						waitTillRobotStops(robot, 250);
-						waitTillRobotStops(robot, 250);
-						waitTillRobotStops(robot, 250);
-
-						Position afterWipPos = dirForw.getPositionInDirection(tile.getPosition());
-						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-						afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-						robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
-						ignoreSeesaw = false;
-					} else {
-						ignoreSeesaw = true;
-					}*/
-
-
+					waitTillRobotStops(robot, 250);
+					DebugBuffer.addInfo("moved tile");
 					
-					// reset barcode value
-					if (tileList.size() > 2) {
+
+					if (i != tileList.size() - 1 && i != 0) {
+
 						robot.hasWrongBarcode();
 						robot.hasCorrectBarcode();
+						if (robot.getCurrTile().hasBarcocde() && robot.getCurrTile().getBarcode().isSeesaw()) {
+							if (SensorBuffer.getInfrared() < 4) {
+								Tile ctile = robot.getCurrTile();
+		
+								robot.moveAcrossSeesaw();
+								waitTillRobotStops(robot, 250);
+								waitTillRobotStops(robot, 250);
+								waitTillRobotStops(robot, 250);
+		
+								Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
+								Position afterWipPos = dirForw.getPositionInDirection(ctile.getPosition());
+								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+								robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
+								ignoreSeesaw = false;
+							} else {
+								ignoreSeesaw = true;
+							}
+							break;
+						}
 					}
-					// travel to last tile
-					int r = tileList.size() - 1;
-					robot.travelToNextTile(tileList.get(r));
-					waitTillRobotStops(robot, 250);
-
-					DebugBuffer.addInfo("done moving!");
+					else {
+						if (i == tileList.size() - 1) {
+							reachedDestination = true;
+							DebugBuffer.addInfo("reached destination");
+						}
+					}
+					i++;
 				}
-			//}
+			}
+			
 			Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 			System.out.println("dirforw " + dirForw);
 			Direction dirLeft = Direction.fromAngle(robot.getPosition().getRotation() - 90); 
 			Direction dirRight = Direction.fromAngle(robot.getPosition().getRotation() + 90);
 			Direction dirBack = Direction.fromAngle(robot.getPosition().getRotation() + 180);
-			/*for (Tile tile : tileList) {
-				robot.travelToNextTile(tile);
-				waitTillRobotStops(robot, 2000);
-			}*/
 			// reset gui variable for astar
 			robot.resetAStartTileList();
 
@@ -644,11 +621,18 @@ public class Explorer {
 		while (!robot.receivedTeamTiles()) { }
 		DebugBuffer.addInfo("received team tiles");
 		
+		boolean mergedFields = false;
 		try {
 			// merge fields
-			Field merged = FieldMerger.mergeFields(robot.getField(), robot.getTeamMateField());
+			Field merged = FieldMerger.mergeFields(robot, robot.getTeamMateField());
 			// set field
+			//robot.getTeamMate().setField(merged);
 			robot.setField(merged);
+
+			DebugBuffer.addInfo("fields merged");
+			
+			robot.setCurrTile(robot.getField().getTileMap().getObjectAtId(robot.getCurrTile().getPosition()));
+			mergedFields = true;
 		} catch (IllegalStateException e) {
 			// explore more
 		}

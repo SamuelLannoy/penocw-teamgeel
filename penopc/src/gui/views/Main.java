@@ -149,22 +149,6 @@ public class Main extends JFrame {
 						} catch (NullPointerException e) {
 							// nothing
 						}
-						
-
-				    	if (client != null && client.isPlaying()) { 
-				    		try {
-				    			client.updatePosition(
-				    					robotPool.getMainRobot().getCurrTile().getPosition().getX() * 40 +
-				    					robotPool.getMainRobot().getPosition().getPosX(),
-				    					robotPool.getMainRobot().getCurrTile().getPosition().getY() * 40 +
-				    					robotPool.getMainRobot().getPosition().getPosY(),
-				    					robotPool.getMainRobot().getPosition().getRotation());
-							} catch (IllegalStateException e) {
-								e.printStackTrace();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-				    	}
 			    	}
 			    }    
 			});

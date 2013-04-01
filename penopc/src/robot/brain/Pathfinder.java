@@ -37,7 +37,8 @@ public class Pathfinder {
 				Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 				if (ignoreSeesaw && current.equals(start) && tile.getPosition()
 						.equals(dirForw.getPositionInDirection(current.getPos()))) {
-					break;
+					System.out.println("ignored seesaw " + tile.getPosition());
+					continue;
 				}
 				
 				int cAdd = current.getC() + 1;
@@ -66,6 +67,7 @@ public class Pathfinder {
 			throw new RuntimeException();
 		}
 		
+		System.out.println("size " + closedList.size());
 		Node currNode = closedList.get(closedList.size()-1);
 		
 		if (!endTile.getPosition().equals(currNode.getPos())) {

@@ -71,7 +71,7 @@ public class FieldFactory {
 			
 		}
 		in.close();
-		field.initSeesaw();
+		//field.initSeesaw();
 		return field;
 	}
 }

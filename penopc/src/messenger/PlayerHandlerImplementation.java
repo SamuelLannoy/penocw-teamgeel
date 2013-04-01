@@ -138,10 +138,23 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	public void gameWon(int teamNumber) {
 		DebugBuffer.addInfo("victory for " + teamNumber);
 	}
+	
 
 	@Override
 	public void teamPosition(double x, double y, double angle) {
+		DebugBuffer.addInfo("teammate orig: " + x + " " + y);
+		x = x + robotPool.getMainRobot().getTranslX() * 40;
+		y = y + robotPool.getMainRobot().getTranslY() * 40;
+		angle = angle + robotPool.getMainRobot().getRotation();
+		DebugBuffer.addInfo("teammate new: " + x + " " + y);
 		
+		DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
+
+		double[] tilePos = Field.convertToInTilePos(new double[]{x,y});
+		
+		robotPool.getMainRobot().getTeamMate().setPosition(new Position(
+				tilePos[0], tilePos[1], angle
+				), new field.Tile(Field.convertToTilePosition(x, y)));
 	}
 
 }

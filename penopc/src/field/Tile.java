@@ -42,6 +42,10 @@ public class Tile {
 		this.barcode = barcode;
 	}
 	
+	public boolean hasBarcocde() {
+		return getBarcode() != null;
+	}
+	
 	@Override
 	public String toString() {
 		return "x:" + getPosition().getX() + " y:" + getPosition().getY();

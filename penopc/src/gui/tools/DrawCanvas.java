@@ -23,7 +23,7 @@ public class DrawCanvas extends Canvas{
 	 */
 	private static final long serialVersionUID = 1L;
 	private RobotPool robotPool;
-	private Field field;
+	//private Field field;
 	private int tileSize;
 	private int borderWidth;
 	private int halfTileSize;
@@ -46,13 +46,13 @@ public class DrawCanvas extends Canvas{
 	public void setRobotPool(RobotPool robotPool) {
 		if (robotPool != null) {
 			this.robotPool = robotPool;
-			setField(robotPool.getMainRobot().getField());
+			//setField(robotPool.getMainRobot().getField());
 		}
 	}
 
-	protected void setField(Field field) {
+	/*protected void setField(Field field) {
 		this.field = field;
-	}
+	}*/
 	
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
@@ -72,7 +72,7 @@ public class DrawCanvas extends Canvas{
 		int maxY = 0;
 		int minX = 0;
 		int minY = 0;
-		for (Tile currentTile : field.getTileMap()){
+		for (Tile currentTile : robotPool.getMainRobot().getField().getTileMap()){
 			int x = currentTile.getPosition().getX();
 			int y = currentTile.getPosition().getY();
 			if (x > maxX){
@@ -172,9 +172,9 @@ public class DrawCanvas extends Canvas{
 		//Graphics2D g2 = (Graphics2D)g;  
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
               //  RenderingHints.VALUE_ANTIALIAS_ON); 
-		synchronized(field.getTileMap()){
+		synchronized(robotPool.getMainRobot().getField().getTileMap()){
 			try {
-		for (Tile currentTile : field.getTileMap()){
+		for (Tile currentTile : robotPool.getMainRobot().getField().getTileMap()){
 			int x = currentTile.getPosition().getX();
 			int y = currentTile.getPosition().getY();
 			int pixelX = (startX - halfTileSize)  + (x * (tileSize));
@@ -187,7 +187,7 @@ public class DrawCanvas extends Canvas{
 				Direction dir2 = null;
 				for (Direction dir : Direction.values()){
 					try {
-						Border bord = field.getBorderInDirection(currentTile, dir);
+						Border bord = robotPool.getMainRobot().getField().getBorderInDirection(currentTile, dir);
 						if (bord instanceof WhiteBorder) {
 							dir2 = dir;
 							break;
@@ -310,7 +310,7 @@ public class DrawCanvas extends Canvas{
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
 		g.setColor(Color.WHITE);
-		for (Border currentBorder : field.getBorderMap()){
+		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
 			int x1 = currentBorder.getBorderPos().getPosition1().getX();
 			int y1 = currentBorder.getBorderPos().getPosition1().getY();
 			int x2 = currentBorder.getBorderPos().getPosition2().getX();
@@ -335,7 +335,7 @@ public class DrawCanvas extends Canvas{
 			
 		}
 		g.setColor(Color.BLACK);
-		for (Border currentBorder : field.getBorderMap()){
+		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
 			int x1 = currentBorder.getBorderPos().getPosition1().getX();
 			int y1 = currentBorder.getBorderPos().getPosition1().getY();
 			int x2 = currentBorder.getBorderPos().getPosition2().getX();
@@ -359,7 +359,7 @@ public class DrawCanvas extends Canvas{
 			}
 		}
 		g.setColor(Color.GRAY);
-		for (Border currentBorder : field.getBorderMap()){
+		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
 			int x1 = currentBorder.getBorderPos().getPosition1().getX();
 			int y1 = currentBorder.getBorderPos().getPosition1().getY();
 			int x2 = currentBorder.getBorderPos().getPosition2().getX();
@@ -395,7 +395,7 @@ public class DrawCanvas extends Canvas{
 			Direction dir2 = null;
 			for (Direction dir : Direction.values()){
 				try {
-					Border bord = field.getBorderInDirection(currentTile, dir);
+					Border bord = robotPool.getMainRobot().getField().getBorderInDirection(currentTile, dir);
 					if (bord instanceof WhiteBorder) {
 						dir2 = dir;
 						break;

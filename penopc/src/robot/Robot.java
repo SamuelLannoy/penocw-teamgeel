@@ -384,17 +384,31 @@ public class Robot extends RobotModel{
 	public void updatePosition() {		
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
-		
-		if (robotConn.hasBall() && !hasBall()) {
-			setHasBall(true);
-			try {
-				if (client.isPlaying()) {
-					client.foundObject();
-				}
+    	if (client != null && client.isPlaying()) { 
+    		try {
+    			client.updatePosition(
+    					robotPool.getMainRobot().getCurrTile().getPosition().getX() * 40 +
+    					robotPool.getMainRobot().getPosition().getPosX(),
+    					robotPool.getMainRobot().getCurrTile().getPosition().getY() * 40 +
+    					robotPool.getMainRobot().getPosition().getPosY(),
+    					robotPool.getMainRobot().getPosition().getRotation());
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+    	}
+		
+		if (robotConn.hasBall() && !hasBall()) {
+			setHasBall(true);
+			if (client.isPlaying()) {
+				try {
+					client.foundObject();
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -863,4 +877,35 @@ public class Robot extends RobotModel{
 	public int getObjectNr() {
 		return robotConn.getObjectNr();
 	}
+	
+	private int translX;
+	
+	private int translY;
+	
+	private float rotation;
+
+	public int getTranslX() {
+		return translX;
+	}
+
+	public void setTranslX(int translX) {
+		this.translX = translX;
+	}
+
+	public int getTranslY() {
+		return translY;
+	}
+
+	public void setTranslY(int translY) {
+		this.translY = translY;
+	}
+
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+	
 }
