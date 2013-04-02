@@ -120,7 +120,7 @@ public class UltrasonicSensor {
 	boolean test = false;
 	
 	public int[] newTileScan() {
-		System.out.println("scan command received");
+		//System.out.println("scan command received");
 		int[] distances = new int[4];
 		
 		lookForward();
@@ -138,7 +138,7 @@ public class UltrasonicSensor {
 	}
 	
 	public int[] checkScan() {
-		System.out.println("scan command received");
+		//System.out.println("scan command received");
 		int[] distances = new int[4];
 		
 		lookForward();

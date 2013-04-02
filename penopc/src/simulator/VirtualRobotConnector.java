@@ -179,7 +179,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	
 	public void turnLeft(double angle) {
 		Command cmd = new Command((int)(angle / getTurnSpeed()), CommandType.LEFT);
-		System.out.println("d "  + (int)(angle / getTurnSpeed()));
+		//System.out.println("d "  + (int)(angle / getTurnSpeed()));
 		addCmd(cmd);
 	}
 	
@@ -385,7 +385,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 			if (robotPool != null) {
 				for (RobotModel robot : robotPool.getOtherRobots()) {
 					if (Collision.collides(robot, corners)) {
-						System.out.println("collision");
+						//System.out.println("collision");
 						collides = true;
 					}
 				}

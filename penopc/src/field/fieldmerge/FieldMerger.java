@@ -23,9 +23,11 @@ public class FieldMerger {
 		
 		if (bc1.size() >= 2) {
 			BarcodeNode barcodeNode1 = bc1.get(0);
+			System.out.println("first " + barcodeNode1);
 			
 			for (BarcodeNode barcodeNode2 : bc2) {
 				if (barcodeNode1.equals(barcodeNode2)) {
+					System.out.println("first " + barcodeNode2);
 					int diffX = barcodeNode1.getPosition().getX() - barcodeNode2.getPosition().getX();
 					int diffY = barcodeNode1.getPosition().getY() - barcodeNode2.getPosition().getY();
 					field2 = field2.moveX(diffX);
@@ -40,9 +42,11 @@ public class FieldMerger {
 			bc2.retainAll(bc1);
 			
 			BarcodeNode barcodeNode1_2 = bc1.get(1);
+			System.out.println("second " + barcodeNode1_2);
 
 			for (BarcodeNode barcodeNode2 : bc2) {
 				if (barcodeNode1_2.equals(barcodeNode2)) {
+					System.out.println("second " + barcodeNode2);
 					double P12 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode1_2.getPosition());
 					System.out.println("rot " + P12);
 					double P13 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode2.getPosition());

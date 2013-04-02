@@ -144,7 +144,7 @@ public class LightSensor {
 			waitX();
 			//System.out.println("2 " + lastColor);
 		}
-		System.out.println("line");
+		//System.out.println("line");
 		return LightSensorUpdate.LINE;
 		//SensorBuffer.addLightUpdate(LightSensorUpdate.LINE.ordinal());
 	}

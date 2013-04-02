@@ -169,7 +169,7 @@ public enum MazePart {
 	public abstract List< Border> getBorders(String orientation, Tile tile);
 	
 	public static MazePart getPartFromString(String string) {
-		System.out.println("converting: " + string);
+		//System.out.println("converting: " + string);
 		return valueOf(string.toUpperCase());
 	}
 	

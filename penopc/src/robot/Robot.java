@@ -420,7 +420,7 @@ public class Robot extends RobotModel{
 		
 		//System.out.println("x " + SensorBuffer.canClear());
 		if (!SensorBuffer.canClear() && SensorBuffer.getDistances().size() >= 4) {
-			System.out.println("scan values given");
+			//System.out.println("scan values given");
 			findBorderObjects();
 		}
 		

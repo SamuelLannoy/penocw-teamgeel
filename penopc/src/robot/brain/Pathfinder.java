@@ -37,7 +37,7 @@ public class Pathfinder {
 				Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 				if (ignoreSeesaw && current.equals(start) && tile.getPosition()
 						.equals(dirForw.getPositionInDirection(current.getPos()))) {
-					System.out.println("ignored seesaw " + tile.getPosition());
+					//System.out.println("ignored seesaw " + tile.getPosition());
 					continue;
 				}
 				

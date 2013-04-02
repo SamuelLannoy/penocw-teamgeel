@@ -335,49 +335,51 @@ public class DrawCanvas extends Canvas{
 			
 		}
 		g.setColor(Color.BLACK);
-		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
-			int x1 = currentBorder.getBorderPos().getPosition1().getX();
-			int y1 = currentBorder.getBorderPos().getPosition1().getY();
-			int x2 = currentBorder.getBorderPos().getPosition2().getX();
-			int y2 = currentBorder.getBorderPos().getPosition2().getY();
-			if (!currentBorder.isPassable() && !(currentBorder instanceof UnsureBorder)){
-				if (x1 == x2){
-					//platte border
-					if (y1 < y2){
-						g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y1 * (tileSize)), tileSize, borderWidth);
+		synchronized(robotPool.getMainRobot().getField().getBorderMap()) {
+			for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
+				int x1 = currentBorder.getBorderPos().getPosition1().getX();
+				int y1 = currentBorder.getBorderPos().getPosition1().getY();
+				int x2 = currentBorder.getBorderPos().getPosition2().getX();
+				int y2 = currentBorder.getBorderPos().getPosition2().getY();
+				if (!currentBorder.isPassable() && !(currentBorder instanceof UnsureBorder)){
+					if (x1 == x2){
+						//platte border
+						if (y1 < y2){
+							g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y1 * (tileSize)), tileSize, borderWidth);
+						} else {
+							g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y2 * (tileSize)), tileSize, borderWidth);
+						}	
 					} else {
-						g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y2 * (tileSize)), tileSize, borderWidth);
-					}	
-				} else {
-					//rechte border
-					if (x1 < x2){
-						g.fillRect((startX + halfTileSize - halfBorderWidth) + (x1 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
-					} else {
-						g.fillRect((startX + halfTileSize - halfBorderWidth) + (x2 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						//rechte border
+						if (x1 < x2){
+							g.fillRect((startX + halfTileSize - halfBorderWidth) + (x1 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						} else {
+							g.fillRect((startX + halfTileSize - halfBorderWidth) + (x2 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						}
 					}
 				}
 			}
-		}
-		g.setColor(Color.GRAY);
-		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
-			int x1 = currentBorder.getBorderPos().getPosition1().getX();
-			int y1 = currentBorder.getBorderPos().getPosition1().getY();
-			int x2 = currentBorder.getBorderPos().getPosition2().getX();
-			int y2 = currentBorder.getBorderPos().getPosition2().getY();
-			if (currentBorder instanceof UnsureBorder){
-				if (x1 == x2){
-					//platte border
-					if (y1 < y2){
-						g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y1 * (tileSize)), tileSize, borderWidth);
+			g.setColor(Color.GRAY);
+			for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
+				int x1 = currentBorder.getBorderPos().getPosition1().getX();
+				int y1 = currentBorder.getBorderPos().getPosition1().getY();
+				int x2 = currentBorder.getBorderPos().getPosition2().getX();
+				int y2 = currentBorder.getBorderPos().getPosition2().getY();
+				if (currentBorder instanceof UnsureBorder){
+					if (x1 == x2){
+						//platte border
+						if (y1 < y2){
+							g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y1 * (tileSize)), tileSize, borderWidth);
+						} else {
+							g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y2 * (tileSize)), tileSize, borderWidth);
+						}	
 					} else {
-						g.fillRect((startX - halfTileSize) + (x1 * (tileSize)), (startY - halfTileSize - halfBorderWidth) - (y2 * (tileSize)), tileSize, borderWidth);
-					}	
-				} else {
-					//rechte border
-					if (x1 < x2){
-						g.fillRect((startX + halfTileSize - halfBorderWidth) + (x1 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
-					} else {
-						g.fillRect((startX + halfTileSize - halfBorderWidth) + (x2 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						//rechte border
+						if (x1 < x2){
+							g.fillRect((startX + halfTileSize - halfBorderWidth) + (x1 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						} else {
+							g.fillRect((startX + halfTileSize - halfBorderWidth) + (x2 * (tileSize)), (startY - halfTileSize) - (y1 * (tileSize)), borderWidth, tileSize);
+						}
 					}
 				}
 			}

@@ -56,4 +56,9 @@ public class BarcodeNode {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return "bc " + barcode.getDecimal() + " pos " + getPosition();
+	}
 }

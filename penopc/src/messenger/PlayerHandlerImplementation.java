@@ -126,12 +126,16 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamTilesReceived(List<Tile> tiles) {
-		Field tField = robotPool.getMainRobot().getTeamMateField();
-		for (Tile tile : tiles) {
-			TileConverter.convertToFieldTile(tile, tField);
+		if (!robotPool.getMainRobot().receivedTeamTiles()) {
+			Field tField = robotPool.getMainRobot().getTeamMateField();
+			for (Tile tile : tiles) {
+				TileConverter.convertToFieldTile(tile, tField);
+			}
+			
+			robotPool.getMainRobot().setReceivedTeamTiles(true);
+		} else {
+			
 		}
-		
-		robotPool.getMainRobot().setReceivedTeamTiles(true);
 	}
 
 	@Override
@@ -155,6 +159,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		robotPool.getMainRobot().getTeamMate().setPosition(new Position(
 				tilePos[0], tilePos[1], angle
 				), new field.Tile(Field.convertToTilePosition(x, y)));
+		robotPool.getMainRobot().getTeamMate().setCurrTile(new field.Tile(Field.convertToTilePosition(x, y)));
 	}
 
 }
