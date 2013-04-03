@@ -26,10 +26,10 @@ public class TouchSensor {
 	
 	public boolean isPressed(){
 		boolean isPressed =	
-				maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), Direction.TOP) < 11 ||
-				maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), Direction.BOTTOM) < 11 ||
-				maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), Direction.RIGHT) < 11 ||
-				maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), Direction.LEFT) < 11 ;
+				maze.distanceFromPanel(Direction.TOP) < 11 ||
+				maze.distanceFromPanel(Direction.BOTTOM) < 11 ||
+				maze.distanceFromPanel(Direction.RIGHT) < 11 ||
+				maze.distanceFromPanel(Direction.LEFT) < 11 ;
 		
 		SensorBuffer.updateTouches(isPressed);
 

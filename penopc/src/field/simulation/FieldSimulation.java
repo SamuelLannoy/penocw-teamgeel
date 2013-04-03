@@ -14,6 +14,7 @@ import robot.DebugBuffer;
 import robot.RobotModel;
 import robot.RobotPool;
 import simulator.ISimulator;
+import sun.security.krb5.internal.LocalSeqNumber;
 
 import field.*;
 import field.fromfile.MazePart;
@@ -129,7 +130,7 @@ public class FieldSimulation extends Field {
 	public void update() {
 		for (RobotModel model : robotPool.getRobots()) {
 			if (getStartPos(model.getPlayerNr()) != null) {
-				Tile tile = getCurrentTile(model.getCurrTile().getPosition().getX() * 40
+				Tile tile = getTileOfPos(model.getCurrTile().getPosition().getX() * 40
 						+ model.getPosition().getPosX()
 						+ getStartPos(model.getPlayerNr()).getX() * 40,
 						model.getCurrTile().getPosition().getY() * 40
@@ -149,7 +150,7 @@ public class FieldSimulation extends Field {
 	
 	
 	/*
-	 * Simulation methods
+	 * Simulation methods for sensors
 	 */
 	
 	public static TilePosition convertToTilePosition(double xpos, double ypos) {
@@ -159,8 +160,15 @@ public class FieldSimulation extends Field {
 		int y = (int)(Math.abs(ypos) + (TILE_SIZE / 2)) / TILE_SIZE;
 		return new TilePosition(x*xsign, y*ysign);
 	}
+
+	public Tile getCurrentTile()
+			throws IllegalArgumentException {
+		double xpos = localSimulator.getTDistanceX();
+		double ypos = localSimulator.getTDistanceY();
+		return getTileOfPos(xpos, ypos);
+	}
 	
-	public Tile getCurrentTile(double xpos, double ypos)
+	public Tile getTileOfPos(double xpos, double ypos)
 			throws IllegalArgumentException {
 		TilePosition tilePos = convertToTilePosition(xpos, ypos);
 		return tileMap.getObjectAtId(tilePos);
@@ -177,6 +185,12 @@ public class FieldSimulation extends Field {
 		ret[0] *= xsign;
 		ret[1] *= ysign;
 		return ret;
+	}
+	
+	public Border getCurrentBorder(Tile tile) {
+		double xpos = localSimulator.getTDistanceX();
+		double ypos = localSimulator.getTDistanceY();
+		return getBorderOfPos(tile, xpos, ypos);
 	}
 	
 	public Border getBorderOfPos(Tile tile, double xpos, double ypos) {
@@ -197,10 +211,10 @@ public class FieldSimulation extends Field {
 		return border;
 	}
 	
-	public boolean collidesWithBorder(double xpos, double ypos)
+	public boolean collidesWithBorder()
 			throws IllegalArgumentException {
-		Tile tile = getCurrentTile(xpos, ypos);
-		Border border = getBorderOfPos(tile, xpos, ypos);
+		Tile tile = getCurrentTile();
+		Border border = getCurrentBorder(tile);
 		if (border != null) {
 			//System.out.println("border " + border.toString() + " pass " + border.isPassable());
 			return !border.isPassable();
@@ -214,7 +228,7 @@ public class FieldSimulation extends Field {
 		for (int i = 0; i < 4; i++) {
 			Tile tile;
 			try {
-				tile = getCurrentTile(corners[i][0], corners[i][1]);
+				tile = getTileOfPos(corners[i][0], corners[i][1]);
 			} catch (IllegalArgumentException e) {
 				return true;
 			}
@@ -233,7 +247,7 @@ public class FieldSimulation extends Field {
 		for (int i = 0; i < 2; i++) {
 			Tile tile;
 			try {
-				tile = getCurrentTile(corners[i][0], corners[i][1]);
+				tile = getTileOfPos(corners[i][0], corners[i][1]);
 			} catch (IllegalArgumentException e) {
 				return true;
 			}
@@ -249,9 +263,9 @@ public class FieldSimulation extends Field {
 		return false;
 	}
 	
-	public boolean isOnWhiteBorder(double xpos, double ypos) {
-		Tile tile = getCurrentTile(xpos, ypos);
-		Border border = getBorderOfPos(tile, xpos, ypos);
+	public boolean isOnWhiteBorder() {
+		Tile tile = getCurrentTile();
+		Border border = getCurrentBorder(tile);
 		if (border != null) {
 			return border instanceof WhiteBorder || border instanceof SeesawBorder;
 		}
@@ -259,8 +273,10 @@ public class FieldSimulation extends Field {
 		return false;
 	}
 	
-	public boolean isOnBarcode(double xpos, double ypos) {
-		Tile tile = getCurrentTile(xpos, ypos);
+	public boolean isOnBarcode() {
+		double xpos = localSimulator.getTDistanceX();
+		double ypos = localSimulator.getTDistanceY();
+		Tile tile = getCurrentTile();
 		if (tile.getBarcode() == null)
 			return false;
 		double[] pass = {xpos, ypos};
@@ -274,8 +290,10 @@ public class FieldSimulation extends Field {
 		return false;
 	}
 	
-	public boolean isOnBlack(double xpos, double ypos) {
-		Tile tile = getCurrentTile(xpos, ypos);
+	public boolean isOnBlack() {
+		double xpos = localSimulator.getTDistanceX();
+		double ypos = localSimulator.getTDistanceY();
+		Tile tile = getCurrentTile();
 		if (tile.getBarcode() == null)
 			return false;
 		Barcode bar = tile.getBarcode();
@@ -312,8 +330,10 @@ public class FieldSimulation extends Field {
 		return null;
 	}
 	
-	public int distanceFromPanel(double x, double y, Direction dir) {
-		Tile tile = getCurrentTile(x, y);
+	public int distanceFromPanel(Direction dir) {
+		double x = localSimulator.getTDistanceX();
+		double y = localSimulator.getTDistanceY();
+		Tile tile = getCurrentTile();
 		SolidBorder border = getFirstPanelInDirection(tile, dir);
 		if (border != null) {
 			double[] pass = {x, y};

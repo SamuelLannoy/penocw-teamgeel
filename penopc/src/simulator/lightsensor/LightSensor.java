@@ -38,7 +38,7 @@ public class LightSensor {
 	}
 	
 	public Color getColor(){
-		if (maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY()))
+		if (maze.isOnWhiteBorder())
 			return Color.WHITE;
 		else 
 			return Color.BROWN;
@@ -62,15 +62,15 @@ public class LightSensor {
 		if(randomness>7)
 			System.out.println(hoeveel++);
 		if(connector.isMoving()){
-			if (maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY())){
-				if (!maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())) {
+			if (maze.isOnWhiteBorder()){
+				if (!maze.isOnBarcode()) {
 						wasOnBarcode = false;
 				}
 				value =  100 + posneg * randomness;
 				lastColor = Color.WHITE;
 				//System.out.println("1 " + "wit");
 			}
-			else if (maze.isOnBarcode(connector.getTDistanceX(), connector.getTDistanceY())){
+			else if (maze.isOnBarcode()){
 				//DebugBuffer.addInfo("ON BARCODE");
 				if (!wasOnBarcode) {
 					wasOnBarcode = true;
@@ -89,7 +89,7 @@ public class LightSensor {
 					} else if (bc.getDecimal() >= 26){
 						SensorBuffer.addBarcodeType(BarcodeType.CHECKPOINT.toString());
 					} else if (bc.getDecimal() > 7 && bc.getDecimal() < 26) {
-						Tile tile = connector.getMaze().getCurrentTile(connector.getTDistanceX(), connector.getTDistanceY());
+						Tile tile = connector.getMaze().getCurrentTile();
 						Border border = connector.getMaze().getSeesawBorder(tile);
 						if (border.isPassable()) {
 							connector.setSeesawStatus(SeesawStatus.ISOPEN);
@@ -103,7 +103,7 @@ public class LightSensor {
 					SensorBuffer.addBarcode(bc.toString());
 					
 				}
-				if (maze.isOnBlack(connector.getTDistanceX(), connector.getTDistanceY())) {
+				if (maze.isOnBlack()) {
 					value =  15 + posneg * randomness;
 					//lastColor = Color.BLACK;
 					lastColor = Color.BROWN;
@@ -182,11 +182,11 @@ public class LightSensor {
 		}*/
 		//return LightSensorUpdate.LINE;
 		//System.out.println("ww " + wasWhite);
-			if (maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY())) {
+			if (maze.isOnWhiteBorder()) {
 				wasWhite = true;
 				//System.out.println("white");
 			}
-			if (wasWhite && !maze.isOnWhiteBorder(connector.getTDistanceX(), connector.getTDistanceY())) {
+			if (wasWhite && !maze.isOnWhiteBorder()) {
 				SensorBuffer.addLightUpdate(LightSensorUpdate.LINE.ordinal());
 				//System.out.println("line");
 				wasWhite = false;

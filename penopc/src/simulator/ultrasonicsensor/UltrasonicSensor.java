@@ -74,19 +74,19 @@ public class UltrasonicSensor {
 		switch(orientation) {
 			case FORWARD:
 				dir = Direction.fromAngle(connector.getTRotation());
-				distance = (int) (maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), dir));
+				distance = (int) (maze.distanceFromPanel(dir));
 				break;
 			case BACKWARD:
 				dir = Direction.fromAngle(connector.getTRotation() + 180);
-				distance = (int) (maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), dir));
+				distance = (int) (maze.distanceFromPanel(dir));
 				break;
 			case LEFT:
 				dir = Direction.fromAngle(connector.getTRotation() - 90);
-				distance = (int) (maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), dir));
+				distance = (int) (maze.distanceFromPanel(dir));
 				break;
 			case RIGHT:
 				dir = Direction.fromAngle(connector.getTRotation() + 90);
-				distance = (int) (maze.distanceFromPanel(connector.getTDistanceX(), connector.getTDistanceY(), dir));
+				distance = (int) (maze.distanceFromPanel(dir));
 				break;
 		}
 		

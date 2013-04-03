@@ -364,14 +364,6 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		}
 	}
 	
-	private boolean checkCollision(double x, double y) {
-		try {
-			return maze.collidesWithBorder(x, y);
-		} catch (IllegalArgumentException e){
-			return false;
-		}
-	}
-	
 	private boolean checkCollision(double[][] corners) {
 		boolean collides = false;
 		
@@ -409,7 +401,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		reduceTicksMoving();
 		checkTicksTurning();
 		reduceTicksTurning();
-		if (maze.isOnWhiteBorder(tdistancex, tdistancey) && stopOnWhite) {
+		if (maze.isOnWhiteBorder() && stopOnWhite) {
 			stopOnWhite = false;
 			stopMoving();
 			
@@ -445,6 +437,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		timer.start();
 		setupField();
 		getMaze().setRobotPool(getRobotPool());
+		getMaze().setLocalSimulator(this);
 		Thread lsThr = new Thread(new Runnable() {
 			
 			@Override
@@ -498,7 +491,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	boolean wasWhite = false;
 	
 	public void updatePassing() {
-		if (maze.isOnWhiteBorder(tdistancex, tdistancey)) {
+		if (maze.isOnWhiteBorder()) {
 			wasWhite = true;
 		} else {
 			if (wasWhite) {
