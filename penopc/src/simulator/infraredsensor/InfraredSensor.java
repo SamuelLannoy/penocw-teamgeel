@@ -12,12 +12,13 @@ import field.Direction;
 import field.Field;
 import field.SeesawBorder;
 import field.Tile;
+import field.simulation.FieldSimulation;
 
 
 public class InfraredSensor {
 	private static InfraredSensor infraredSensor;
 	private static VirtualRobotConnector connector = VirtualRobotConnector.getInstance(); 
-	private static Field maze = connector.getMaze();
+	private static FieldSimulation maze = connector.getMaze();
 	private int lastInfrared = 0;
 	
 	/**

@@ -149,12 +149,13 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		
 		//DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
 
-		double[] tilePos = Field.convertToInTilePos(new double[]{x,y});
+		double[] tilePos = FieldSimulation.convertToInTilePos(new double[]{x,y});
 		
 		robotPool.getMainRobot().getTeamMate().setPosition(new Position(
 				tilePos[0], tilePos[1], angle
-				), new field.Tile(Field.convertToTilePosition(x, y)));
-		robotPool.getMainRobot().getTeamMate().setCurrTile(new field.Tile(Field.convertToTilePosition(x, y)));
+				), new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
+		robotPool.getMainRobot().getTeamMate()
+			.setCurrTile(new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
 	}
 
 }

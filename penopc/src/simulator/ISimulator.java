@@ -3,6 +3,7 @@ package simulator;
 import communication.SeesawStatus;
 
 import field.Field;
+import field.simulation.FieldSimulation;
 import robot.AbstractRobotConnector;
 import robot.RobotPool;
 
@@ -17,7 +18,7 @@ public interface ISimulator extends AbstractRobotConnector {
 	public abstract double getWidth();
 	public abstract double getLength();
 	
-	public abstract Field getField();
+	public abstract FieldSimulation getField();
 	
 	public abstract void setHasBall(boolean set);
 	

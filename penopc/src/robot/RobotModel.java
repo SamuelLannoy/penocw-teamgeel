@@ -3,6 +3,7 @@ package robot;
 import corner.Corner;
 import field.Field;
 import field.Tile;
+import field.simulation.FieldSimulation;
 
 public class RobotModel {
 	protected Tile currTile;
@@ -31,8 +32,8 @@ public class RobotModel {
 	}
 	
 	public void setGlobalPosition(double x, double y, double angle) {
-		double[] position = Field.convertToInTilePos(new double[] {x, y });
-		field.TilePosition tpos = Field.convertToTilePosition(x, y);
+		double[] position = FieldSimulation.convertToInTilePos(new double[] {x, y });
+		field.TilePosition tpos = FieldSimulation.convertToTilePosition(x, y);
 		setPosition(new Position(position[0], position[1], angle), new Tile(tpos));
 	}
 	

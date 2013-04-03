@@ -5,6 +5,7 @@ import java.util.Random;
 import simulator.VirtualRobotConnector;
 import field.Direction;
 import field.Field;
+import field.simulation.FieldSimulation;
 import robot.SensorBuffer;
 
 public class UltrasonicSensor {
@@ -12,7 +13,7 @@ public class UltrasonicSensor {
 	private static final int dangerousDistance = 50;
 	private Orientation orientation;
 	private static VirtualRobotConnector connector = VirtualRobotConnector.getInstance(); 
-	private static Field maze = connector.getMaze();
+	private static FieldSimulation maze = connector.getMaze();
 	private Random randomGenerator = new Random();
 	
 	private static final double MEAN = -3.79;

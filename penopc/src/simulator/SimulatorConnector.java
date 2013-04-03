@@ -37,9 +37,9 @@ public class SimulatorConnector implements ISimulator {
 		return length;
 	}
 	
-	private Field field;
+	private FieldSimulation field;
 	
-	public Field getField() {
+	public FieldSimulation getField() {
 		return field;
 	}
 	

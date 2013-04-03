@@ -12,11 +12,12 @@ import field.Direction;
 import field.Field;
 import field.SeesawBorder;
 import field.Tile;
+import field.simulation.FieldSimulation;
 
 public class LightSensor {
 	private static LightSensor lightSensor;
 	private static VirtualRobotConnector connector = VirtualRobotConnector.getInstance(); 
-	private static Field maze = connector.getMaze();
+	private static FieldSimulation maze = connector.getMaze();
 	
 	/**
 	 * Creates a new light sensor as a singleton object.
@@ -74,7 +75,7 @@ public class LightSensor {
 				if (!wasOnBarcode) {
 					wasOnBarcode = true;
 					SensorBuffer.addLightUpdate(1);
-					Barcode bc = maze.getTileMap().getObjectAtId(Field.convertToTilePosition(connector.getTDistanceX(), connector.getTDistanceY())).getBarcode();
+					Barcode bc = maze.getTileMap().getObjectAtId(FieldSimulation.convertToTilePosition(connector.getTDistanceX(), connector.getTDistanceY())).getBarcode();
 					DebugBuffer.addInfo("code " + bc.getDecimal());
 					if (bc.getDecimal() <= 7) {
 						SensorBuffer.addBarcodeType(BarcodeType.OBJECT.toString());

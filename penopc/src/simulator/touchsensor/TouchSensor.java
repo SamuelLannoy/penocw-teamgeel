@@ -3,11 +3,12 @@ package simulator.touchsensor;
 import robot.SensorBuffer;
 import simulator.VirtualRobotConnector;
 import field.*;
+import field.simulation.FieldSimulation;
 
 public class TouchSensor {
 	private static TouchSensor touchSensor;
 	private static VirtualRobotConnector connector = VirtualRobotConnector.getInstance(); 
-	private static Field maze = connector.getMaze();
+	private static FieldSimulation maze = connector.getMaze();
 	
 	/**
 	 * Creates a new touch sensor as a singleton object.
