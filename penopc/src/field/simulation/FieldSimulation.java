@@ -13,6 +13,7 @@ import java.util.Map;
 import robot.DebugBuffer;
 import robot.RobotModel;
 import robot.RobotPool;
+import simulator.ISimulator;
 
 import field.*;
 import field.fromfile.MazePart;
@@ -20,6 +21,8 @@ import field.fromfile.MazePart;
 public class FieldSimulation extends Field {
 
 	private RobotPool robotPool;
+	
+	private ISimulator localSimulator;
 	
 	public FieldSimulation(String path) {
 		this(null, path);
@@ -40,6 +43,10 @@ public class FieldSimulation extends Field {
 		this.robotPool = robotPool;
 	}
 
+	public void setLocalSimulator(ISimulator simulator) {
+		this.localSimulator = simulator;
+	}
+	
 	public void initialize(String path) throws NumberFormatException, IOException {
 		FileInputStream fstream = new FileInputStream(path);
 		DataInputStream in = new DataInputStream(fstream);
@@ -284,6 +291,25 @@ public class FieldSimulation extends Field {
 		if (bar.getCode()[codeNr - 1] == 0)
 			return true;
 		return false;
+	}
+	
+	private SolidBorder getFirstPanelInDirection(Tile tile, Direction dir) {
+		boolean found = false;
+		TilePosition currPos = tile.getPosition();
+		while (!found) {
+			BorderPosition pos = dir.getBorderPositionInDirection(currPos);
+			try {
+				Border border = null;
+				border = borderMap.getObjectAtId(pos);
+				if (border instanceof SolidBorder && !border.isPassable()) {
+					return (SolidBorder)border;
+				}
+			} catch (IllegalArgumentException e) {
+				return null;
+			}
+			currPos = dir.getPositionInDirection(currPos);
+		}
+		return null;
 	}
 	
 	public int distanceFromPanel(double x, double y, Direction dir) {

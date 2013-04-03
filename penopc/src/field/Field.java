@@ -99,7 +99,31 @@ public abstract class Field implements Fieldable {
 	protected void removeBall(TilePosition pos) {
 		ballMap.removeObjectAtId(pos);
 	}
+
 	
+	protected Border getTopBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	protected Border getBottomBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getSouthPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	protected Border getLeftBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getLeftPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	protected Border getRightBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getRightPosition());
+		return borderMap.getObjectAtId(pos);
+	}
 	
 	
 	
@@ -120,49 +144,6 @@ public abstract class Field implements Fieldable {
 		return ret;
 	}
 	
-	public Border getTopBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	public Border getBottomBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getSouthPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	public Border getLeftBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getLeftPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	public Border getRightBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getRightPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	
-	public Border getBorderInDirection(Tile tile, Direction dir) {
-		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
-	}
-	
-	public SolidBorder getFirstPanelInDirection(Tile tile, Direction dir) {
-		boolean found = false;
-		TilePosition currPos = tile.getPosition();
-		while (!found) {
-			BorderPosition pos = dir.getBorderPositionInDirection(currPos);
-			try {
-				Border border = null;
-				border = borderMap.getObjectAtId(pos);
-				if (border instanceof SolidBorder && !border.isPassable()) {
-					return (SolidBorder)border;
-				}
-			} catch (IllegalArgumentException e) {
-				return null;
-			}
-			currPos = dir.getPositionInDirection(currPos);
-		}
-		return null;
-	}
 
 	public ObjectMap<TilePosition, Tile> getTileMap() {
 		synchronized(tileMap) {
@@ -207,10 +188,14 @@ public abstract class Field implements Fieldable {
 	}
 	
 	
-	public void makeUnsure(BorderPosition borderPos) {
+	/*public void makeUnsure(BorderPosition borderPos) {
 		if (borderMap.hasId(borderPos)) {
 			borderMap.overWrite(borderPos, new UnsureBorder(borderPos));
 		}
+	}*/
+
+	public Border getBorderInDirection(Tile tile, Direction dir) {
+		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
 	}
 	
 	public boolean hasSeesawBorder(Tile tile) {

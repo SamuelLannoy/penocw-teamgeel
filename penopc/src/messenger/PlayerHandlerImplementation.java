@@ -46,7 +46,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 				robotPool.addRobot(new Robot(1), id);
 			}
 		}*/
-		DebugBuffer.addInfo("game started with " + robotPool.getRobots().toString());
+		DebugBuffer.addInfo("game started with " + robotPool.getRobotPoolSize() + " robots");
 	}
 
 	@Override

@@ -1,10 +1,14 @@
 package field.representation;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import field.*;
 import field.fieldmerge.BarcodeNode;
+import field.fieldmerge.TileConverter;
 import field.fromfile.MazePart;
 
 public class FieldRepresentation extends Field {
@@ -261,6 +265,7 @@ public class FieldRepresentation extends Field {
 					System.out.println("adding " + tile.getPosition());
 				}
 			}
+			
 			for (Border border : field2.getBorderMap()) {
 				if (!hasBorderAt(border.getBorderPos())) {
 					addBorder(border);
@@ -276,11 +281,48 @@ public class FieldRepresentation extends Field {
 		} else {
 			throw new IllegalStateException();
 		}
+	}
+	
+	public Collection<peno.htttp.Tile> convertToMessage() {
+		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(getTileMap().getKeys().size());
+		for (Tile tile : tileMap) {
+			peno.htttp.Tile toadd = convertToTileMsg(tile.getPosition());
+			if (toadd != null)
+				tilesMsg.add(toadd);
+		}
+		return tilesMsg;
+	}
+	
+	private peno.htttp.Tile convertToTileMsg(TilePosition tilePos) {
+		Map<Direction, Border> borders = new HashMap<Direction, Border>();
+		Tile tile = getTileAt(tilePos);
 		
+		try {
+		borders.put(Direction.TOP, getTopBorderOfTile(tile));
+		borders.put(Direction.BOTTOM, getBottomBorderOfTile(tile));
+		borders.put(Direction.LEFT, getLeftBorderOfTile(tile));
+		borders.put(Direction.RIGHT, getRightBorderOfTile(tile));
+		
+		String sentToken = MazePart.getToken(borders, tile);
+		System.out.println("sent: " + sentToken);
+		if (sentToken.equals(""))
+			return null;
+		
+		return new peno.htttp.Tile(tile.getPosition().getX(),
+				tile.getPosition().getY(),
+				sentToken);
+		
+		} catch (IllegalArgumentException e) {
+
+			
+			return new peno.htttp.Tile(tile.getPosition().getX(),
+					tile.getPosition().getY(),
+					"unknown");
+		}
 	}
 	
 	/*
-	 * Keep track of translation/rotation to map to merged field
+	 * Keep track of translation/rotation to map teammate field to ours
 	 */
 	
 	private boolean isMerged;

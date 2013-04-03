@@ -485,16 +485,6 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		maze = new FieldSimulation(filename);
 	}
 	
-	public List<Border> getBorderSurroundings() {
-		List<Border> list = new ArrayList<Border>();
-		Tile tile = maze.getCurrentTile(tdistancex, tdistancey);
-		list.add(maze.getBottomBorderOfTile(tile));
-		list.add(maze.getTopBorderOfTile(tile));
-		list.add(maze.getLeftBorderOfTile(tile));
-		list.add(maze.getRightBorderOfTile(tile));
-		return list;
-	}
-	
 	boolean passedWhiteBorder = false;
 	
 	public boolean passedWhiteBorder() {

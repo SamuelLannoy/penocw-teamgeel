@@ -480,12 +480,7 @@ public class Explorer {
 		DebugBuffer.addInfo("found friend");
 		DebugBuffer.addInfo("sending tiles to friend");
 		// make collection of tilesmsges
-		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(field.getTileMap().getKeys().size());
-		for (Tile tile : field.getTileMap()) {
-			peno.htttp.Tile toadd = TileConverter.convertToTileMsg(tile, field);
-			if (toadd != null)
-				tilesMsg.add(toadd);
-		}
+		Collection<peno.htttp.Tile> tilesMsg = robot.getField().convertToMessage();
 		try {
 			// send tiles
 			robot.getClient().sendTiles(tilesMsg);

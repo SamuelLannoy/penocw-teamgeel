@@ -14,7 +14,7 @@ import field.fromfile.MazePart;
 
 public class TileConverter {
 	
-	public static peno.htttp.Tile convertToTileMsg(Tile tile, Field field) {
+	/*public static peno.htttp.Tile convertToTileMsg(Tile tile, Field field) {
 		Map<Direction, Border> borders = new HashMap<Direction, Border>();
 		
 		try {
@@ -39,7 +39,7 @@ public class TileConverter {
 					tile.getPosition().getY(),
 					"unknown");
 		}
-	}
+	}*/
 	
 	
 
