@@ -67,7 +67,7 @@ public class Pathfinder {
 			throw new RuntimeException();
 		}
 		
-		System.out.println("size " + closedList.size());
+		//System.out.println("size " + closedList.size());
 		Node currNode = closedList.get(closedList.size()-1);
 		
 		if (!endTile.getPosition().equals(currNode.getPos())) {

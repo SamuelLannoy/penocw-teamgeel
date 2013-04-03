@@ -128,7 +128,7 @@ public class SensorBuffer {
 	
 	public static void updateBarcodeTypes(ArrayList<String> barcodetypes) {
 		if (barcodetypes.size() > 0) {
-			System.out.println("test");
+			//System.out.println("test");
 		}
 		for(int i = 0; i < barcodetypes.size(); i++) {
 			SensorBuffer.barcodetypes.add(barcodetypes.get(i));
@@ -137,7 +137,7 @@ public class SensorBuffer {
 	
 	public static void addBarcodeType(String type) {
 		SensorBuffer.barcodetypes.add(type);
-		System.out.println("test");
+		//System.out.println("test");
 	}
 	
 	public static List<String> getBarcodeTypes() {

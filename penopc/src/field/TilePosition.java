@@ -1,19 +1,19 @@
 package field;
 
-public class Position {
+public class TilePosition {
 	
-	public final static Position POSITION_ZERO = new Position(0, 0);
+	public final static TilePosition POSITION_ZERO = new TilePosition(0, 0);
 	
-	public Position() {
+	public TilePosition() {
 		this(0, 0);
 	}
 	
-	public Position(int x, int y) {
+	public TilePosition(int x, int y) {
 		setX(x);
 		setY(y);
 	}
 	
-	public Position(Position pos1, Position pos2) {
+	public TilePosition(TilePosition pos1, TilePosition pos2) {
 		setX(pos1.getX() + pos2.getX());
 		setY(pos1.getY() + pos2.getY());
 	}
@@ -38,28 +38,28 @@ public class Position {
 		this.y = y;
 	}
 	
-	public int manhattanDistance(Position pos) {
+	public int manhattanDistance(TilePosition pos) {
 		return Math.abs(pos.getX() - this.getX()) + Math.abs(pos.getY() - this.getY());
 	}
 	
-	public static double euclDistance(Position pos1, Position pos2) {
+	public static double euclDistance(TilePosition pos1, TilePosition pos2) {
 		return Math.sqrt(Math.pow(pos1.getX() - pos2.getX(), 2) + Math.pow(pos1.getY() - pos2.getY(), 2));
 	}
 	
-	public Position getNorthPosition() {
-		return new Position(getX(), getY() + 1);
+	public TilePosition getNorthPosition() {
+		return new TilePosition(getX(), getY() + 1);
 	}
 	
-	public Position getSouthPosition() {
-		return new Position(getX(), getY() - 1);
+	public TilePosition getSouthPosition() {
+		return new TilePosition(getX(), getY() - 1);
 	}
 	
-	public Position getRightPosition() {
-		return new Position(getX() + 1, getY());
+	public TilePosition getRightPosition() {
+		return new TilePosition(getX() + 1, getY());
 	}
 	
-	public Position getLeftPosition() {
-		return new Position(getX() - 1, getY());
+	public TilePosition getLeftPosition() {
+		return new TilePosition(getX() - 1, getY());
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class Position {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Position other = (Position) obj;
+		TilePosition other = (TilePosition) obj;
 		if (x != other.x)
 			return false;
 		if (y != other.y)
@@ -92,7 +92,7 @@ public class Position {
 		return "Position x: " + Integer.toString(x) + " y: " + Integer.toString(y);
 	}
 	
-	public static int[] rotate(int rotation, Position pos1, Position center) {
+	public static int[] rotate(int rotation, TilePosition pos1, TilePosition center) {
 		float s = (float) Math.sin(rotation * Math.PI / 180);
 		float c = (float) Math.cos(rotation * Math.PI / 180);
 

@@ -14,6 +14,7 @@ import communication.SeesawStatus;
 
 import field.*;
 import field.fromfile.FieldFactory;
+import field.simulation.FieldSimulation;
 
 import robot.AbstractRobotConnector;
 import robot.Collision;
@@ -463,21 +464,15 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		
 	}
 	
-	private Field maze;
+	private FieldSimulation maze;
 	
-	public Field getMaze() {
+	public FieldSimulation getMaze() {
 		return maze;
 	}
 
 	private void setupField() {
 		if (maze == null) {
-
-			try {
-				maze = FieldFactory.fieldFromFile("C:\\demo2.txt");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			//maze.addBall(new Ball(1), new Position(0, 7));
+			maze = new FieldSimulation("C:\\demo2.txt");
 		}
 	}
 	
@@ -486,11 +481,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	}
 	
 	public void SetupFieldFile(String filename) {
-		try {
-			maze = FieldFactory.fieldFromFile(filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		maze = new FieldSimulation(filename);
 	}
 	
 	public List<Border> getBorderSurroundings() {

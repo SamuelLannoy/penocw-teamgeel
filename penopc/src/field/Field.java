@@ -15,49 +15,100 @@ import robot.RobotModel;
 import robot.RobotPool;
 
 
-public class Field implements Fieldable {
+public abstract class Field implements Fieldable {
 	
 	public final static int TILE_SIZE = 40;
 	public final static double BORDER_SIZE = 2;
-	//public final static double BORDER_SIZE = 5.5;
+	
+	
 	
 	public Field() {
+		
 	}
 	
-	private ObjectMap<Position, Tile> tileMap = new ObjectMap<Position, Tile>();
-	private ObjectMap<Position, Ball> ballMap = new ObjectMap<Position, Ball>();
-	private ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>();
+
+	/*
+	 * Tile Methods
+	 */
 	
-	public void initSeesaw() {
-		for (Tile tile : tileMap) {
-			//DebugBuffer.addInfo("a " + tile.getPosition() + " " + hasSeesawBorder(tile) + " " + tile.getBarcode());
-			if (hasSeesawBorder(tile) && tile.getBarcode() != null) {
-				SeesawBorder border = getSeesawBorder(tile);
-				//DebugBuffer.addInfo("b " + tile.getPosition());
-				if (tile.getBarcode().getDecimal() == 11 ||
-						tile.getBarcode().getDecimal() == 15 ||
-						tile.getBarcode().getDecimal() == 19) {
-					//DebugBuffer.addInfo("c " + tile.getPosition());
-					border.setDown();
-				} else if (tile.getBarcode().getDecimal() == 13 ||
-						tile.getBarcode().getDecimal() == 17 ||
-						tile.getBarcode().getDecimal() == 21) {
-					border.setUp();
-				}
-			}
+	protected ObjectMap<TilePosition, Tile> tileMap = new ObjectMap<TilePosition, Tile>();
+	
+	public boolean hasTileAt(TilePosition tilePosition) {
+		return tileMap.hasId(tilePosition);
+	}
+	
+	public Tile getTileAt(TilePosition tilePosition) {
+		return tileMap.getObjectAtId(tilePosition);
+	}
+	
+	protected void addTile(Tile tile) {
+		if (!hasTileAt(tile.getPosition()))
+			tileMap.addObject(tile.getPosition(), tile);
+	}
+	
+	protected void addTile(TilePosition tilePos) {
+		if (!hasTileAt(tilePos))
+			tileMap.addObject(tilePos, new Tile(tilePos));
+	}
+
+	/*
+	 * Border Methods
+	 */
+
+	protected ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>();
+	
+	protected boolean hasBorderAt(BorderPosition borderPosition) {
+		return borderMap.hasId(borderPosition);
+	}
+	
+	protected Border getBorderAt(BorderPosition borderPosition) {
+		return borderMap.getObjectAtId(borderPosition);
+	}
+	
+	protected void addBorder(Border border) {
+		if (!hasBorderAt(border.getBorderPos()))
+			borderMap.addObject(border.getBorderPos(), border);
+	}
+	
+	protected void overWriteBorder(Border border) {
+		borderMap.overWrite(border.getBorderPos(), border);
+	}
+	
+	protected void addBorders(Collection<Border> borders) {
+		for (Border border : borders) {
+			addBorder(border);
 		}
 	}
 	
-	public void clear() {
-		tileMap = new ObjectMap<Position, Tile>();
-		borderMap = new ObjectMap<BorderPosition, Border>();
+	/*
+	 * Ball Methods
+	 */
+
+	protected ObjectMap<TilePosition, Ball> ballMap = new ObjectMap<TilePosition, Ball>();
+	
+	protected boolean hasBallAt(TilePosition tilePosition) {
+		return ballMap.hasId(tilePosition);
 	}
 	
-	public void addTile(Tile tile){
-		if (!canHaveAsTile(tile.getPosition()))
-			throw new IllegalArgumentException("given position already used " + tile.getPosition());
-		tileMap.addObject(tile.getPosition(), tile);
+	protected void addBall(Ball ball, TilePosition tilePosition) {
+		if (hasBallAt(tilePosition)) {
+			ballMap.addObject(tilePosition, ball);
+		}
 	}
+	
+	protected void removeBall(TilePosition pos) {
+		ballMap.removeObjectAtId(pos);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public List<BarcodeNode> getBarcodes() {
 		List<BarcodeNode> ret = new ArrayList<BarcodeNode>(tileMap.getObjectCollection().size() / 5);
@@ -67,28 +118,6 @@ public class Field implements Fieldable {
 			}
 		}
 		return ret;
-	}
-	
-	public void addTileWithBorders(Tile tile, boolean top, boolean right, boolean bot, boolean left) {
-		if (!canHaveAsTile(tile.getPosition()))
-			throw new IllegalArgumentException("given position already used");
-		tileMap.addObject(tile.getPosition(), tile);
-		BorderPosition north = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());
-		if (canHaveAsBorder(north)) {
-			borderMap.addObject(north, top ? new PanelBorder(north) : new WhiteBorder(north));
-		}
-		BorderPosition south = new BorderPosition(tile.getPosition(), tile.getPosition().getSouthPosition());
-		if (canHaveAsBorder(south)) {
-			borderMap.addObject(south, bot ? new PanelBorder(south) : new WhiteBorder(south));
-		}
-		BorderPosition leftB = new BorderPosition(tile.getPosition(), tile.getPosition().getLeftPosition());
-		if (canHaveAsBorder(leftB)) {
-			borderMap.addObject(leftB, left ? new PanelBorder(leftB) : new WhiteBorder(leftB));
-		}
-		BorderPosition rightB = new BorderPosition(tile.getPosition(), tile.getPosition().getRightPosition());
-		if (canHaveAsBorder(rightB)) {
-			borderMap.addObject(rightB, right ? new PanelBorder(rightB) : new WhiteBorder(rightB));
-		}
 	}
 	
 	public Border getTopBorderOfTile(Tile tile)
@@ -118,7 +147,7 @@ public class Field implements Fieldable {
 	
 	public SolidBorder getFirstPanelInDirection(Tile tile, Direction dir) {
 		boolean found = false;
-		Position currPos = tile.getPosition();
+		TilePosition currPos = tile.getPosition();
 		while (!found) {
 			BorderPosition pos = dir.getBorderPositionInDirection(currPos);
 			try {
@@ -134,48 +163,8 @@ public class Field implements Fieldable {
 		}
 		return null;
 	}
-	
-	public boolean canHaveAsTile(Position pos) {
-		return !tileMap.hasId(pos);
-	}
-	
-	public void addBorder(Border border) {
-		if (!borderMap.hasId(border.getBorderPos()) ||
-				borderMap.getObjectAtId(border.getBorderPos()) instanceof UnsureBorder ||
-				border instanceof SeesawBorder) {
-			borderMap.overWrite(border.getBorderPos(), border);
-		}else {
-			if (!canHaveAsBorder(border.getBorderPos()))
-				throw new IllegalArgumentException("given border position already used " + border.getBorderPos());
-			borderMap.addObject(border.getBorderPos(), border);
-		}
-	}
-	
-	public void addBorders(Collection<Border> borders) {
-		for (Border border : borders) {
-			if (canHaveAsBorder(border.getBorderPos()) || border instanceof SeesawBorder) {
-				addBorder(border);
-			}
-		}
-	}
-	
-	public void addBall(Ball ball, Position pos) {
-		if (ballMap.canHaveAsObject(ball)) {
-			ballMap.addObject(pos, ball);
-		}
-	}
-	
-	public void removeBall(Position pos) {
-		ballMap.removeObjectAtId(pos);
-	}
-	
-	public boolean canHaveAsBorder(BorderPosition pos) {
-		if (!borderMap.hasId(pos))
-			return true;
-		return (borderMap.getObjectAtId(pos) instanceof UnsureBorder);
-	}
 
-	public ObjectMap<Position, Tile> getTileMap() {
+	public ObjectMap<TilePosition, Tile> getTileMap() {
 		synchronized(tileMap) {
 			return tileMap;
 		}
@@ -185,21 +174,21 @@ public class Field implements Fieldable {
 		return borderMap;
 	}
 	
-	public ObjectMap<Position, Ball> getBallMap() {
+	public ObjectMap<TilePosition, Ball> getBallMap() {
 		return ballMap;
 	}
 	
-	public static Position convertToTilePosition(double xpos, double ypos) {
+	public static TilePosition convertToTilePosition(double xpos, double ypos) {
 		int xsign = xpos < 0? -1:1;
 		int ysign = ypos < 0? -1:1;
 		int x = (int)(Math.abs(xpos) + (TILE_SIZE / 2)) / TILE_SIZE;
 		int y = (int)(Math.abs(ypos) + (TILE_SIZE / 2)) / TILE_SIZE;
-		return new Position(x*xsign, y*ysign);
+		return new TilePosition(x*xsign, y*ysign);
 	}
 	
 	public Tile getCurrentTile(double xpos, double ypos)
 			throws IllegalArgumentException {
-		Position tilePos = convertToTilePosition(xpos, ypos);
+		TilePosition tilePos = convertToTilePosition(xpos, ypos);
 		return tileMap.getObjectAtId(tilePos);
 	}
 	
@@ -351,7 +340,7 @@ public class Field implements Fieldable {
 			BorderPosition pos;
 			pos = dir.getBorderPositionInDirection(tile.getPosition());
 			if (borderMap.hasId(pos) && borderMap.getObjectAtId(pos).isPassable()) {
-				Position tpos = pos.getOtherPosition(tile.getPosition());
+				TilePosition tpos = pos.getOtherPosition(tile.getPosition());
 				if (tileMap.hasId(tpos)) {
 					ret.add(tileMap.getObjectAtId(tpos));
 				}
@@ -363,67 +352,11 @@ public class Field implements Fieldable {
 		return ret;
 	}
 	
-	/**
-	 * returns true when this tile has a border defined in every direction
-	 * @param pos
-	 * @return
-	 */
-	public boolean isExplored(Position pos) {
-		return getBorderMap().hasId(Direction.TOP.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.BOTTOM.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.RIGHT.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.LEFT.getBorderPositionInDirection(pos));
-	}
-	
-	/**
-	 * true when no gray borders are on this tile
-	 * @param pos
-	 * @return
-	 */
-	public boolean isSure(Position pos) {
-		return isExplored(pos) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.TOP) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.BOTTOM) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.LEFT) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.RIGHT) instanceof UnsureBorder);
-	}
+
 
 	@Override
 	public Field toField() {
 		return this;
-	}
-	
-	public Field moveX(int x) {
-		Field retF = new Field();
-		for (Tile tile : tileMap) {
-			retF.addTile(tile.moveX(x));
-		}
-		for (Border border : borderMap) {
-			retF.addBorder(border.moveX(x));
-		}
-		return retF;
-	}
-	
-	public Field moveY(int y) {
-		Field retF = new Field();
-		for (Tile tile : tileMap) {
-			retF.addTile(tile.moveY(y));
-		}
-		for (Border border : borderMap) {
-			retF.addBorder(border.moveY(y));
-		}
-		return retF;
-	}
-	
-	public Field rotate(int rotation, Position pos) {
-		Field retF = new Field();
-		for (Tile tile : tileMap) {
-			retF.addTile(tile.rotate(rotation, pos));
-		}
-		for (Border border : borderMap) {
-			retF.addBorder(border.rotate(rotation, pos));
-		}
-		return retF;
 	}
 	
 	public void updateField(RobotPool robotPool) {
@@ -452,10 +385,10 @@ public class Field implements Fieldable {
 		}
 	}
 	
-	private Map<Integer, Position> startPos = new HashMap<Integer, Position>();
+	private Map<Integer, TilePosition> startPos = new HashMap<Integer, TilePosition>();
 	private Map<Integer, Direction> startDir = new HashMap<Integer, Direction>();
 	
-	public void setStartPos(int i, Position pos) {
+	public void setStartPos(int i, TilePosition pos) {
 		startPos.put(i, pos);
 		DebugBuffer.addInfo("adding " + pos  + " to " + i);
 	}
@@ -464,7 +397,7 @@ public class Field implements Fieldable {
 		startDir.put(i, dir);
 	}
 	
-	public Position getStartPos(int i) {
+	public TilePosition getStartPos(int i) {
 		return startPos.get(i);
 	}
 	
@@ -472,7 +405,7 @@ public class Field implements Fieldable {
 		return startDir.get(i);
 	}
 	
-	public peno.htttp.Tile toTileMessage(Position pos) {
+	public peno.htttp.Tile toTileMessage(TilePosition pos) {
 		return null;
 	}
 	

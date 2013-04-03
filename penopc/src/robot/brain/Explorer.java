@@ -17,6 +17,7 @@ import communication.Status;
 import field.*;
 import field.fieldmerge.FieldMerger;
 import field.fieldmerge.TileConverter;
+import field.representation.FieldRepresentation;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -51,11 +52,11 @@ public class Explorer {
 	
 	public static void explore(final Robot robot, EndingCondition endCond) {
 		
-		Field field = robot.getField();
+		FieldRepresentation field = robot.getField();
 		// list of nodes that need to be explored
 		LinkedList<ExploreNode> toExplore = new LinkedList<ExploreNode>();
 		// list of tiles that are explored
-		HashSet<Position> explored = new HashSet<Position>();
+		HashSet<TilePosition> explored = new HashSet<TilePosition>();
 		// first explore tile defined
 		ExploreNode init = new ExploreNode(robot.getCurrTile(), null);
 		// add to toexplore list
@@ -127,11 +128,7 @@ public class Explorer {
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 		
-								Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-								Position afterWipPos = dirForw.getPositionInDirection(ctile.getPosition());
-								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-								afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+								TilePosition afterWipPos = robot.getTilePositionAfterSeesaw(ctile);
 								robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
 								ignoreSeesaw = false;
 							} else {
@@ -164,22 +161,8 @@ public class Explorer {
 			
 			// barcode has been detected
 			if (correct || wrong || robot.isScanning()) {
-				
-				// adding known borders for barcode
 
-				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
-				if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
-				if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(robot.getCurrTile().getPosition())));
-				
-				// new tile after barcode
-				Position newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
-				System.out.println("newtilepos " + newTilePos);
-				
-				if (field.canHaveAsTile(dirForw.getPositionInDirection(robot.getCurrTile().getPosition())))
-					field.addTile(new Tile(newTilePos));
+				robot.getField().registerBarcode(robot.getCurrTile().getPosition(), dirForw);
 				
 				// is not scanning anymore
 				if (!robot.isScanning()) {
@@ -221,36 +204,13 @@ public class Explorer {
 							
 							// keep current tile of robot as reference
 							Tile tile = robot.getCurrTile();
+							robot.getField().registerBall(tile.getPosition(), dirForw);
 							
 							// pick up our object
 							if (robot.getTeamNr() != -1 && !robot.hasFoundOwnBarcode()) {
 								System.out.println("PICKUP");
 								robot.setHasFoundOwnBarcode(true);
 								robot.stopMoving();
-								
-								Tile newT = new Tile(dirForw.getPositionInDirection(tile.getPosition()));
-
-								if (field.canHaveAsTile(newT.getPosition()))
-									field.addTile(newT);
-								
-								if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirForw.getBorderPositionInDirection(newT.getPosition())));
-								
-								if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())));
-								
-								if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
-								
-								
-								
-								
-								System.out.println("adding tile: " + newTilePos);
-
-								// add new tile where object is located
-								newTilePos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
-								if (field.canHaveAsTile(newTilePos))
-									field.addTile(new Tile(newTilePos));
 
 								System.out.println("ObjectNr: "+Integer.parseInt(robot.getCurrTile().getBarcode().toString().substring(4, 5),2));
 								System.out.println("OurObjectNr"+robot.getObjectNr());
@@ -316,21 +276,6 @@ public class Explorer {
 							} else {
 								System.out.println("WRONG OBJ");
 								
-								// adding tile where object is located
-								Tile newT = new Tile(dirForw.getPositionInDirection(tile.getPosition()));
-
-								if (field.canHaveAsTile(newT.getPosition()))
-									field.addTile(newT);
-								
-								if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirForw.getBorderPositionInDirection(newT.getPosition())));
-								
-								if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newT.getPosition())));
-								
-								if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newT.getPosition())))
-									field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newT.getPosition())));
-								
 								if (!robot.isSim()) {
 									// execute move away from wrong object
 									robot.pauseLightSensor();
@@ -359,6 +304,7 @@ public class Explorer {
 								// this is the case when we cross the seesaw or when we come across any object barcode
 								check = false;
 							}
+							
 							System.out.println("tile: " + robot.getCurrTile().getPosition());
 							break;
 						case CHECKPOINT:
@@ -377,77 +323,10 @@ public class Explorer {
 
 							// keep current tile as reference
 							Tile btile = robot.getCurrTile();
-							Position pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
+							TilePosition pos = dirForw.getPositionInDirection(robot.getCurrTile().getPosition());
 
-							// calculate code at other end
-							int bcode = btile.getBarcode().getDecimal();
-							int ncode = 0;
-							if (bcode == 11 || bcode == 15 || bcode == 19) {
-								ncode = bcode + 2;
-							} else if (bcode == 13 || bcode == 17 || bcode == 21) {
-								ncode = bcode - 2;
-							}
-
-							//2de tegel wip tekenen
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
-								field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
-
-							if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
-
-							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
-
-							pos = dirForw.getPositionInDirection(pos);
-
-							//3de tegel wip tekenen
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
-								field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
-
-
-							if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
-
-							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
-
-
-							pos = dirForw.getPositionInDirection(pos);
-
-
-							//4de tegel wip tekenen
-							Tile pLastTile = new Tile(pos);
-							if (field.canHaveAsTile(pos))
-								field.addTile(pLastTile);
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsTile(pos))
-								field.addTile(new Tile(pos));
-							if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(pos)))
-								field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(pos)));
-
-							if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(pos)));
-
-							if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(pos)))
-								field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(pos)));
-							field.getTileMap().getObjectAtId(pos).setBarcode(new Barcode(ncode));
-
-							pos = dirForw.getPositionInDirection(pos);
-
-							//5de tegel wip tekenen
-							Tile lastTile = new Tile(pos);
-							if (field.canHaveAsTile(pos))
-								field.addTile(lastTile);
-
+							// register seesaw
+							robot.getField().registerSeesaw(btile.getPosition(), dirForw);
 
 
 							// wait for infrared values
@@ -468,10 +347,11 @@ public class Explorer {
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 
-								robot.setCurrTile(lastTile);
-								robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), robot.getCurrTile());
+								TilePosition afterWipPos = robot.getTilePositionAfterSeesaw(btile);
+								Tile afterWipTile = new Tile(afterWipPos);
+								robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), afterWipTile);
 
-								toExplore.add(new ExploreNode(lastTile, pLastTile));
+								toExplore.add(new ExploreNode(afterWipTile, robot.getField().getTileAt(robot.getBarcodePositionAfterSeesaw(btile))));
 							}// seesaw closed
 							else{
 								Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
@@ -501,7 +381,7 @@ public class Explorer {
 				
 				// add tile in direction of robot
 				if (check) {
-					Position pos = dirForw.getPositionInDirection(current.getTile().getPosition());
+					TilePosition pos = dirForw.getPositionInDirection(current.getTile().getPosition());
 					ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
 					if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
 						toExplore.add(newNode);
@@ -541,10 +421,7 @@ public class Explorer {
 							robot.checkScan();
 							waitTillRobotStops(robot, 900);
 							if (counter == 2 && field.getBorderInDirection(current.getTile(), dir) instanceof UnsureBorder) {
-								field.addBorder(new WhiteBorder(dir.getBorderPositionInDirection(current.getTile().getPosition())));
-								if (field.canHaveAsTile(dir.getPositionInDirection(current.getTile().getPosition()))){
-									field.addTile(new Tile(dir.getPositionInDirection(current.getTile().getPosition())));
-								}
+								robot.getField().registerNewTile(dir, current.getTile().getPosition());
 								break;
 							}
 							counter++;
@@ -556,7 +433,7 @@ public class Explorer {
 					
 					// if a white border was scanned add a new tile and add it to explore list
 					if (field.getBorderInDirection(current.getTile(), dir) instanceof WhiteBorder) {
-						Position pos = dir.getPositionInDirection(current.getTile().getPosition());
+						TilePosition pos = dir.getPositionInDirection(current.getTile().getPosition());
 						ExploreNode newNode = new ExploreNode(new Tile(pos), current.getTile());
 						if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(newNode)) {
 							toExplore.add(newNode);
@@ -624,22 +501,21 @@ public class Explorer {
 		boolean mergedFields = false;
 		try {
 			// merge fields
-			Field merged = FieldMerger.mergeFields(robot, robot.getTeamMateField());
-			// set field
-			//robot.getTeamMate().setField(merged);
-			robot.setField(merged);
+			robot.getField().mergeFields(robot.getTeamMate().getField());
 
 			DebugBuffer.addInfo("fields merged");
 			
-			robot.setCurrTile(robot.getField().getTileMap().getObjectAtId(robot.getCurrTile().getPosition()));
 			mergedFields = true;
 		} catch (IllegalStateException e) {
+			e.printStackTrace();
 			// explore more
 		}
 
 		// check merged field ?
 
 
+		waitTillRobotStops(robot, 1000);
+		
 		boolean ignoreSeesaw = false;
 		boolean reachedDestination = false;
 		
@@ -676,7 +552,7 @@ public class Explorer {
 							waitTillRobotStops(robot, 250);
 	
 							Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-							Position afterWipPos = dirForw.getPositionInDirection(ctile.getPosition());
+							TilePosition afterWipPos = dirForw.getPositionInDirection(ctile.getPosition());
 							afterWipPos = dirForw.getPositionInDirection(afterWipPos);
 							afterWipPos = dirForw.getPositionInDirection(afterWipPos);
 							afterWipPos = dirForw.getPositionInDirection(afterWipPos);

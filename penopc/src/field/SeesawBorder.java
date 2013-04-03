@@ -2,6 +2,10 @@ package field;
 
 public class SeesawBorder extends Border implements SolidBorder {
 	
+	public SeesawBorder() {
+		super();
+	}
+	
 	public SeesawBorder(BorderPosition borderPos)
 			throws IllegalArgumentException {
 		super(borderPos);

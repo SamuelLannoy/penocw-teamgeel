@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import field.Field;
 import field.fromfile.FieldFactory;
+import field.simulation.FieldSimulation;
 import peno.htttp.DisconnectReason;
 import peno.htttp.SpectatorHandler;
 import robot.DebugBuffer;
@@ -12,7 +13,7 @@ import robot.RobotPool;
 public class SpectatorHandlerImplementation implements SpectatorHandler {
 	RobotPool robotPool;
 	String ownId;
-	Field field;
+	FieldSimulation field;
 	
 	
 
@@ -20,11 +21,7 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 		super();
 		this.robotPool = pool;
 		this.ownId = ownId;
-		try {
-			field = FieldFactory.fieldFromFile("C:\\demo2.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		field = new FieldSimulation("C:\\demo2.txt");
 	}
 
 	@Override

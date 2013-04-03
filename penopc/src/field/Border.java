@@ -1,6 +1,10 @@
 package field;
 
 public abstract class Border {
+	
+	public Border() {
+		
+	}
 
 	public Border(BorderPosition borderPos)
 			throws IllegalArgumentException {
@@ -8,12 +12,17 @@ public abstract class Border {
 	}
 	
 	public Border(int x1, int y1, int x2, int y2) {
-		BorderPosition borderPosition = new BorderPosition(new Position(x1, y1), new Position(x2, y2));
+		BorderPosition borderPosition = new BorderPosition(new TilePosition(x1, y1), new TilePosition(x2, y2));
 		setBorderPos(borderPosition);
 	}
 	
 	public Border(Tile tile, Direction dir) {
 		BorderPosition borderPosition = new BorderPosition(tile.getPosition(), dir.getPositionInDirection(tile.getPosition()));
+		setBorderPos(borderPosition);
+	}
+	
+	public Border(TilePosition tilePos, Direction dir) {
+		BorderPosition borderPosition = new BorderPosition(tilePos, dir.getPositionInDirection(tilePos));
 		setBorderPos(borderPosition);
 	}
 	
@@ -49,7 +58,7 @@ public abstract class Border {
 		return newBorder(getBorderPos().moveY(move));
 	}
 	
-	public Border rotate(int rotation, Position pos) {
+	public Border rotate(int rotation, TilePosition pos) {
 		return newBorder(getBorderPos().rotate(rotation, pos));
 	}
 

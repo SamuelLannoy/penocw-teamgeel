@@ -124,6 +124,23 @@ public class Barcode {
 		return getDecimal() >= 11 && getDecimal() <= 25;
 	}
 	
+	public boolean isSeesawDownCode() {
+		return getDecimal() == 11 || getDecimal() == 15 || getDecimal() == 19;
+	}
+	
+	public boolean isSeesawUpCode() {
+		return getDecimal() == 13 || getDecimal() == 17 || getDecimal() == 21;
+	}
+	
+	public Barcode otherSeesawBarcode() {
+		if (isSeesawDownCode()) {
+			return new Barcode(getDecimal() + 2);
+		} else if (isSeesawUpCode()) {
+			return new Barcode(getDecimal() - 2);
+		}
+		throw new IllegalArgumentException();
+	}
+	
 	public boolean isObject() {
 		return getDecimal() >= 0 && getDecimal() <= 7;
 	}

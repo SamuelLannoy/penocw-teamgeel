@@ -4,12 +4,13 @@ import java.io.*;
 import java.util.List;
 
 import field.*;
+import field.simulation.FieldSimulation;
 
 public class FieldFactory {
-
+/*
 
 	public static Field fieldFromFile(String path) throws IOException {
-		Field field = new Field();
+		FieldSimulation field = new FieldSimulation();
 		FileInputStream fstream = new FileInputStream(path);
 		DataInputStream in = new DataInputStream(fstream);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -73,5 +74,5 @@ public class FieldFactory {
 		in.close();
 		//field.initSeesaw();
 		return field;
-	}
+	}*/
 }

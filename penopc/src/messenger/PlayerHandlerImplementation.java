@@ -7,6 +7,8 @@ import java.util.List;
 import field.Field;
 import field.fieldmerge.TileConverter;
 import field.fromfile.FieldFactory;
+import field.representation.FieldRepresentation;
+import field.simulation.FieldSimulation;
 
 import peno.htttp.DisconnectReason;
 import peno.htttp.PlayerHandler;
@@ -21,17 +23,13 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	
 	RobotPool robotPool;
 	String ownId;
-	Field field;
+	FieldSimulation field;
 
 	public PlayerHandlerImplementation(RobotPool pool, String ownId) {
 		super();
 		robotPool = pool;
 		this.ownId = ownId;
-		try {
-			field = FieldFactory.fieldFromFile("C:\\demo2.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		field = new FieldSimulation("C:\\demo2.txt");
 	}
 	
 	private String getPoolID(String playerID) {
@@ -127,11 +125,8 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamTilesReceived(List<Tile> tiles) {
 		if (!robotPool.getMainRobot().receivedTeamTiles()) {
-			Field tField = robotPool.getMainRobot().getTeamMateField();
-			for (Tile tile : tiles) {
-				TileConverter.convertToFieldTile(tile, tField);
-			}
-			
+			FieldRepresentation teamMateField = new FieldRepresentation(tiles);
+			robotPool.getMainRobot().getTeamMate().setField(teamMateField);			
 			robotPool.getMainRobot().setReceivedTeamTiles(true);
 		} else {
 			
@@ -146,13 +141,13 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamPosition(double x, double y, double angle) {
-		DebugBuffer.addInfo("teammate orig: " + x + " " + y);
-		x = x + robotPool.getMainRobot().getTranslX() * 40;
-		y = y + robotPool.getMainRobot().getTranslY() * 40;
-		angle = angle + robotPool.getMainRobot().getRotation();
-		DebugBuffer.addInfo("teammate new: " + x + " " + y);
+		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
+		x = x + robotPool.getMainRobot().getField().getTranslX() * 40;
+		y = y + robotPool.getMainRobot().getField().getTranslY() * 40;
+		angle = angle + robotPool.getMainRobot().getField().getRotation();
+		//DebugBuffer.addInfo("teammate new: " + x + " " + y);
 		
-		DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
+		//DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
 
 		double[] tilePos = Field.convertToInTilePos(new double[]{x,y});
 		

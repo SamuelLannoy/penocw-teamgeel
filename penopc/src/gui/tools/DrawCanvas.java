@@ -2,7 +2,7 @@ package gui.tools;
 
 import robot.*;
 import field.*;
-import field.Position;
+import field.TilePosition;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -388,9 +388,9 @@ public class DrawCanvas extends Canvas{
 	
 	// tekent de balletjes in het doolhof
 	private void paintObjects(Graphics g){
-		ObjectMap<Position, Ball> ballMap = robotPool.getMainRobot().getField().getBallMap();
-		ObjectMap<Position, Tile> TileMap = robotPool.getMainRobot().getField().getTileMap();
-		for (Position pos : ballMap.getKeys()){
+		ObjectMap<TilePosition, Ball> ballMap = robotPool.getMainRobot().getField().getBallMap();
+		ObjectMap<TilePosition, Tile> TileMap = robotPool.getMainRobot().getField().getTileMap();
+		for (TilePosition pos : ballMap.getKeys()){
 			Tile currentTile = TileMap.getObjectAtId(pos);
 			int xBall = startX + (pos.getX() * (tileSize));
 			int yBall = startY - (pos.getY() * (tileSize));
@@ -423,8 +423,8 @@ public class DrawCanvas extends Canvas{
 			g.setColor(Color.CYAN);
 			List<Tile> list = robotPool.getMainRobot().getAStarTileList();
 			for (int i = 0; i < list.size()-1; i++){
-				Position pos1 = list.get(i).getPosition();
-				Position pos2 = list.get(i+1).getPosition();
+				TilePosition pos1 = list.get(i).getPosition();
+				TilePosition pos2 = list.get(i+1).getPosition();
 				int x1 = startX + (pos1.getX() * (tileSize));
 				int y1 = startY - (pos1.getY() * (tileSize));
 				int x2 = startX + (pos2.getX() * (tileSize));

@@ -6,14 +6,15 @@ import robot.Robot;
 
 import field.Border;
 import field.Field;
-import field.Position;
+import field.TilePosition;
 import field.Tile;
+import field.representation.FieldRepresentation;
 
 public class FieldMerger {
 
-	public static Field mergeFields(Robot robot, Field field2) {
-		Field retF = new Field();
-		Field field1 = robot.getField();
+	/*public static FieldRepresentation mergeFields(Robot robot, FieldRepresentation field2) {
+		FieldRepresentation retF = new FieldRepresentation();
+		FieldRepresentation field1 = robot.getField();
 		
 		List<BarcodeNode> bc1 = field1.getBarcodes();
 		List<BarcodeNode> bc2 = field2.getBarcodes();
@@ -47,11 +48,11 @@ public class FieldMerger {
 			for (BarcodeNode barcodeNode2 : bc2) {
 				if (barcodeNode1_2.equals(barcodeNode2)) {
 					System.out.println("second " + barcodeNode2);
-					double P12 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode1_2.getPosition());
+					double P12 = TilePosition.euclDistance(barcodeNode1.getPosition(), barcodeNode1_2.getPosition());
 					System.out.println("rot " + P12);
-					double P13 = Position.euclDistance(barcodeNode1.getPosition(), barcodeNode2.getPosition());
+					double P13 = TilePosition.euclDistance(barcodeNode1.getPosition(), barcodeNode2.getPosition());
 					System.out.println("rot " + P13);
-					double P23 = Position.euclDistance(barcodeNode1_2.getPosition(), barcodeNode2.getPosition());
+					double P23 = TilePosition.euclDistance(barcodeNode1_2.getPosition(), barcodeNode2.getPosition());
 					System.out.println("rot " + P23 + " " + barcodeNode1_2.getPosition() + " " + barcodeNode2.getPosition());
 					int rotation = (int)(Math.acos((Math.pow(P12, 2) + Math.pow(P13, 2) - Math.pow(P23, 2)) / (2 * P12 * P13)) / Math.PI * 180 + .5);
 					System.out.println("rot " + rotation);
@@ -95,5 +96,5 @@ public class FieldMerger {
 			throw new IllegalStateException();
 		}
 		return retF;
-	}
+	}*/
 }

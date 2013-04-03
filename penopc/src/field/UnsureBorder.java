@@ -1,6 +1,11 @@
 package field;
 
 public class UnsureBorder extends Border {
+	
+	public UnsureBorder() {
+		super();
+	}
+	
 	public UnsureBorder(BorderPosition borderPos)
 			throws IllegalArgumentException {
 		super(borderPos);

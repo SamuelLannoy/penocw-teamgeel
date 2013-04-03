@@ -356,7 +356,7 @@ public class Advanced extends JFrame {
 		btn_add_square.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Tile tile = new Tile(Integer.parseInt(co1_x.getText()),Integer.parseInt(co1_y.getText()));
-				robot.getField().addTile(tile);
+				//robot.getField().addTile(tile);
 			}
 		});
 		
@@ -364,7 +364,7 @@ public class Advanced extends JFrame {
 		btn_add_wall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Border border = new PanelBorder(Integer.parseInt(co1_x.getText()),Integer.parseInt(co1_y.getText()),Integer.parseInt(co2_x.getText()),Integer.parseInt(co2_y.getText()));
-				robot.getField().addBorder(border);
+				//robot.getField().addBorder(border);
 			}
 		});
 		
@@ -372,7 +372,7 @@ public class Advanced extends JFrame {
 		btn_add_white.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Border border = new WhiteBorder(Integer.parseInt(co1_x.getText()),Integer.parseInt(co1_y.getText()),Integer.parseInt(co2_x.getText()),Integer.parseInt(co2_y.getText()));
-				robot.getField().addBorder(border);
+				//robot.getField().addBorder(border);
 			}
 		});
 		

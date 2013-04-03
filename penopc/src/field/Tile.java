@@ -4,33 +4,33 @@ package field;
 public class Tile {
 	
 	public Tile() {
-		this(Position.POSITION_ZERO);
+		this(TilePosition.POSITION_ZERO);
 	}
 	
-	public Tile(Position position) {
+	public Tile(TilePosition position) {
 		setPosition(position);
 	}
 	
 	public Tile(int x, int y) {
-		setPosition(new Position(x, y));
+		setPosition(new TilePosition(x, y));
 	}
 	
-	public Position getPosition() {
+	public TilePosition getPosition() {
 		return position;
 	}
 
-	private void setPosition(Position position) {
+	private void setPosition(TilePosition position) {
 		if (!isValidPosition(position)) {
 			throw new IllegalArgumentException("given position is invalid");
 		}
 		this.position = position;
 	}
 	
-	private boolean isValidPosition(Position position) {
+	private boolean isValidPosition(TilePosition position) {
 		return position != null;
 	}
 
-	private Position position;
+	private TilePosition position;
 
 	private Barcode barcode;
 
@@ -63,8 +63,8 @@ public class Tile {
 		return ret;
 	}
 	
-	public Tile rotate(int rotation, Position pos) {
-		int[] newpos = Position.rotate(rotation, getPosition(), pos);
+	public Tile rotate(int rotation, TilePosition pos) {
+		int[] newpos = TilePosition.rotate(rotation, getPosition(), pos);
 
 		Tile ret = new Tile(newpos[0], newpos[1]);
 		ret.setBarcode(getBarcode());

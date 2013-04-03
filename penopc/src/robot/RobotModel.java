@@ -32,7 +32,7 @@ public class RobotModel {
 	
 	public void setGlobalPosition(double x, double y, double angle) {
 		double[] position = Field.convertToInTilePos(new double[] {x, y });
-		field.Position tpos = Field.convertToTilePosition(x, y);
+		field.TilePosition tpos = Field.convertToTilePosition(x, y);
 		setPosition(new Position(position[0], position[1], angle), new Tile(tpos));
 	}
 	

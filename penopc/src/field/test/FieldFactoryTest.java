@@ -36,7 +36,7 @@ public class FieldFactoryTest {
 		Field field = FieldFactory.fieldFromFile("D:\\test.txt");
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 6; j++){
-				Position pos = new Position(i, j);
+				TilePosition pos = new TilePosition(i, j);
 				assertTrue(field.getTileMap().hasId(pos));
 				assertTrue(field.getBorderMap().hasId(new BorderPosition(pos, Direction.BOTTOM.getPositionInDirection(pos))));
 				assertTrue(field.getBorderMap().hasId(new BorderPosition(pos, Direction.TOP.getPositionInDirection(pos))));

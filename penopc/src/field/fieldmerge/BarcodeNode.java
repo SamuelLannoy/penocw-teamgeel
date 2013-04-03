@@ -1,18 +1,18 @@
 package field.fieldmerge;
 
 import field.Barcode;
-import field.Position;
+import field.TilePosition;
 
 public class BarcodeNode {
 	
-	public BarcodeNode(Barcode barcode, Position position) {
+	public BarcodeNode(Barcode barcode, TilePosition position) {
 		setBarcode(barcode);
 		setPosition(position);
 	}
 	
 	private Barcode barcode;
 	
-	private Position position;
+	private TilePosition position;
 
 	public Barcode getBarcode() {
 		return barcode;
@@ -22,11 +22,11 @@ public class BarcodeNode {
 		this.barcode = barcode;
 	}
 
-	public Position getPosition() {
+	public TilePosition getPosition() {
 		return position;
 	}
 
-	public void setPosition(Position position) {
+	public void setPosition(TilePosition position) {
 		this.position = position;
 	}
 

@@ -8,35 +8,11 @@ import field.Barcode;
 import field.Border;
 import field.Direction;
 import field.Field;
-import field.Position;
+import field.TilePosition;
 import field.Tile;
 import field.fromfile.MazePart;
 
 public class TileConverter {
-	
-	
-	public static void convertToFieldTile(peno.htttp.Tile tileMsg, Field field) {
-		String[] split = tileMsg.getToken().split("\\.");
-		MazePart part = MazePart.getPartFromString(split[0]);
-		
-		Position tilePos = new Position((int)tileMsg.getX(), (int)tileMsg.getY());
-		Tile added = null;
-		if (field.canHaveAsTile(tilePos)){
-			added = new Tile(tilePos);
-			field.addTile(added);
-		} else {
-			added = field.getTileMap().getObjectAtId(tilePos);
-		}
-		
-		if (split.length >= 3) {
-			int nr = Integer.parseInt(split[2]);
-			added.setBarcode(new Barcode(nr));
-		}
-		
-		Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
-		
-		field.addBorders(borders);
-	}
 	
 	public static peno.htttp.Tile convertToTileMsg(Tile tile, Field field) {
 		Map<Direction, Border> borders = new HashMap<Direction, Border>();

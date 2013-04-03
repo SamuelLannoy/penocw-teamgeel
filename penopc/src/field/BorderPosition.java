@@ -2,10 +2,10 @@ package field;
 
 public class BorderPosition {
 
-	private Position position1 = null;
-	private Position position2 = null;
+	private TilePosition position1 = null;
+	private TilePosition position2 = null;
 	
-	public BorderPosition(Position position1, Position position2) {
+	public BorderPosition(TilePosition position1, TilePosition position2) {
 		super();
 		setPosition1(position1);
 		setPosition2(position2);
@@ -31,7 +31,7 @@ public class BorderPosition {
 		return (getPosition1().getX() == getPosition2().getX());
 	}
 	
-	public Position getOtherPosition(Position pos) {
+	public TilePosition getOtherPosition(TilePosition pos) {
 		if (position1.equals(pos)) {
 			return getPosition2();
 		}
@@ -41,25 +41,25 @@ public class BorderPosition {
 		throw new IllegalArgumentException("borderpos does not have " + pos);
 	}
 	
-	public Position getPosition1() {
+	public TilePosition getPosition1() {
 		return position1;
 	}
-	public void setPosition1(Position position1) {
+	public void setPosition1(TilePosition position1) {
 		if (!canHaveAsPosition(position1, 1)) {
 			throw new IllegalArgumentException();
 		}
 		this.position1 = position1;
 	}
-	public Position getPosition2() {
+	public TilePosition getPosition2() {
 		return position2;
 	}
-	public void setPosition2(Position position2) {
+	public void setPosition2(TilePosition position2) {
 		if (!canHaveAsPosition(position2, 2)) {
 			throw new IllegalArgumentException();
 		}
 		this.position2 = position2;
 	}
-	public boolean canHaveAsPosition(Position position, int pos)
+	public boolean canHaveAsPosition(TilePosition position, int pos)
 		throws IllegalArgumentException{
 		if (position == null) {
 			return false;
@@ -83,7 +83,7 @@ public class BorderPosition {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		Position pos = new Position(position1, position2);
+		TilePosition pos = new TilePosition(position1, position2);
 		result = prime * result
 				+ ((pos == null) ? 0 : pos.hashCode());
 		return result;
@@ -123,21 +123,21 @@ public class BorderPosition {
 	
 	public BorderPosition moveX(int move) {
 		return new BorderPosition(
-				new Position(getPosition1().getX() + move, getPosition1().getY()),
-				new Position(getPosition2().getX() + move, getPosition2().getY()));
+				new TilePosition(getPosition1().getX() + move, getPosition1().getY()),
+				new TilePosition(getPosition2().getX() + move, getPosition2().getY()));
 	}
 	
 	public BorderPosition moveY(int move) {
 		return new BorderPosition(
-				new Position(getPosition1().getX(), getPosition1().getY() + move),
-				new Position(getPosition2().getX(), getPosition2().getY() + move));
+				new TilePosition(getPosition1().getX(), getPosition1().getY() + move),
+				new TilePosition(getPosition2().getX(), getPosition2().getY() + move));
 	}
 	
-	public BorderPosition rotate(int rotation, Position pos) {
-		int[] newpos1 = Position.rotate(rotation, getPosition1(), pos);
-		int[] newpos2 = Position.rotate(rotation, getPosition2(), pos);
+	public BorderPosition rotate(int rotation, TilePosition pos) {
+		int[] newpos1 = TilePosition.rotate(rotation, getPosition1(), pos);
+		int[] newpos2 = TilePosition.rotate(rotation, getPosition2(), pos);
 		return new BorderPosition(
-				new Position(newpos1[0], newpos1[1]),
-				new Position(newpos2[0], newpos2[1]));
+				new TilePosition(newpos1[0], newpos1[1]),
+				new TilePosition(newpos2[0], newpos2[1]));
 	}
 }

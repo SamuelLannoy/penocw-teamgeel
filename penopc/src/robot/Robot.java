@@ -19,12 +19,14 @@ import field.Direction;
 import field.Field;
 import field.PanelBorder;
 import field.Tile;
+import field.TilePosition;
 import field.UnsureBorder;
 import field.WhiteBorder;
 import field.fieldmerge.FieldConverter;
 import field.fieldmerge.FieldMerger;
 import field.fieldmerge.FieldMessage;
 import field.fromfile.FieldFactory;
+import field.representation.FieldRepresentation;
 
 /**
  * @author  Samuel
@@ -33,7 +35,7 @@ public class Robot extends RobotModel{
 	
 	private AbstractRobotConnector robotConn;
 	//private Position position = new Position();
-	private Field field = new Field();
+	private FieldRepresentation field = new FieldRepresentation();
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
@@ -100,7 +102,6 @@ public class Robot extends RobotModel{
 
 	public void initialize() throws CommunicationException, IOException {
 		robotConn.initialize();
-		currTile = new Tile(0, 0);
 		
 		/*setField(FieldFactory.fieldFromFile("c:\\demo2.txt"));
 		currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));*/
@@ -114,7 +115,8 @@ public class Robot extends RobotModel{
 		currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));*/
 		
 		
-		getField().addTile(currTile);
+		getField().initialize();
+		setCurrTile(getField().getTileAt(TilePosition.POSITION_ZERO));
 	}
 	
 	public void terminate() {
@@ -424,92 +426,20 @@ public class Robot extends RobotModel{
 			findBorderObjects();
 		}
 		
-		/*field.Position pos = Field.convertToTilePosition(getPosition().getPosX(), getPosition().getPosY());
-		if (!getField().getTileMap().hasId(pos)) {
-			getField().addTile(new Tile(pos));
-			List<Border> list = robotConn.getBorderSurroundings();
-			if (list != null) {
-				for (Border border : list) {
-					if (getField().canHaveAsBorder(border.getBorderPos()))
-					{
-						getField().addBorder(border);
-					}
-				}
-			}
-		}*/
-		//System.out.println("add " + pos);
-		//if (robotConn instanceof VirtualRobotConnector && ((VirtualRobotConnector)robotConn).passedWhiteBorder()) {
 		passedWhiteBorder();
 		if (passedWhite && !isSeesawMode()/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
 			passedWhite = false;
-			// TODO: possible problem: seesaw with only one tile at ending
-			currEndSeesaw = 0;
 			//System.out.println("LINE");
 			Direction dir = Direction.fromPos(getPosition());
-			field.Position newPos = dir.getPositionInDirection(currTile.getPosition());
+			field.TilePosition newPos = dir.getPositionInDirection(currTile.getPosition());
 			//System.out.println("dit " + dir);
-			if (!getField().getTileMap().hasId(newPos)) {
-				getField().addTile(new Tile(newPos));
-				currTile = getField().getTileMap().getObjectAtId(newPos);
-				System.out.println("add " + newPos);
-			} else {
-				currTile = getField().getTileMap().getObjectAtId(newPos);
-			}
-			/*if (isSeesawMode()) {
-				Direction dirForw = Direction.fromAngle(getPosition().getRotation());
-				Direction dirLeft = Direction.fromAngle(getPosition().getRotation() - 90); 
-				Direction dirRight = Direction.fromAngle(getPosition().getRotation() + 90);
-				Direction dirBack = Direction.fromAngle(getPosition().getRotation() + 180);
-				
-				if (field.canHaveAsBorder(dirForw.getBorderPositionInDirection(newPos)))
-					field.addBorder(new WhiteBorder(dirForw.getBorderPositionInDirection(newPos)));
-				
-				if (field.canHaveAsBorder(dirBack.getBorderPositionInDirection(newPos)))
-					field.addBorder(new WhiteBorder(dirBack.getBorderPositionInDirection(newPos)));
-				
-				if (field.canHaveAsBorder(dirLeft.getBorderPositionInDirection(newPos)))
-					field.addBorder(new PanelBorder(dirLeft.getBorderPositionInDirection(newPos)));
-				
-				if (field.canHaveAsBorder(dirRight.getBorderPositionInDirection(newPos)))
-					field.addBorder(new PanelBorder(dirRight.getBorderPositionInDirection(newPos)));
-				
-				if (field.canHaveAsTile(dirForw.getPositionInDirection(newPos)))
-					field.addTile(new Tile(dirForw.getPositionInDirection(newPos)));
-			}*/
-			/*if ((robotConn instanceof VirtualRobotConnector && ((VirtualRobotConnector)robotConn).getField().getTileMap().getObjectAtId(newPos).getBarcode() != null)){
-				currTile.setBarcode(((VirtualRobotConnector)robotConn).getField().getTileMap().getObjectAtId(newPos).getBarcode());
-				if (currTile.getBarcode().equals(new Barcode(1,1,0,1,1,1))) {
-					setFinishTile(currTile);
-					DebugBuffer.addInfo("einde");
-				}
-				if (currTile.getBarcode().equals(new Barcode(0,0,1,1,0,1))) {
-					setStartTile(currTile);
-					DebugBuffer.addInfo("start");
-				}
-			}*/
-			if(field.canHaveAsBorder(dir.opposite().getBorderPositionInDirection(newPos)))
-				field.addBorder(new WhiteBorder(dir.opposite().getBorderPositionInDirection(newPos)));
+
+			getField().registerNewTile(getDirection(), getCurrTile().getPosition());
+			currTile = getField().getTileAt(newPos);
+
 			getPosition().resetPosition(dir);
 		}
-		/*if (isSeesawMode()) {
-			if (currTile.getBarcode() != null) {
-				currEndSeesaw = currTile.getBarcode().getDecimal();
-				setSeesawMode(false);
-			}
-		} else {
-			if (currTile.getBarcode() != null) {
-				//DebugBuffer.addInfo("BARCODE");
-				int dec = currTile.getBarcode().getDecimal();
-				if (dec != currEndSeesaw) {
-					if (dec == 11 || dec == 13 || dec == 15 || dec == 17 || dec == 19 || dec == 21) {
-						setSeesawMode(true);
-					}
-				}
-			}
-		}*/
 	}
-	
-	private int currEndSeesaw;
 	
 	public void scanOnlyLines(boolean flag) {
 		robotConn.scanOnlyLines(flag);
@@ -556,10 +486,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void zeroPos() {
-		//setField(new Field());
-		getField().clear();
-		currTile = new Tile(0, 0);
-		getField().addTile(currTile);
+		getField().clearRepresentation();
+		setCurrTile(getField().getTileAt(TilePosition.POSITION_ZERO));
 		if (robotConn instanceof VirtualRobotConnector) {
 			((VirtualRobotConnector)robotConn).zeroPos();
 		}
@@ -571,6 +499,10 @@ public class Robot extends RobotModel{
 		zeroPos();
 	}
 	
+	public Direction getDirection() {
+		return Direction.fromAngle(getPosition().getRotation());
+	}
+	
 	/**
 	 * @return
 	 * @uml.property  name="position"
@@ -579,102 +511,41 @@ public class Robot extends RobotModel{
 		return position;
 	}
 	
-	public Field getField() {
+	public FieldRepresentation getField() {
 		return field;
 	}
-	public void setField(Field f) {
+	public void setField(FieldRepresentation f) {
 		field = f;
 	}
 	
-	private void findTileObjects(){
-		// maakt nieuwe vakjes aan wanneer ontdekt.
-		// plaatst ook witte lijn tussen vorig en huidig vakje.
-		// moet aangeroepen wanneer witte lijn overschreden.
-		// nieuwe tegel adhv positie in vakje. (voor reset van positie vorig vakje!).
-		if (Math.abs(position.getPosX()) > 20 || Math.abs(position.getPosY()) > 20){
-			int currXCoord = getCurrTile().getPosition().getX();
-			int currYCoord = getCurrTile().getPosition().getY();
-			int xCoord = 0;
-			int yCoord = 0;
-			if (Math.abs(position.getPosX()) > 20){
-				if (position.getPosX() > 20){
-					xCoord = currXCoord + 1;
-				} else {
-					xCoord = currYCoord - 1;
-				}
-			}
-			if (Math.abs(position.getPosY()) > 20){
-				if (position.getPosX() > 20){
-					yCoord = currXCoord + 1;
-				} else {
-					yCoord = currYCoord - 1;
-				}
-			}
-			Tile tile = new Tile(xCoord,yCoord);
-			field.addTile(tile);
-			WhiteBorder whiteBorder = new WhiteBorder(currXCoord,currYCoord,xCoord,yCoord);
-			field.addBorder(whiteBorder);
-		}
-	}
 	private void findBorderObjects(){
 		// maakt nieuwe borders aan wanneer ontdekt.
 		// aanroepen na scan met ultrasone sensor.
 		// klopt niet altijd wanneer scheef => telkens witte lijn => rechtzetten.
 		// probeer ook midden van tegels te rijden.
 		// rotatie is hier 0 als naar boven gericht.
-		Tile tile = getCurrTile();
-		int xCoord1 = tile.getPosition().getX();
-		int yCoord1 = tile.getPosition().getY();
-		double orientation = getPosition().getRotation();
 		List<Integer> distances = SensorBuffer.getDistances();
 		if (distances.size() >= 4) {
-			double sensorRotation = 0.0;
 			for (int i = 0; i < 4; i++){
+				Direction dir = getDirection();
+				if (i == 1)
+					dir = dir.left();
+				if (i == 2)
+					dir = dir.opposite();
+				if (i == 3)
+					dir = dir.right();
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
-				int xCoord2 = 0;
-				int yCoord2 = 0;
-				double rotation = ((orientation + sensorRotation) % 360);
-				if (rotation < 0)
-					rotation += 360;
-				if (rotation > 225 && rotation < 315){
-					// WEST (links)
-					xCoord2 = xCoord1 - 1;
-					yCoord2 = yCoord1;
-				}
-				if (rotation > 135 && rotation < 225){
-					// ZUID (onder)
-					xCoord2 = xCoord1;
-					yCoord2 = yCoord1 - 1;
-				}
-				if (rotation > 45 && rotation < 135){
-					// OOST (rechts)
-					xCoord2 = xCoord1 + 1;
-					yCoord2 = yCoord1;
-				}
-				if (rotation > 315 || rotation < 45){
-					// NOORD (boven)
-					xCoord2 = xCoord1;
-					yCoord2 = yCoord1 + 1;
-				}
-				Border border;
-				//System.out.println("x1 " + xCoord1 + " y1 " + yCoord1 + " x2 " + xCoord2 + " y2 " + yCoord2 + " r " + rotation + " o " + orientation + " sr " + sensorRotation);
 				if (distance != -1) {
 					if (distance < 25){
-						border = new PanelBorder(xCoord1,yCoord1,xCoord2,yCoord2);
+						getField().registerBorder(getCurrTile().getPosition(),
+								dir, PanelBorder.class);
 					} else if (distance >= 25 && distance < 45){
-						border = new UnsureBorder(xCoord1,yCoord1,xCoord2,yCoord2);
+						getField().registerBorder(getCurrTile().getPosition(),
+								dir, UnsureBorder.class);
 					} else {
-						border = new WhiteBorder(xCoord1,yCoord1,xCoord2,yCoord2);
-					}
-					if (field.canHaveAsBorder(border.getBorderPos())) {
-						field.addBorder(border);
-						if (border instanceof WhiteBorder) {
-							if (!field.getTileMap().hasId(new field.Position(xCoord2, yCoord2)))
-								field.addTile(new Tile(xCoord2, yCoord2));
-						}
+						getField().registerNewTile(dir, getCurrTile().getPosition());
 					}
 				}
-				sensorRotation -= 90.0;
 			}
 			SensorBuffer.getDistances().clear();
 			SensorBuffer.setClear(false);
@@ -757,13 +628,13 @@ public class Robot extends RobotModel{
 		return getTeamMateNr() != null && !getTeamMateNr().equals("");
 	}
 	
-	private Field teamMateField = new Field();
+	private FieldRepresentation teamMateField = new FieldRepresentation();
 	
 	public boolean hasTeamMateField() {
 		return teamMateField != null;
 	}
 	
-	public Field getTeamMateField() {
+	public FieldRepresentation getTeamMateField() {
 		return teamMateField;
 	}
 	
@@ -799,7 +670,7 @@ public class Robot extends RobotModel{
 
 	public void setReceivedTeamTiles(boolean receivedTeamTiles) {
 		this.receivedTeamTiles = receivedTeamTiles;
-		getTeamMate().setPosition(new Position(0, 0, 0), new Tile(new field.Position(0,0)));
+		getTeamMate().setPosition(new Position(0, 0, 0), new Tile(new field.TilePosition(0,0)));
 	}
 
 	private boolean hasFoundOwnBarcode;
@@ -874,38 +745,22 @@ public class Robot extends RobotModel{
 //		moveForward(800);
 	}
 
+	public TilePosition getBarcodePositionAfterSeesaw(Tile currTile) {
+		Direction dirForw = getDirection();
+		TilePosition afterWipPos = dirForw.getPositionInDirection(currTile.getPosition());
+		afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+		afterWipPos = dirForw.getPositionInDirection(afterWipPos);
+		return afterWipPos;
+	}
+	
+	public TilePosition getTilePositionAfterSeesaw(Tile currTile) {
+		Direction dirForw = getDirection();
+		TilePosition afterWipPos = dirForw.getPositionInDirection(getBarcodePositionAfterSeesaw(currTile));
+		return afterWipPos;
+	}
+
 	public int getObjectNr() {
 		return robotConn.getObjectNr();
-	}
-	
-	private int translX;
-	
-	private int translY;
-	
-	private float rotation;
-
-	public int getTranslX() {
-		return translX;
-	}
-
-	public void setTranslX(int translX) {
-		this.translX = translX;
-	}
-
-	public int getTranslY() {
-		return translY;
-	}
-
-	public void setTranslY(int translY) {
-		this.translY = translY;
-	}
-
-	public float getRotation() {
-		return rotation;
-	}
-
-	public void setRotation(float rotation) {
-		this.rotation = rotation;
 	}
 	
 }

@@ -11,6 +11,7 @@ import communication.SeesawStatus;
 import exception.CommunicationException;
 import field.Field;
 import field.fromfile.FieldFactory;
+import field.simulation.FieldSimulation;
 import robot.Robot;
 import robot.RobotPool;
 
@@ -175,11 +176,7 @@ public class SimulatorConnector implements ISimulator {
 	private void setupField() {
 		if (getField() == null) {
 
-			try {
-				field = FieldFactory.fieldFromFile("C:\\demo2.txt");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			field = new FieldSimulation("C:\\demo2.txt");
 			//maze.addBall(new Ball(1), new Position(0, 7));
 		}
 	}

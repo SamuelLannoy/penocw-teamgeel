@@ -14,7 +14,7 @@ import field.BorderPosition;
 import field.Direction;
 import field.Field;
 import field.PanelBorder;
-import field.Position;
+import field.TilePosition;
 import field.SolidBorder;
 import field.Tile;
 import field.UnsureBorder;
@@ -61,32 +61,32 @@ public class FieldTest {
 
 	@Test
 	public void convertToTilePosition_normalCases(){
-		Position pos = null;
+		TilePosition pos = null;
 		pos = Field.convertToTilePosition(0, 0);
-		assertEquals(new Position(0,0), pos);
+		assertEquals(new TilePosition(0,0), pos);
 		pos = Field.convertToTilePosition(Field.TILE_SIZE, Field.TILE_SIZE);
-		assertEquals(new Position(1,1), pos);
+		assertEquals(new TilePosition(1,1), pos);
 		pos = Field.convertToTilePosition(Field.TILE_SIZE, 0);
-		assertEquals(new Position(1,0), pos);
+		assertEquals(new TilePosition(1,0), pos);
 		pos = Field.convertToTilePosition(0, Field.TILE_SIZE);
-		assertEquals(new Position(0,1), pos);
+		assertEquals(new TilePosition(0,1), pos);
 		pos = Field.convertToTilePosition(-Field.TILE_SIZE, -Field.TILE_SIZE);
-		assertEquals(new Position(-1,-1), pos);
+		assertEquals(new TilePosition(-1,-1), pos);
 		pos = Field.convertToTilePosition(-Field.TILE_SIZE * 2, -Field.TILE_SIZE * 2);
-		assertEquals(new Position(-2,-2), pos);
+		assertEquals(new TilePosition(-2,-2), pos);
 	}
 	
 	@Test
 	public void getCurrentTile_normalCases() {
 		Tile tile = null;
 		tile = maze.getCurrentTile(0,0);
-		assertEquals(new Position(0,0), tile.getPosition());
+		assertEquals(new TilePosition(0,0), tile.getPosition());
 		tile = maze.getCurrentTile(Field.TILE_SIZE + 1 ,0);
-		assertEquals(new Position(1,0), tile.getPosition());
+		assertEquals(new TilePosition(1,0), tile.getPosition());
 		tile = maze.getCurrentTile(0,Field.TILE_SIZE + 1);
-		assertEquals(new Position(0,1), tile.getPosition());
+		assertEquals(new TilePosition(0,1), tile.getPosition());
 		tile = maze.getCurrentTile(Field.TILE_SIZE + 1,Field.TILE_SIZE + 1);
-		assertEquals(new Position(1,1), tile.getPosition());
+		assertEquals(new TilePosition(1,1), tile.getPosition());
 	}
 	
 	@Test (expected=IllegalArgumentException.class)
@@ -135,20 +135,20 @@ public class FieldTest {
 	public void getFirstPanelInDirection_normalCase1() {
 		Tile tile = maze.getCurrentTile(0,0);
 		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.TOP);
-		assertEquals(border.getBorderPos(), new BorderPosition(new Position(0, 0), new Position(0, 1)));
+		assertEquals(border.getBorderPos(), new BorderPosition(new TilePosition(0, 0), new TilePosition(0, 1)));
 	}
 	
 	@Test
 	public void getFirstPanelInDirection_normalCase2() {
 		Tile tile = maze.getCurrentTile(0,0);
 		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.RIGHT);
-		assertEquals(border.getBorderPos(), new BorderPosition(new Position(1, 0), new Position(2, 0)));
+		assertEquals(border.getBorderPos(), new BorderPosition(new TilePosition(1, 0), new TilePosition(2, 0)));
 	}
 	@Test
 	public void getFirstPanelInDirection_normalCase3() {
 		Tile tile = maze.getCurrentTile(0,40);
 		SolidBorder border = maze.getFirstPanelInDirection(tile, Direction.BOTTOM);
-		assertEquals(border.getBorderPos(), new BorderPosition(new Position(0, 0), new Position(0, 1)));
+		assertEquals(border.getBorderPos(), new BorderPosition(new TilePosition(0, 0), new TilePosition(0, 1)));
 	}
 	
 	@Test
@@ -182,7 +182,7 @@ public class FieldTest {
 		Field mazex = new Field();
 		mazex.addBorder(new UnsureBorder(0, 0, 0, 1));
 		mazex.addBorder(new WhiteBorder(0, 0, 0, 1));
-		assertTrue(mazex.getBorderMap().getObjectAtId(new BorderPosition(new Position(0, 0), new Position(0, 1))) instanceof WhiteBorder);
+		assertTrue(mazex.getBorderMap().getObjectAtId(new BorderPosition(new TilePosition(0, 0), new TilePosition(0, 1))) instanceof WhiteBorder);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -190,7 +190,7 @@ public class FieldTest {
 		Field mazex = new Field();
 		mazex.addBorder(new WhiteBorder(0, 0, 0, 1));
 		mazex.addBorder(new UnsureBorder(0, 0, 0, 1));
-		assertTrue(mazex.getBorderMap().getObjectAtId(new BorderPosition(new Position(0, 0), new Position(0, 1))) instanceof WhiteBorder);
+		assertTrue(mazex.getBorderMap().getObjectAtId(new BorderPosition(new TilePosition(0, 0), new TilePosition(0, 1))) instanceof WhiteBorder);
 	}
 
 	@Test

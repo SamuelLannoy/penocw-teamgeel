@@ -3,12 +3,12 @@ package field;
 public enum Direction {
 	TOP {
 		@Override
-		public BorderPosition getBorderPositionInDirection(Position pos) {
+		public BorderPosition getBorderPositionInDirection(TilePosition pos) {
 			return new BorderPosition(pos, pos.getNorthPosition());
 		}
 
 		@Override
-		public Position getPositionInDirection(Position pos) {
+		public TilePosition getPositionInDirection(TilePosition pos) {
 			return pos.getNorthPosition();
 		}
 
@@ -41,15 +41,25 @@ public enum Direction {
 			}
 			return 0;
 		}
+
+		@Override
+		public Direction left() {
+			return LEFT;
+		}
+
+		@Override
+		public Direction right() {
+			return RIGHT;
+		}
 	},
 	BOTTOM {
 		@Override
-		public BorderPosition getBorderPositionInDirection(Position pos) {
+		public BorderPosition getBorderPositionInDirection(TilePosition pos) {
 			return new BorderPosition(pos, pos.getSouthPosition());
 		}
 
 		@Override
-		public Position getPositionInDirection(Position pos) {
+		public TilePosition getPositionInDirection(TilePosition pos) {
 			return pos.getSouthPosition();
 		}
 
@@ -82,15 +92,25 @@ public enum Direction {
 			}
 			return 0;
 		}
+
+		@Override
+		public Direction left() {
+			return RIGHT;
+		}
+
+		@Override
+		public Direction right() {
+			return LEFT;
+		}
 	},
 	LEFT {
 		@Override
-		public BorderPosition getBorderPositionInDirection(Position pos) {
+		public BorderPosition getBorderPositionInDirection(TilePosition pos) {
 			return new BorderPosition(pos, pos.getLeftPosition());
 		}
 
 		@Override
-		public Position getPositionInDirection(Position pos) {
+		public TilePosition getPositionInDirection(TilePosition pos) {
 			return pos.getLeftPosition();
 		}
 
@@ -123,15 +143,25 @@ public enum Direction {
 			}
 			return 0;
 		}
+
+		@Override
+		public Direction left() {
+			return BOTTOM;
+		}
+
+		@Override
+		public Direction right() {
+			return TOP;
+		}
 	},
 	RIGHT {
 		@Override
-		public BorderPosition getBorderPositionInDirection(Position pos) {
+		public BorderPosition getBorderPositionInDirection(TilePosition pos) {
 			return new BorderPosition(pos, pos.getRightPosition());
 		}
 
 		@Override
-		public Position getPositionInDirection(Position pos) {
+		public TilePosition getPositionInDirection(TilePosition pos) {
 			return pos.getRightPosition();
 		}
 
@@ -163,6 +193,16 @@ public enum Direction {
 					return 90;
 			}
 			return 0;
+		}
+
+		@Override
+		public Direction left() {
+			return TOP;
+		}
+
+		@Override
+		public Direction right() {
+			return BOTTOM;
 		}
 	};
 	
@@ -227,11 +267,13 @@ public enum Direction {
 		throw new IllegalArgumentException();
 	}
 	
-	public abstract BorderPosition getBorderPositionInDirection(Position pos);
-	public abstract Position getPositionInDirection(Position pos);
+	public abstract BorderPosition getBorderPositionInDirection(TilePosition pos);
+	public abstract TilePosition getPositionInDirection(TilePosition pos);
 	public abstract int getDistance(double x, double y, Tile tile, BorderPosition borderPos);
 	public abstract double toAngle();
 	public abstract Direction opposite();
+	public abstract Direction left();
+	public abstract Direction right();
 	public abstract int turnTo(Direction other);
 	
 	public static Direction fromString(String in) {

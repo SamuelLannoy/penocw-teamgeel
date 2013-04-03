@@ -1,6 +1,6 @@
 package robot.brain;
 
-import field.Position;
+import field.TilePosition;
 import field.Tile;
 
 public class Node {
@@ -20,7 +20,7 @@ public class Node {
 	public Tile getTile() {
 		return tile;
 	}
-	public Position getPos() {
+	public TilePosition getPos() {
 		return getTile().getPosition();
 	}
 	public int getC() {
