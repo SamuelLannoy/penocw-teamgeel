@@ -23,7 +23,6 @@ public class RobotPool implements Iterable<RobotModel>{
 	public RobotPool(Robot mainRobot){
 		robotPool = new HashMap<String, RobotModel>();
 		robotPool.put("main", mainRobot);
-		mainRobot.setRobotPool(this);
 	}
 	
 	public Collection<RobotModel> getRobots(){

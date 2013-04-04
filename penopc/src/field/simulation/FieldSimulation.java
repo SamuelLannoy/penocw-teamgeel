@@ -48,6 +48,8 @@ public class FieldSimulation extends Field {
 		this.localSimulator = simulator;
 	}
 	
+	private Map<Integer, TilePosition> barcodeIndex = new HashMap<Integer, TilePosition>();
+	
 	public void initialize(String path) throws NumberFormatException, IOException {
 		FileInputStream fstream = new FileInputStream(path);
 		DataInputStream in = new DataInputStream(fstream);
@@ -85,7 +87,9 @@ public class FieldSimulation extends Field {
 								String dir = start.substring(2, 3);
 								setStartDir(id, Direction.fromString(dir));
 							} else {
-								tile.setBarcode(new Barcode(Integer.parseInt(parts[2])));
+								Barcode barcode = new Barcode(Integer.parseInt(parts[2]));
+								tile.setBarcode(barcode);
+								barcodeIndex.put(barcode.getDecimal(), tile.getPosition());
 							}
 						}
 						if (parts.length == 2) {
@@ -134,7 +138,21 @@ public class FieldSimulation extends Field {
 	}
 	
 	public void update() {
-		for (RobotModel model : robotPool.getRobots()) {
+		Tile tile = getCurrentTile();
+		if (isSeesawTile(tile)) {
+			SeesawBorder border = getSeesawBorder(tile);
+			if (!border.isPassable()) {
+				border.setDown();
+				
+				Direction dir = getDirectionOfSeesawBorder(tile);
+				dir = dir.opposite();
+				TilePosition otherSeesawPos = dir.getPositionInDirection(tile.getPosition());
+				SeesawBorder otherBorder = getSeesawBorder(getTileAt(otherSeesawPos));
+				otherBorder.setUp();
+				//DebugBuffer.addInfo("passed across seesaw: " + model.getPlayerNr());
+			}
+		}
+		/*for (RobotModel model : robotPool.getRobots()) {
 			if (getStartPos(model.getPlayerNr()) != null) {
 				Tile tile = getTileOfPos(model.getCurrTile().getPosition().getX() * 40
 						+ model.getPosition().getPosX()
@@ -146,11 +164,11 @@ public class FieldSimulation extends Field {
 					SeesawBorder border = getSeesawBorder(tile);
 					if (!border.isPassable()) {
 						border.setDown();
-						DebugBuffer.addInfo("SETTING DOWN");
+						DebugBuffer.addInfo("passed across seesaw: " + model.getPlayerNr());
 					}
 				}
 			}
-		}
+		}*/
 	}
 	
 	
@@ -374,6 +392,32 @@ public class FieldSimulation extends Field {
 	
 	public Direction getStartDir(int i) {
 		return startDir.get(i);
+	}
+	
+	/*
+	 * Consistent Seesaw with real world and between application
+	 */
+	
+	public void playerLockedSeesaw(int barcode) {
+		TilePosition btilePos = barcodeIndex.get(barcode);
+		Tile btile = getTileAt(btilePos);
+		Barcode otherBarcode = btile.getBarcode().otherSeesawBarcode();
+		TilePosition otherBtilePos = barcodeIndex.get(otherBarcode.getDecimal());
+		SeesawBorder firstBorder = getSeesawBorder(btile);
+		SeesawBorder secondBorder = getSeesawBorder(getTileAt(otherBtilePos));
+		firstBorder.setDown();
+		secondBorder.setUp();
+	}
+	
+	public void playerUnlockedSeesaw(int barcode) {
+		TilePosition btilePos = barcodeIndex.get(barcode);
+		Tile btile = getTileAt(btilePos);
+		Barcode otherBarcode = btile.getBarcode().otherSeesawBarcode();
+		TilePosition otherBtilePos = barcodeIndex.get(otherBarcode.getDecimal());
+		SeesawBorder firstBorder = getSeesawBorder(btile);
+		SeesawBorder secondBorder = getSeesawBorder(getTileAt(otherBtilePos));
+		firstBorder.setUp();
+		secondBorder.setDown();
 	}
 	
 }

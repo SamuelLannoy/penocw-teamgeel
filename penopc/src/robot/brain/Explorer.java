@@ -120,7 +120,8 @@ public class Explorer {
 						if (robot.getCurrTile().hasBarcocde() && robot.getCurrTile().getBarcode().isSeesaw()) {
 							if (SensorBuffer.getInfrared() < 4) {
 								Tile ctile = robot.getCurrTile();
-		
+
+								// TODO register seesaw position
 								robot.moveAcrossSeesaw();
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
@@ -165,7 +166,7 @@ public class Explorer {
 				// is not scanning anymore
 				if (!robot.isScanning()) {
 					if (correct) {
-						// has received correct => wait till it appears onscreen
+						// has received correct => wait till it appears on tile
 						while (robot.getCurrTile().getBarcode() == null);
 					} else {
 						// if wrong barcode wait 5s
@@ -337,7 +338,14 @@ public class Explorer {
 							System.out.println(("INFRARED VALUE: " + SensorBuffer.getInfrared()));
 							// < 4 => open
 							if(SensorBuffer.getInfrared() < 4 ){
-								
+								robot.getField().registerSeesawPosition(btile.getPosition(), dirForw, btile.getBarcode().isSeesawDownCode());
+								try {
+									robot.getClient().lockSeesaw(btile.getBarcode().getDecimal());
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 								// execute move across seesaw
 								DebugBuffer.addInfo("MOVING");
 
@@ -345,6 +353,16 @@ public class Explorer {
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
+								
+								
+								try {
+									robot.getClient().unlockSeesaw();
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								robot.getField().registerSeesawPosition(btile.getPosition(), dirForw, btile.getBarcode().isSeesawUpCode());
 
 								TilePosition afterWipPos = robot.getTilePositionAfterSeesaw(btile);
 								Tile afterWipTile = new Tile(afterWipPos);
@@ -353,6 +371,7 @@ public class Explorer {
 								toExplore.add(new ExploreNode(afterWipTile, robot.getField().getTileAt(robot.getBarcodePositionAfterSeesaw(btile))));
 							}// seesaw closed
 							else{
+								robot.getField().registerSeesawPosition(btile.getPosition(), dirForw, btile.getBarcode().isSeesawUpCode());
 								Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
 							}
 							robot.resumeLightSensor();
@@ -540,6 +559,7 @@ public class Explorer {
 						if (SensorBuffer.getInfrared() < 4) {
 							Tile ctile = robot.getCurrTile();
 	
+							// TODO register seesaw position
 							robot.moveAcrossSeesaw();
 							waitTillRobotStops(robot, 250);
 							waitTillRobotStops(robot, 250);

@@ -167,6 +167,16 @@ public abstract class Field{
 		throw new IllegalArgumentException("no seesaw border on tile " + tile.getPosition());
 	}
 	
+	protected Direction getDirectionOfSeesawBorder(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Border border = getBorderInDirection(tile, dir);
+			if (border instanceof SeesawBorder) {
+				return dir;
+			}
+		}
+		throw new IllegalArgumentException("no seesaw border on tile " + tile.getPosition());
+	}
+	
 	/*
 	 * TODO REMOVE
 	 */

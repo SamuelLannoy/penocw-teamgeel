@@ -298,4 +298,10 @@ public class SimulatorConnector implements ISimulator {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setSimField(FieldSimulation world) {
+		// TODO Auto-generated method stub
+		
+	}
 }

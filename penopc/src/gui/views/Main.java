@@ -45,6 +45,7 @@ import communication.Bluetooth;
 import exception.CommunicationException;
 import field.Barcode;
 import field.BarcodeType;
+import field.simulation.FieldSimulation;
 import gui.tools.BarCodeCanvas;
 import gui.tools.DrawCanvas;
 import gui.tools.PlotCanvas;
@@ -72,6 +73,7 @@ public class Main extends JFrame {
 	private SpectatorClient sClient;
 	private JFrame frame2;
 	private JPanel contentPane2;
+	private FieldSimulation world;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -674,8 +676,13 @@ public class Main extends JFrame {
 	public void init() throws IOException {
 		String playerID = teamMateTextArea.getText();
 		
+		
 		robotPool = new RobotPool(robot);
+		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
 		robot.initialize();
+		if (robot.isSim()) {
+			robot.setSimField(world);
+		}
 		double x = 0;
 		double y = 0;
 		try {
@@ -693,8 +700,8 @@ public class Main extends JFrame {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		handler = new PlayerHandlerImplementation(robotPool, playerID);
-		sHandler = new SpectatorHandlerImplementation(robotPool, playerID);
+		handler = new PlayerHandlerImplementation(robotPool, playerID, world);
+		sHandler = new SpectatorHandlerImplementation(robotPool, playerID, world);
 		Connection conn = RabbitMQ.createConnection();
 		client = new PlayerClient(conn, handler, BROADCAST_ID, playerID);
 		sClient = new SpectatorClient(conn, sHandler, BROADCAST_ID);

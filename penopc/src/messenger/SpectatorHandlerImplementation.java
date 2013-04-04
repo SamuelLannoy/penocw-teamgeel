@@ -17,11 +17,11 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	
 	
 
-	public SpectatorHandlerImplementation(RobotPool pool, String ownId) {
+	public SpectatorHandlerImplementation(RobotPool pool, String ownId, FieldSimulation field) {
 		super();
 		this.robotPool = pool;
 		this.ownId = ownId;
-		field = new FieldSimulation("C:\\demo2.txt");
+		this.field = field;
 	}
 
 	@Override
@@ -87,12 +87,14 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void lockedSeesaw(String playerID, int playerNumber, int barcode) {
-		
+		DebugBuffer.addInfo("player " + playerID + " locked seesaw " + barcode);
+		field.playerLockedSeesaw(barcode);
 	}
 
 	@Override
 	public void unlockedSeesaw(String playerID, int playerNumber, int barcode) {
-		
+		DebugBuffer.addInfo("player " + playerID + " unlocked seesaw " + barcode);
+		field.playerUnlockedSeesaw(barcode);
 	}
 
 }

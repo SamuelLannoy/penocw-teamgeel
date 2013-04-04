@@ -19,6 +19,7 @@ import field.Tile;
 import field.TilePosition;
 import field.UnsureBorder;
 import field.representation.FieldRepresentation;
+import field.simulation.FieldSimulation;
 
 /**
  * @author  Samuel
@@ -381,11 +382,11 @@ public class Robot extends RobotModel{
     	if (client != null && client.isPlaying()) { 
     		try {
     			client.updatePosition(
-    					robotPool.getMainRobot().getCurrTile().getPosition().getX() * 40 +
-    					robotPool.getMainRobot().getPosition().getPosX(),
-    					robotPool.getMainRobot().getCurrTile().getPosition().getY() * 40 +
-    					robotPool.getMainRobot().getPosition().getPosY(),
-    					robotPool.getMainRobot().getPosition().getRotation());
+    					getCurrTile().getPosition().getX() * 40 +
+    					getPosition().getPosX(),
+    					getCurrTile().getPosition().getY() * 40 +
+    					getPosition().getPosY(),
+    					getPosition().getRotation());
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -753,6 +754,10 @@ public class Robot extends RobotModel{
 
 	public int getObjectNr() {
 		return robotConn.getObjectNr();
+	}
+	
+	public void setSimField(FieldSimulation world) {
+		((ISimulator)robotConn).setSimField(world);
 	}
 	
 }

@@ -24,11 +24,11 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	String ownId;
 	FieldSimulation field;
 
-	public PlayerHandlerImplementation(RobotPool pool, String ownId) {
+	public PlayerHandlerImplementation(RobotPool pool, String ownId, FieldSimulation field) {
 		super();
 		robotPool = pool;
 		this.ownId = ownId;
-		field = new FieldSimulation("C:\\demo2.txt");
+		this.field = field;
 	}
 	
 	private String getPoolID(String playerID) {

@@ -411,9 +411,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 			currCmd.execute(this);
 		}
 		updatePassing();
-		if (robotPool != null) {
-			maze.update();
-		}
+		maze.update();
 		//System.out.println(getDistanceXMoved() + "  " + getDistanceYMoved() + " " + getRotation());
 		//System.out.println(distanceXMoved + "  " + distanceYMoved + " " + rotation);
 	}
@@ -435,8 +433,13 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	@Override
 	public void initialize() {
 		timer.start();
-		setupField();
-		getMaze().setRobotPool(getRobotPool());
+		//setupField();
+	}
+
+
+	@Override
+	public void setSimField(FieldSimulation world) {
+		this.maze = world;
 		getMaze().setLocalSimulator(this);
 		Thread lsThr = new Thread(new Runnable() {
 			
@@ -451,7 +454,6 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 		});
 		lsThr.start();
 	}
-
 	@Override
 	public void terminate() {
 		timer.stop();
