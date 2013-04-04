@@ -4,20 +4,14 @@ import field.Tile;
 
 public class ExploreNode {
 	
-	public ExploreNode(Tile tile, Tile parent) {
+	public ExploreNode(Tile tile) {
 		super();
 		this.tile = tile;
-		this.parent = parent;
 	}
 	
 	private Tile tile;
 	public Tile getTile() {
 		return tile;
-	}
-	
-	private Tile parent;
-	public Tile getParent() {
-		return parent;
 	}
 	
 	@Override

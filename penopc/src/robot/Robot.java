@@ -1,6 +1,7 @@
 package robot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,17 +9,20 @@ import communication.SeesawStatus;
 
 import peno.htttp.PlayerClient;
 
+import robot.brain.ExploreNode;
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
 
 import exception.CommunicationException;
+import field.Barcode;
 import field.Direction;
 import field.PanelBorder;
 import field.Tile;
 import field.TilePosition;
 import field.UnsureBorder;
+import field.WhiteBorder;
 import field.representation.FieldRepresentation;
 import field.simulation.FieldSimulation;
 
@@ -793,7 +797,7 @@ public class Robot extends RobotModel{
 				// is the tile I moved on a seesaw barcode tile?
 				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
 					// boolean for A*
-					ignoreSeesaw = seesawAction(false);
+					ignoreSeesaw = seesawAction();
 				}
 				
 			} catch (IllegalArgumentException e) {
@@ -805,16 +809,153 @@ public class Robot extends RobotModel{
 	
 	/**
 	 * 
+	 * @return returns tilepositions that need to be explored
+	 */
+	public Collection<TilePosition> exploreTile() {
+		Collection<TilePosition> toExplore = new ArrayList<TilePosition>(4);
+		// ask if barcode was read
+		boolean correct = hasCorrectBarcode();
+		boolean wrong = hasWrongBarcode();
+
+		// barcode has been detected
+		if (correct || wrong || isScanning()) {
+			getField().registerBarcode(getCurrTile().getPosition(), getDirection());
+			
+			// is not scanning anymore
+			if (!isScanning()) {
+				if (correct) {
+					// has received correct => wait till it appears on tile
+					while (getCurrTile().getBarcode() == null);
+				} else {
+					// if wrong barcode wait 5s
+					waitTillStandby(5000);
+				}
+			} else { // still scanning
+				DebugBuffer.addInfo("still scanning!");
+				waitTillStandby(5000);
+
+				// reupdate correct / wrong
+				correct = hasCorrectBarcode();
+				wrong = hasWrongBarcode();
+			}
+			
+			if (correct) {// correcte barcode
+				DebugBuffer.addInfo("correct barcode");
+				
+				// get barcode of current tile
+				Barcode code = getCurrTile().getBarcode();
+				
+				DebugBuffer.addInfo("test: " + code.getType());
+				
+				// do action based on the barcode type
+				switch (code.getType()) {
+					case OBJECT:
+						System.out.println("Teamnr: "+getTeamNr());
+						System.out.println("Gevonden: "+hasFoundOwnBarcode());
+						
+						// keep current tile of robot as reference
+						Tile tile = getCurrTile();
+						getField().registerBall(tile.getPosition(), getDirection());
+						
+						if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
+							pickUpObjectAction();
+						} else {
+							wrongObjectAction();
+						}
+						
+						System.out.println("tile: " + getCurrTile().getPosition());
+						break;
+					case CHECKPOINT:
+						TilePosition afterBarcodePos = getDirection().getPositionInDirection(getCurrTile().getPosition());
+						toExplore.add(afterBarcodePos);
+						break;
+					case ILLEGAL:
+						break;
+					case OTHERPLAYERBARCODE:
+						break;
+					case PICKUP:
+						break;
+					case SEESAW:
+						// keep current tile as reference
+						Tile ctile = getCurrTile();
+						getField().registerSeesaw(ctile.getPosition(), getDirection());
+						
+						seesawAction();
+						
+						TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
+						toExplore.add(afterWipPos);
+						break;
+					default:
+						break;
+				}
+				
+			} else if (wrong) {
+				throw new IllegalStateException("robot heeft foute barcode gelezen");
+			}
+		} else {
+			TilePosition current = getCurrTile().getPosition();
+			// if border at back is defined do new tile scan
+			Direction dirx = getDirection().opposite();
+			if (field.hasBackBorder(current, dirx) &&
+					!(field.getBorderInDirection(current, dirx) instanceof UnsureBorder)) {
+				newTileScan();
+
+			} else { // else scan 360
+				scanSonar();
+			}
+
+			System.out.println("scan command given " + current + " rt " + getCurrTile());
+
+			// wait till tile border results have been given
+			while (!field.isExplored(current)) {
+				waitTillStandby(1000);
+			}
+			System.out.println("done scanning");
+
+			// check for gray borders in every direction
+			for (Direction dir : Direction.values()) {
+				if (field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+					// turn and move to gray border
+					turnToAngle(dir.toAngle());
+					moveForward(55);
+					waitTillStandby(1000);
+					// scan border again, time outs with 3 tries
+					// after 3 tries add white border with new tile
+					int counter = 0;
+					while (field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+						checkScan();
+						waitTillStandby(900);
+						if (counter == 2 && field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+							getField().registerNewTile(dir, current);
+							break;
+						}
+						counter++;
+					}
+					// move back
+					moveBackward(55);
+					waitTillStandby(1000);
+				}
+				
+				// if a white border was scanned add it to explore list
+				if (field.getBorderInDirection(current, dir) instanceof WhiteBorder) {
+					TilePosition pos = dir.getPositionInDirection(current);
+					toExplore.add(pos);
+				}
+			}
+		}
+		
+		return toExplore;
+	}
+	
+	
+	/**
+	 * 
 	 * @return true if crossed seesaw, false if we didn't cross it
 	 */
-	public boolean seesawAction(boolean exploreTile) {
+	public boolean seesawAction() {
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
-		// register the seesaw when exploring
-		if (exploreTile) {
-			getField().registerSeesaw(ctile.getPosition(), dirForw);
-		}
 		// wait a bit for infrared
 		try {
 			Thread.sleep(500);
@@ -849,6 +990,7 @@ public class Robot extends RobotModel{
 				e.printStackTrace();
 			}
 
+			// we know we are at end of seesaw position
 			TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
 			setPosition(new robot.Position(0, 0, getPosition().getRotation()), getField().getTileAt(afterWipPos));
 			
@@ -859,6 +1001,111 @@ public class Robot extends RobotModel{
 			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
 			return true;
 		}
+	}
+	
+	public void pickUpObjectAction() {
+		// keep current tile and orientation as reference
+		Tile ctile = getCurrTile();
+		Direction dirForw = getDirection();
+		
+		System.out.println("PICKUP");
+		setHasFoundOwnBarcode(true);
+		stopMoving();
+
+		System.out.println("ObjectNr: "+Integer.parseInt(getCurrTile().getBarcode().toString().substring(4, 5),2));
+		System.out.println("OurObjectNr"+getObjectNr());
+		System.out.println("Barcode: "+getCurrTile().getBarcode());
+
+		// execute pickup
+
+		pauseLightSensor();
+		/*robot.turnLeft(90);
+				waitTillRobotStops(robot, 250);
+				robot.startMovingForward();
+				DebugBuffer.addInfo("touch");
+
+				while(!SensorBuffer.getTouched()){}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			DebugBuffer.addInfo("after touch");
+				robot.stopMoving();
+				robot.moveBackward(100);
+				robot.turnRight(90);
+				waitTillRobotStops(robot, 250);*/
+		DebugBuffer.addInfo("pick obj up");
+		startMovingForward();
+		while(!SensorBuffer.getTouched()){};
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DebugBuffer.addInfo("picked up");
+		stopMoving();
+		moveBackward(100);
+		turnLeft(180);
+		moveForward(800);
+		resumeLightSensor();
+		setHasBall(true);
+		// execute pickup
+
+		waitTillStandby(500);
+
+		DebugBuffer.addInfo("OUT: my team is " + getTeamNr());
+		// send object found + join team via rabbitmq
+		getClient().hasFoundObject();
+		try {
+			getClient().joinTeam(getTeamNr());
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+
+		setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
+				field.getTileAt(
+						dirForw.opposite().getPositionInDirection(ctile.getPosition())));
+	}
+	
+	public void wrongObjectAction() {
+		// keep current tile and orientation as reference
+		Tile ctile = getCurrTile();
+		Direction dirForw = getDirection();
+		System.out.println("WRONG OBJ");
+		
+		if (!isSim()) {
+			// execute move away from wrong object
+			pauseLightSensor();
+			scanOnlyLines(true);
+			DebugBuffer.addInfo("PAUSE");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			moveForward(200);
+			waitTillStandby(250);
+			turnLeft(180);
+			waitTillStandby(250);
+			moveForward(750);
+			waitTillStandby(250);
+			DebugBuffer.addInfo("RESUME");
+			scanOnlyLines(false);
+			resumeLightSensor();
+			setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
+					field.getTileAt(
+							dirForw.opposite().getPositionInDirection(ctile.getPosition())));
+			
+		}
+
+		//check is false when next tile (in direction of robot) need not be explored
+		// this is the case when we cross the seesaw or when we come across any object barcode
 	}
 	
 	public void waitTillStandby(int base) {

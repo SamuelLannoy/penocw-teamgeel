@@ -70,9 +70,13 @@ public abstract class Field{
 			addBorder(border);
 		}
 	}
+
+	public Border getBorderInDirection(TilePosition tilePos, Direction dir) {
+		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tilePos));
+	}
 	
 	public Border getBorderInDirection(Tile tile, Direction dir) {
-		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
+		return getBorderInDirection(tile.getPosition(), dir);
 	}
 	
 	/*
