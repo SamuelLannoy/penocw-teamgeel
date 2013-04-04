@@ -1,6 +1,7 @@
 package robot;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import communication.SeesawStatus;
@@ -708,7 +709,8 @@ public class Robot extends RobotModel{
 		robotConn.resumeLightSensor();
 	}
 	
-	public void moveAcrossSeesaw() {
+	public void moveAcrossSeesawPhysical() {
+		pauseLightSensor();
 		moveForward(800);
 		Explorer.waitTillRobotStops(this, 2500);
 		moveForward(400);
@@ -717,6 +719,7 @@ public class Robot extends RobotModel{
 		Explorer.waitTillRobotStops(this, 400);
 		moveForward(190);
 		Explorer.waitTillRobotStops(this, 400);
+		resumeLightSensor();
 //		moveForward(400);
 //		try {
 //			Thread.sleep(250);
@@ -789,50 +792,8 @@ public class Robot extends RobotModel{
 				
 				// is the tile I moved on a seesaw barcode tile?
 				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
-					// keep current tile and orientation as reference
-					Tile ctile = getCurrTile();
-					Direction dirForw = getDirection();
-					// wait a bit for infrared
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					// is seesaw open?
-					if(SensorBuffer.getInfrared() < 4 ){
-						// yes, this means we have to cross it
-						// register open position
-						getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawDownCode());
-						// lock seesaw
-						try {
-							getClient().lockSeesaw(ctile.getBarcode().getDecimal());
-						} catch (IllegalStateException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						// move across the seesaw
-						moveAcrossSeesaw();
-						waitTillStandby(500);
-						
-						// register position closed
-						getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
-						// unlock seesaw
-						try {
-							getClient().unlockSeesaw();
-						} catch (IllegalStateException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-						TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
-						setPosition(new robot.Position(0, 0, getPosition().getRotation()), getField().getTileAt(afterWipPos));
-						ignoreSeesaw = false;
-					} else {
-						// no, we need to make sure A* doesn't send us here again
-						ignoreSeesaw = true;
-					}
+					// boolean for A*
+					ignoreSeesaw = seesawAction(false);
 				}
 				
 			} catch (IllegalArgumentException e) {
@@ -840,7 +801,64 @@ public class Robot extends RobotModel{
 				e.printStackTrace();
 			}
 		}
-		
+	}
+	
+	/**
+	 * 
+	 * @return true if crossed seesaw, false if we didn't cross it
+	 */
+	public boolean seesawAction(boolean exploreTile) {
+		// keep current tile and orientation as reference
+		Tile ctile = getCurrTile();
+		Direction dirForw = getDirection();
+		// register the seesaw when exploring
+		if (exploreTile) {
+			getField().registerSeesaw(ctile.getPosition(), dirForw);
+		}
+		// wait a bit for infrared
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// is seesaw open?
+		if(SensorBuffer.getInfrared() < 4 ){
+			// yes, this means we have to cross it
+			// register open seesaw position
+			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawDownCode());
+			// lock seesaw
+			try {
+				getClient().lockSeesaw(ctile.getBarcode().getDecimal());
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// move across the seesaw
+			moveAcrossSeesawPhysical();
+			waitTillStandby(500);
+			
+			// register closed seesaw position
+			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
+			// unlock seesaw
+			try {
+				getClient().unlockSeesaw();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
+			setPosition(new robot.Position(0, 0, getPosition().getRotation()), getField().getTileAt(afterWipPos));
+			
+			return false;
+		} else {
+			// not open
+			// register closed seesaw position
+			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
+			return true;
+		}
 	}
 	
 	public void waitTillStandby(int base) {

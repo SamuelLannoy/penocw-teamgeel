@@ -320,7 +320,16 @@ public class Explorer {
 							
 							break;
 						case SEESAW:
-							robot.pauseLightSensor();
+							// keep current tile as reference
+							Tile ctile = robot.getCurrTile();
+							robot.seesawAction(true);
+							TilePosition afterWipPos = robot.getTilePositionAfterSeesaw(ctile);
+							Tile afterWipTile = robot.getField().getTileAt(afterWipPos);
+
+							toExplore.add(new ExploreNode(afterWipTile, robot.getField().getTileAt(robot.getBarcodePositionAfterSeesaw(ctile))));
+							check = false;
+							
+							/**robot.pauseLightSensor();
 
 							DebugBuffer.addInfo("SEESAW");
 
@@ -352,7 +361,7 @@ public class Explorer {
 								// execute move across seesaw
 								DebugBuffer.addInfo("MOVING");
 
-								robot.moveAcrossSeesaw();
+								robot.moveAcrossSeesawPhysical();
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
 								waitTillRobotStops(robot, 250);
@@ -377,7 +386,7 @@ public class Explorer {
 								robot.getField().registerSeesawPosition(btile.getPosition(), dirForw, btile.getBarcode().isSeesawUpCode());
 								Status.setSeesawStatus(SeesawStatus.ISNOTAPPLICABLE);
 							}
-							robot.resumeLightSensor();
+							robot.resumeLightSensor();**/
 							break;
 						default:
 							break;
@@ -563,7 +572,7 @@ public class Explorer {
 							Tile ctile = robot.getCurrTile();
 	
 							// TODO register seesaw position
-							robot.moveAcrossSeesaw();
+							robot.moveAcrossSeesawPhysical();
 							waitTillRobotStops(robot, 250);
 							waitTillRobotStops(robot, 250);
 							waitTillRobotStops(robot, 250);
