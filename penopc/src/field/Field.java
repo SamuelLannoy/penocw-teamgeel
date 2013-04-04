@@ -1,21 +1,12 @@
 package field;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import field.fieldmerge.BarcodeNode;
-import field.fieldmerge.Fieldable;
 
 import robot.DebugBuffer;
-import robot.RobotModel;
-import robot.RobotPool;
 
 
-public abstract class Field implements Fieldable {
+public abstract class Field{
 	
 	public final static int TILE_SIZE = 40;
 	public final static double BORDER_SIZE = 2;
@@ -80,6 +71,10 @@ public abstract class Field implements Fieldable {
 		}
 	}
 	
+	public Border getBorderInDirection(Tile tile, Direction dir) {
+		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
+	}
+	
 	/*
 	 * Ball Methods
 	 */
@@ -99,7 +94,26 @@ public abstract class Field implements Fieldable {
 	protected void removeBall(TilePosition pos) {
 		ballMap.removeObjectAtId(pos);
 	}
-
+	
+	/*
+	 * Iterators
+	 */
+	
+	public Iterator<Tile> tileIterator() {
+		return tileMap.iterator();
+	}
+	
+	public Iterator<Border> borderIterator() {
+		return borderMap.iterator();
+	}
+	
+	public Iterator<Ball> ballIterator() {
+		return ballMap.iterator();
+	}
+	
+	/*
+	 * Internal methods
+	 */
 	
 	protected Border getTopBorderOfTile(Tile tile)
 			throws IllegalArgumentException {
@@ -125,78 +139,9 @@ public abstract class Field implements Fieldable {
 		return borderMap.getObjectAtId(pos);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public List<BarcodeNode> getBarcodes() {
-		List<BarcodeNode> ret = new ArrayList<BarcodeNode>(tileMap.getObjectCollection().size() / 5);
-		for (Tile tile : tileMap) {
-			if (tile.getBarcode() != null) {
-				ret.add(new BarcodeNode(tile.getBarcode(), tile.getPosition()));
-			}
-		}
-		return ret;
-	}
-	
-
-	public ObjectMap<TilePosition, Tile> getTileMap() {
-		synchronized(tileMap) {
-			return tileMap;
-		}
-	}
-
-	public ObjectMap<BorderPosition, Border> getBorderMap() {
-		return borderMap;
-	}
-	
-	public ObjectMap<TilePosition, Ball> getBallMap() {
-		return ballMap;
-	}
-	
-
-	
-	public List<Tile> getPassableNeighbours(Tile tile) {
-		List<Tile> ret = new ArrayList<Tile>();
-		
-		for (Direction dir : Direction.values()) {
-			BorderPosition pos;
-			pos = dir.getBorderPositionInDirection(tile.getPosition());
-			if (borderMap.hasId(pos) && borderMap.getObjectAtId(pos).isPassable()) {
-				TilePosition tpos = pos.getOtherPosition(tile.getPosition());
-				if (tileMap.hasId(tpos)) {
-					ret.add(tileMap.getObjectAtId(tpos));
-				}
-			}
-		}
-		
-		
-		
-		return ret;
-	}
-	
-
-
-	@Override
-	public Field toField() {
-		return this;
-	}
-	
-	
-	/*public void makeUnsure(BorderPosition borderPos) {
-		if (borderMap.hasId(borderPos)) {
-			borderMap.overWrite(borderPos, new UnsureBorder(borderPos));
-		}
-	}*/
-
-	public Border getBorderInDirection(Tile tile, Direction dir) {
-		return borderMap.getObjectAtId(dir.getBorderPositionInDirection(tile.getPosition()));
-	}
+	/*
+	 * Seesaw methods
+	 */
 	
 	public boolean hasSeesawBorder(Tile tile) {
 		for (Direction dir : Direction.values()) {
@@ -220,5 +165,23 @@ public abstract class Field implements Fieldable {
 			}
 		}
 		throw new IllegalArgumentException("no seesaw border on tile " + tile.getPosition());
+	}
+	
+	/*
+	 * TODO REMOVE
+	 */
+
+	public ObjectMap<TilePosition, Tile> getTileMap() {
+		synchronized(tileMap) {
+			return tileMap;
+		}
+	}
+
+	public ObjectMap<BorderPosition, Border> getBorderMap() {
+		return borderMap;
+	}
+	
+	public ObjectMap<TilePosition, Ball> getBallMap() {
+		return ballMap;
 	}
 }

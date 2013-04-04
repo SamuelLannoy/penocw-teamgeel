@@ -9,6 +9,8 @@ import java.util.List;
 import robot.Robot;
 
 import field.*;
+import field.representation.FieldRepresentation;
+import field.simulation.FieldSimulation;
 
 public class Pathfinder {
 	
@@ -17,7 +19,7 @@ public class Pathfinder {
 	}
 	
 	public static List<Tile> findShortestPath(Robot robot, Tile endTile, boolean ignoreSeesaw) {
-		Field field = robot.getField();
+		FieldRepresentation field = robot.getField();
 		
 		int h = endTile.getPosition().manhattanDistance(robot.getCurrTile().getPosition());
 		Node start = new Node(robot.getCurrTile(), 0, h, null);

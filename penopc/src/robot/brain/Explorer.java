@@ -1,22 +1,18 @@
 package robot.brain;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import lejos.nxt.Button;
 
 import communication.SeesawStatus;
 import communication.Status;
 
 import field.*;
-import field.fieldmerge.FieldMerger;
-import field.fieldmerge.TileConverter;
 import field.representation.FieldRepresentation;
 
 import robot.DebugBuffer;
@@ -63,7 +59,9 @@ public class Explorer {
 		toExplore.add(init);
 		
 		// add all tiles that have gray borders or that need to be explored
-		for (Tile tile : robot.getField().getTileMap()) {
+		Iterator<Tile> it = robot.getField().tileIterator();
+		while (it.hasNext()) {
+			Tile tile = it.next();
 			if (!robot.getField().isSure(tile.getPosition())
 					&& !robot.getField().isExplored(tile.getPosition())) {
 				ExploreNode node = new ExploreNode(tile, null);
@@ -271,7 +269,7 @@ public class Explorer {
 								
 								
 								robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
-										field.getTileMap().getObjectAtId(
+										field.getTileAt(
 												dirBack.getPositionInDirection(tile.getPosition())));
 							} else {
 								System.out.println("WRONG OBJ");
@@ -294,8 +292,9 @@ public class Explorer {
 									waitTillRobotStops(robot, 250);
 									DebugBuffer.addInfo("RESUME");
 									robot.scanOnlyLines(false);
-									robot.resumeLightSensor();robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
-											field.getTileMap().getObjectAtId(
+									robot.resumeLightSensor();
+									robot.setPosition(new robot.Position(0, 0, dirBack.toAngle()),
+											field.getTileAt(
 													dirBack.getPositionInDirection(tile.getPosition())));
 									
 								}
@@ -391,7 +390,7 @@ public class Explorer {
 
 				// if border at back is defined do new tile scan
 				Direction dirx = Direction.fromAngle(robot.getPosition().getRotation() + 180);
-				if (field.getBorderMap().hasId(dirx.getBorderPositionInDirection(current.getTile().getPosition())) &&
+				if (field.hasBackBorder(current.getTile().getPosition(), dirx) &&
 						!(field.getBorderInDirection(current.getTile(), dirx) instanceof UnsureBorder)) {
 					robot.newTileScan();
 

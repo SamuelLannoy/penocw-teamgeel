@@ -8,7 +8,6 @@ import java.util.Map;
 
 import field.*;
 import field.fieldmerge.BarcodeNode;
-import field.fieldmerge.TileConverter;
 import field.fromfile.MazePart;
 
 public class FieldRepresentation extends Field {
@@ -127,10 +126,10 @@ public class FieldRepresentation extends Field {
 	 * @return
 	 */
 	public boolean isExplored(TilePosition pos) {
-		return getBorderMap().hasId(Direction.TOP.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.BOTTOM.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.RIGHT.getBorderPositionInDirection(pos)) && 
-				getBorderMap().hasId(Direction.LEFT.getBorderPositionInDirection(pos));
+		return hasBorderAt(Direction.TOP.getBorderPositionInDirection(pos)) && 
+				hasBorderAt(Direction.BOTTOM.getBorderPositionInDirection(pos)) && 
+				hasBorderAt(Direction.RIGHT.getBorderPositionInDirection(pos)) && 
+				hasBorderAt(Direction.LEFT.getBorderPositionInDirection(pos));
 	}
 	
 	/**
@@ -140,10 +139,35 @@ public class FieldRepresentation extends Field {
 	 */
 	public boolean isSure(TilePosition pos) {
 		return isExplored(pos) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.TOP) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.BOTTOM) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.LEFT) instanceof UnsureBorder) &&
-				!(getBorderInDirection(getTileMap().getObjectAtId(pos), Direction.RIGHT) instanceof UnsureBorder);
+				!(getBorderInDirection(getTileAt(pos), Direction.TOP) instanceof UnsureBorder) &&
+				!(getBorderInDirection(getTileAt(pos), Direction.BOTTOM) instanceof UnsureBorder) &&
+				!(getBorderInDirection(getTileAt(pos), Direction.LEFT) instanceof UnsureBorder) &&
+				!(getBorderInDirection(getTileAt(pos), Direction.RIGHT) instanceof UnsureBorder);
+	}
+	
+	public boolean hasBackBorder(TilePosition tilePos, Direction backDirection) {
+		return hasBorderAt(backDirection.getBorderPositionInDirection(tilePos));
+	}
+
+	/*
+	 * get methods for A*
+	 */
+	
+	public List<Tile> getPassableNeighbours(Tile tile) {
+		List<Tile> ret = new ArrayList<Tile>();
+		
+		for (Direction dir : Direction.values()) {
+			BorderPosition pos;
+			pos = dir.getBorderPositionInDirection(tile.getPosition());
+			if (borderMap.hasId(pos) && borderMap.getObjectAtId(pos).isPassable()) {
+				TilePosition tpos = pos.getOtherPosition(tile.getPosition());
+				if (tileMap.hasId(tpos)) {
+					ret.add(tileMap.getObjectAtId(tpos));
+				}
+			}
+		}
+		
+		return ret;
 	}
 	
 	/*
@@ -259,14 +283,14 @@ public class FieldRepresentation extends Field {
 			}
 			
 
-			for (Tile tile : field2.getTileMap()) {
+			for (Tile tile : field2.tileMap) {
 				if (!hasTileAt(tile.getPosition())) {
 					addTile(tile);
 					System.out.println("adding " + tile.getPosition());
 				}
 			}
 			
-			for (Border border : field2.getBorderMap()) {
+			for (Border border : field2.borderMap) {
 				if (!hasBorderAt(border.getBorderPos())) {
 					addBorder(border);
 					System.out.println("adding " + border.getBorderPos());
@@ -282,9 +306,19 @@ public class FieldRepresentation extends Field {
 			throw new IllegalStateException();
 		}
 	}
+
+	private List<BarcodeNode> getBarcodes() {
+		List<BarcodeNode> ret = new ArrayList<BarcodeNode>(tileMap.getObjectCollection().size() / 5);
+		for (Tile tile : tileMap) {
+			if (tile.getBarcode() != null) {
+				ret.add(new BarcodeNode(tile.getBarcode(), tile.getPosition()));
+			}
+		}
+		return ret;
+	}
 	
 	public Collection<peno.htttp.Tile> convertToMessage() {
-		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(getTileMap().getKeys().size());
+		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(tileMap.getKeys().size());
 		for (Tile tile : tileMap) {
 			peno.htttp.Tile toadd = convertToTileMsg(tile.getPosition());
 			if (toadd != null)

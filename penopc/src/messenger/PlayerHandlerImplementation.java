@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import field.Field;
-import field.fieldmerge.TileConverter;
 import field.fromfile.FieldFactory;
 import field.representation.FieldRepresentation;
 import field.simulation.FieldSimulation;

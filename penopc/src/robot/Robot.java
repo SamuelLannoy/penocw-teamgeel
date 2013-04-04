@@ -13,19 +13,11 @@ import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
 
 import exception.CommunicationException;
-import field.Barcode;
-import field.Border;
 import field.Direction;
-import field.Field;
 import field.PanelBorder;
 import field.Tile;
 import field.TilePosition;
 import field.UnsureBorder;
-import field.WhiteBorder;
-import field.fieldmerge.FieldConverter;
-import field.fieldmerge.FieldMerger;
-import field.fieldmerge.FieldMessage;
-import field.fromfile.FieldFactory;
 import field.representation.FieldRepresentation;
 
 /**
@@ -325,7 +317,7 @@ public class Robot extends RobotModel{
 			//turnRight(270-getPosition().getRotation());
 		}*/
 
-		if (Math.abs(turn) > 0 && getField().getTileMap().getObjectAtId(start.getPosition()).getBarcode() != null) {
+		if (Math.abs(turn) > 0 && getField().getTileAt(start.getPosition()).getBarcode() != null) {
 			moveForward(60);
 			DebugBuffer.addInfo("testcode");
 		}

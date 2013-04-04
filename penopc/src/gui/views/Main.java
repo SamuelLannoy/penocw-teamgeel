@@ -124,7 +124,7 @@ public class Main extends JFrame {
 	
 	private Thread mapthread = new Thread(new Runnable() {
 		public void run() {
-			mapTimer = new Timer(100, new ActionListener() {
+			mapTimer = new Timer(200, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
 						try {
