@@ -73,7 +73,7 @@ public class Pathfinder {
 		Node currNode = closedList.get(closedList.size()-1);
 		
 		if (!endTile.getPosition().equals(currNode.getPos())) {
-			throw new RuntimeException();
+			throw new IllegalArgumentException("no path found from " + robot.getCurrTile().getPosition() + " to " + endTile.getPosition());
 		}
 		
 		LinkedList<Tile> ret = new LinkedList<Tile>();

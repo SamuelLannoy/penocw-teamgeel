@@ -760,4 +760,109 @@ public class Robot extends RobotModel{
 		((ISimulator)robotConn).setSimField(world);
 	}
 	
+	
+	public void goToTile(TilePosition tilePos) {
+		boolean reachedDestination = false;
+		boolean ignoreSeesaw = false;
+		// redo this till we have found our destination
+		while (!reachedDestination) {
+			// can we find a path to the tile ?
+			try {
+				// yes we can
+				List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoreSeesaw);
+				// update path list for gui
+				setAStartTileList(tileList);
+				
+				if (tileList.size() == 1) { // this means we arrived
+					break;
+				}
+				
+				// TODO check if it is safe to move
+				
+				// before moving flush barcode values
+				hasWrongBarcode();
+				hasCorrectBarcode();
+				
+				// travel to second tile, because first one is always our own tile
+				travelToNextTile(tileList.get(1));
+				waitTillStandby(500);
+				
+				// is the tile I moved on a seesaw barcode tile?
+				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+					// keep current tile and orientation as reference
+					Tile ctile = getCurrTile();
+					Direction dirForw = getDirection();
+					// wait a bit for infrared
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					// is seesaw open?
+					if(SensorBuffer.getInfrared() < 4 ){
+						// yes, this means we have to cross it
+						// register open position
+						getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawDownCode());
+						// lock seesaw
+						try {
+							getClient().lockSeesaw(ctile.getBarcode().getDecimal());
+						} catch (IllegalStateException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						// move across the seesaw
+						moveAcrossSeesaw();
+						waitTillStandby(500);
+						
+						// register position closed
+						getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
+						// unlock seesaw
+						try {
+							getClient().unlockSeesaw();
+						} catch (IllegalStateException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
+						setPosition(new robot.Position(0, 0, getPosition().getRotation()), getField().getTileAt(afterWipPos));
+						ignoreSeesaw = false;
+					} else {
+						// no, we need to make sure A* doesn't send us here again
+						ignoreSeesaw = true;
+					}
+				}
+				
+			} catch (IllegalArgumentException e) {
+				// no we can't
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public void waitTillStandby(int base) {
+		try {
+			if (!isSim()) {
+				Thread.sleep(base);
+			} else {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		while (isMoving()) {
+			try {
+				if (!isSim()) {
+					Thread.sleep(100);
+				} else {
+					Thread.sleep(20);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

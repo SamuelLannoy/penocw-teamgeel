@@ -90,8 +90,11 @@ public class Explorer {
 			if (quit)
 				break;
 			//DebugBuffer.addInfo("explore " + current.getTile().getPosition());
+			
+			
+			robot.goToTile(current.getTile().getPosition());
 
-			boolean ignoreSeesaw = false;
+			/*boolean ignoreSeesaw = false;
 			boolean reachedDestination = false;
 			
 			while (!reachedDestination) {
@@ -144,7 +147,7 @@ public class Explorer {
 					}
 					i++;
 				}
-			}
+			}*/
 			
 			Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 			//System.out.println("dirforw " + dirForw);
