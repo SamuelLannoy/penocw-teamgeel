@@ -33,6 +33,11 @@ public class FieldRepresentation extends Field {
 	public void registerSeesaw(TilePosition barcodePosition, Direction directionOfSeesaw) {
 		Direction left = directionOfSeesaw.left();
 		Direction right = directionOfSeesaw.right();
+		
+		if (getBorderInDirection(getTileAt(barcodePosition), directionOfSeesaw) instanceof WhiteBorder) {
+			SeesawBorder firstSeesawBorder = new SeesawBorder(getTileAt(barcodePosition), directionOfSeesaw);
+			overWriteBorder(firstSeesawBorder);
+		}
 
 		//2de tegel wip toevoegen
 		TilePosition secondTilePosition = directionOfSeesaw.getPositionInDirection(barcodePosition);
@@ -46,7 +51,7 @@ public class FieldRepresentation extends Field {
 		TilePosition thirdTilePosition = directionOfSeesaw.getPositionInDirection(secondTilePosition);
 		System.out.println("adding " + thirdTilePosition);
 		addTile(thirdTilePosition);
-		registerBorder(thirdTilePosition, directionOfSeesaw, WhiteBorder.class);
+		registerBorder(thirdTilePosition, directionOfSeesaw, SeesawBorder.class);
 		registerBorder(thirdTilePosition, left, PanelBorder.class);
 		registerBorder(thirdTilePosition, right, PanelBorder.class);
 
@@ -61,6 +66,32 @@ public class FieldRepresentation extends Field {
 		TilePosition fifthTilePosition = directionOfSeesaw.getPositionInDirection(fourthTilePosition);
 		System.out.println("adding " + fifthTilePosition);
 		addTile(fifthTilePosition);
+	}
+	
+	public void registerSeesawPosition(TilePosition barcodePosition, Direction directionOfSeesaw, boolean standardPosition) {
+		Barcode bc = getTileAt(barcodePosition).getBarcode();
+		SeesawBorder firstSeesawBorder = getSeesawBorder(getTileAt(barcodePosition));
+		TilePosition firstSeesawTilePos = directionOfSeesaw.getPositionInDirection(barcodePosition);
+		TilePosition secondSeesawTilePos = directionOfSeesaw.getPositionInDirection(firstSeesawTilePos);
+		SeesawBorder secondSeesawBorder = getSeesawBorder(getTileAt(secondSeesawTilePos));
+		if (bc.isSeesawDownCode()) {
+			if (standardPosition) {
+				firstSeesawBorder.setDown();
+				secondSeesawBorder.setUp();
+			} else {
+				firstSeesawBorder.setUp();
+				secondSeesawBorder.setDown();
+			}
+		} else if (bc.isSeesawUpCode()) {
+			if (standardPosition) {
+				firstSeesawBorder.setUp();
+				secondSeesawBorder.setDown();
+			} else {
+				firstSeesawBorder.setDown();
+				secondSeesawBorder.setUp();
+			}
+		}
+		
 	}
 	
 	public void registerBall(TilePosition barcodePosition, Direction directionOfObject) {
@@ -157,12 +188,12 @@ public class FieldRepresentation extends Field {
 		List<Tile> ret = new ArrayList<Tile>();
 		
 		for (Direction dir : Direction.values()) {
-			BorderPosition pos;
-			pos = dir.getBorderPositionInDirection(tile.getPosition());
-			if (borderMap.hasId(pos) && borderMap.getObjectAtId(pos).isPassable()) {
+			BorderPosition pos = dir.getBorderPositionInDirection(tile.getPosition());
+			if (hasBorderAt(pos) &&
+					(getBorderAt(pos).isPassable() || getBorderAt(pos) instanceof SeesawBorder)) {
 				TilePosition tpos = pos.getOtherPosition(tile.getPosition());
-				if (tileMap.hasId(tpos)) {
-					ret.add(tileMap.getObjectAtId(tpos));
+				if (hasTileAt(tpos)) {
+					ret.add(getTileAt(tpos));
 				}
 			}
 		}

@@ -101,7 +101,13 @@ public class FieldSimulation extends Field {
 						String param = parts.length >= 2 ? parts[1] : "";
 						List<Border> borders = part.getBorders(param, tile);
 						//System.out.println("" + borders + " param: " + param);
-						addBorders(borders);
+						for (Border border : borders) {
+							if (border instanceof SeesawBorder) {
+								overWriteBorder(border);
+							} else {
+								addBorder(border);
+							}
+						}
 					}
 					currY--;
 				}
