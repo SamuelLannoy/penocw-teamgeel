@@ -170,68 +170,7 @@ public class Explorer {
 
 		waitTillRobotStops(robot, 1000);
 		
-		boolean ignoreSeesaw = false;
-		boolean reachedDestination = false;
-		
-		while (!reachedDestination) {
-			DebugBuffer.addInfo("moving from " + robot.getCurrTile().getPosition() + " to " + robot.getTeamMate().getCurrTile().getPosition());
-			List<Tile> tileList = Pathfinder.findShortestPath(robot, robot.getTeamMate().getCurrTile(), ignoreSeesaw);
-			robot.setAStartTileList(tileList);
-
-			if (tileList.size() > 2) {
-				robot.hasWrongBarcode();
-				robot.hasCorrectBarcode();
-			}
-			
-			int i = 0;
-			for (Tile tile : tileList) {
-				robot.travelToNextTile(tile);
-				waitTillRobotStops(robot, 500);
-				waitTillRobotStops(robot, 250);
-				waitTillRobotStops(robot, 250);
-				waitTillRobotStops(robot, 250);
-				DebugBuffer.addInfo("moved tile");
-				
-
-				if (i != tileList.size() - 1 && i != 0) {
-					robot.hasWrongBarcode();
-					robot.hasCorrectBarcode();
-					if (robot.getCurrTile().hasBarcocde() && robot.getCurrTile().getBarcode().isSeesaw()) {
-						if (SensorBuffer.getInfrared() < 4) {
-							Tile ctile = robot.getCurrTile();
-	
-							// TODO register seesaw position
-							robot.moveAcrossSeesawPhysical();
-							waitTillRobotStops(robot, 250);
-							waitTillRobotStops(robot, 250);
-							waitTillRobotStops(robot, 250);
-	
-							Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-							TilePosition afterWipPos = dirForw.getPositionInDirection(ctile.getPosition());
-							afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-							afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-							afterWipPos = dirForw.getPositionInDirection(afterWipPos);
-							robot.setPosition(new robot.Position(0, 0, robot.getPosition().getRotation()), new Tile(afterWipPos));
-							ignoreSeesaw = false;
-						} else {
-							ignoreSeesaw = true;
-						}
-						break;
-					}
-					if (i == 1) {
-						break;
-					}
-				}
-				else {
-					if (i == tileList.size() - 1) {
-						reachedDestination = true;
-						DebugBuffer.addInfo("reached destination");
-					}
-				}
-				i++;
-			}
-		}
-		
+		robot.goToTeamMate();
 	}
 	
 	public static boolean isPaused() {

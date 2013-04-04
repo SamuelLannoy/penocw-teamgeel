@@ -381,23 +381,29 @@ public class Robot extends RobotModel{
 		return (x<40);
 	}
 	
+	private int connUpdateCounter = 0;
+	
 	public void updatePosition() {		
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
-    	if (client != null && client.isPlaying()) { 
-    		try {
-    			client.updatePosition(
-    					getCurrTile().getPosition().getX() * 40 +
-    					getPosition().getPosX(),
-    					getCurrTile().getPosition().getY() * 40 +
-    					getPosition().getPosY(),
-    					getPosition().getRotation());
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-    	}
+		connUpdateCounter++;
+		if (connUpdateCounter == 10) {
+	    	if (client != null && client.isPlaying()) { 
+	    		try {
+	    			client.updatePosition(
+	    					getCurrTile().getPosition().getX() * 40 +
+	    					getPosition().getPosX(),
+	    					getCurrTile().getPosition().getY() * 40 +
+	    					getPosition().getPosY(),
+	    					getPosition().getRotation());
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    	connUpdateCounter = 0;
+		}
 		
 		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
@@ -767,44 +773,67 @@ public class Robot extends RobotModel{
 		((ISimulator)robotConn).setSimField(world);
 	}
 	
+	public void goToTeamMate() {
+		boolean reachedDestination = false;
+		boolean ignoreSeesaw = false;
+		// redo this till we have found our destination
+		while (!reachedDestination) {
+			try {
+				ignoreSeesaw = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoreSeesaw);
+			} catch (IllegalStateException e) {
+				break;
+			}
+			// TODO check win
+		}
+	}
 	
 	public void goToTile(TilePosition tilePos) {
 		boolean reachedDestination = false;
 		boolean ignoreSeesaw = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
-			// can we find a path to the tile ?
 			try {
-				// yes we can
-				List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoreSeesaw);
-				// update path list for gui
-				setAStartTileList(tileList);
-				
-				if (tileList.size() == 1) { // this means we arrived
-					break;
-				}
-				
-				// TODO check if it is safe to move
-				
-				// before moving flush barcode values
-				hasWrongBarcode();
-				hasCorrectBarcode();
-				
-				// travel to second tile, because first one is always our own tile
-				travelToNextTile(tileList.get(1));
-				waitTillStandby(500);
-				
-				// is the tile I moved on a seesaw barcode tile?
-				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
-					// boolean for A*
-					ignoreSeesaw = seesawAction();
-				}
-				
-			} catch (IllegalArgumentException e) {
-				// no we can't
-				e.printStackTrace();
+				ignoreSeesaw = goToTileLoop(tilePos, ignoreSeesaw);
+			} catch (IllegalStateException e) {
+				break;
 			}
 		}
+	}
+	
+	private boolean goToTileLoop(TilePosition tilePos, boolean ignoreSeesaw) {
+		boolean ret = false;
+		// can we find a path to the tile ?
+		try {
+			// yes we can
+			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoreSeesaw);
+			// update path list for gui
+			setAStartTileList(tileList);
+			
+			if (tileList.size() == 1) { // this means we arrived
+				throw new IllegalStateException();
+			}
+			
+			// TODO check if it is safe to move
+			
+			// before moving flush barcode values
+			hasWrongBarcode();
+			hasCorrectBarcode();
+			
+			// travel to second tile, because first one is always our own tile
+			travelToNextTile(tileList.get(1));
+			waitTillStandby(500);
+			
+			// is the tile I moved on a seesaw barcode tile?
+			if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+				// boolean for A*
+				ret = seesawAction();
+			}
+			
+		} catch (IllegalArgumentException e) {
+			// no we can't
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 	/**
