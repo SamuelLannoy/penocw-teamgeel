@@ -2,14 +2,16 @@ package gui.tools;
 
 import robot.*;
 import field.*;
-import field.TilePosition;
 
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.text.AttributedCharacterIterator;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+
+import peno.htttp.PlayerClient;
 
 
 /*
@@ -57,12 +59,32 @@ public class DrawCanvas extends Canvas{
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
 		if (robotPool != null) {
+			//if (robotPool.getMainRobot().getClient().isPlaying()) {
 			rescale();
 			paintTiles(g);
 			paintBorders(g);
 			paintPos(g);
 			paintObjects(g);
 			shortestPath(g);
+			/*} else {
+				drawLobby(g);
+			}*/
+		}
+	}
+	
+	private void drawLobby(Graphics g) {
+		PlayerClient client = robotPool.getMainRobot().getClient();
+		
+		if (client.isPaused()) {
+			g.drawString("PAUSED", 80, 160);
+		}
+		
+		g.drawString("players in lobby:", 20, 20);
+		int i = 1;
+		for (String player : client.getPlayers()) {
+			String drawString = "Player " + i + ": " + player;
+			g.drawString(drawString, 20, 40 + 20 * i);
+			i++;
 		}
 	}
 	
@@ -156,7 +178,7 @@ public class DrawCanvas extends Canvas{
 		g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
 
 		// teammate current tile
-		if (robotPool.getMainRobot().hasTeamMate()) {
+		if (robotPool.getMainRobot().hasTeamMate() && robotPool.getMainRobot().getField().isMerged()) {
 			x = robotPool.getMainRobot().getTeamMate().getCurrTile().getPosition().getX();
 			y = robotPool.getMainRobot().getTeamMate().getCurrTile().getPosition().getY();
 			g.setColor(Color.GREEN);

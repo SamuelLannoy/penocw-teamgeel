@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import messenger.PenoHtttpTeamCommunicator;
+
 import communication.SeesawStatus;
 
 import peno.htttp.PlayerClient;
 
+import robot.brain.EndingCondition;
 import robot.brain.ExploreNode;
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
@@ -39,6 +42,7 @@ public class Robot extends RobotModel{
 	private Tile endTile;
 	private PlayerClient client;
 	private RobotPool robotPool;
+	private PenoHtttpTeamCommunicator comm;
 
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
@@ -46,6 +50,7 @@ public class Robot extends RobotModel{
 	
 	public void setClient(PlayerClient client) {
 		this.client = client;
+		comm = new PenoHtttpTeamCommunicator(getClient());
 	}
 	
 	public PlayerClient getClient() {
@@ -1165,6 +1170,8 @@ public class Robot extends RobotModel{
 		setCurrentAction("Looking for friend");
 		// wait till teammate is set
 		while (!hasTeamMate()) { }
+		
+		getField().foundTeamMate(comm);
 
 		setCurrentAction("Sending tiles to friend");
 		// make collection of tilesmsges
@@ -1186,13 +1193,26 @@ public class Robot extends RobotModel{
 			getField().mergeFields(getTeamMate().getField());
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-			// explore more
+			Explorer.explore(this, new EndingCondition() {
+				
+				@Override
+				public boolean isLastTile(Robot robot) {
+					try {
+						// merge fields
+						getField().mergeFields(getTeamMate().getField());
+						return true;
+					} catch (IllegalStateException e) {
+						DebugBuffer.addInfo("could not merge fields");
+						return false;
+					}
+				}
+			});
 		}
 	
 		// check merged field ?
 	
 	
-		waitTillStandby(1000);
+		waitTillStandby(2000);
 		
 		goToTeamMate();
 	}

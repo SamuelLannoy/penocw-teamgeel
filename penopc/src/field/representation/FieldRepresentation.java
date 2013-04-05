@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import messenger.PenoHtttpTeamCommunicator;
+
+
 import field.*;
 import field.fieldmerge.BarcodeNode;
 import field.fromfile.MazePart;
@@ -19,6 +22,16 @@ public class FieldRepresentation extends Field {
 		addTile(TilePosition.POSITION_ZERO);
 	}
 	
+	private boolean teamMateMode = false;
+	
+	private PenoHtttpTeamCommunicator comm;
+	
+	public void foundTeamMate(PenoHtttpTeamCommunicator comm) {
+		teamMateMode = true;
+		this.comm = comm;
+		
+	}
+	
 	/*
 	 * Register methods when discovering the maze
 	 */
@@ -28,6 +41,10 @@ public class FieldRepresentation extends Field {
 		addTile(newTilePosition);
 		
 		registerBorder(discoveredFromPosition, discoverDirection, WhiteBorder.class);
+		
+		if (teamMateMode) {
+			comm.sendTiles(convertToTileMsg(newTilePosition));
+		}
 	}
 	
 	public void registerSeesaw(TilePosition barcodePosition, Direction directionOfSeesaw) {
@@ -66,6 +83,14 @@ public class FieldRepresentation extends Field {
 		TilePosition fifthTilePosition = directionOfSeesaw.getPositionInDirection(fourthTilePosition);
 		System.out.println("adding " + fifthTilePosition);
 		addTile(fifthTilePosition);
+		
+		if (teamMateMode) {
+			comm.sendTiles(convertToTileMsg(barcodePosition),
+					convertToTileMsg(secondTilePosition),
+					convertToTileMsg(thirdTilePosition),
+					convertToTileMsg(fourthTilePosition),
+					convertToTileMsg(fifthTilePosition));
+		}
 	}
 	
 	public void registerSeesawPosition(TilePosition barcodePosition, Direction directionOfSeesaw, boolean standardPosition) {
@@ -102,6 +127,11 @@ public class FieldRepresentation extends Field {
 		registerBorder(objectTilePosition, directionOfObject, PanelBorder.class);
 		registerBorder(objectTilePosition, left, PanelBorder.class);
 		registerBorder(objectTilePosition, right, PanelBorder.class);
+
+		if (teamMateMode) {
+			comm.sendTiles(convertToTileMsg(barcodePosition),
+					convertToTileMsg(objectTilePosition));
+		}
 	}
 	
 	public void registerBorder(TilePosition tilePosition, Direction directionOfBorder, Class<? extends Border> borderType) {
@@ -122,6 +152,9 @@ public class FieldRepresentation extends Field {
 		} else {
 			addBorder(newBorder);
 		}
+		if (teamMateMode) {
+			comm.sendTiles(convertToTileMsg(tilePosition));
+		}
 	}
 	
 	public void registerBarcode(TilePosition barcodePosition, Barcode discoveredBarcode, Direction directionOfBarcode) {
@@ -140,6 +173,11 @@ public class FieldRepresentation extends Field {
 		
 		TilePosition nextTilePos = directionOfBarcode.getPositionInDirection(barcodePosition);
 		addTile(nextTilePos);
+		
+
+		if (teamMateMode) {
+			comm.sendTiles(convertToTileMsg(barcodePosition));
+		}
 	}
 	
 	
@@ -244,6 +282,14 @@ public class FieldRepresentation extends Field {
 	
 	public FieldRepresentation(Collection<peno.htttp.Tile> tileList) {
 		super();
+		addFromComm(tileList);
+	}
+	
+	public void addFromTeammate(Collection<peno.htttp.Tile> tileList) {
+		addFromComm(tileList);
+	}
+	
+	private void addFromComm(Collection<peno.htttp.Tile> tileList) {
 		for (peno.htttp.Tile tileMsg : tileList) {
 			String[] split = tileMsg.getToken().split("\\.");
 			MazePart part = MazePart.getPartFromString(split[0]);

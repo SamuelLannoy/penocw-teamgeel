@@ -110,7 +110,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 			robotPool.getMainRobot().getTeamMate().setField(teamMateField);			
 			robotPool.getMainRobot().setReceivedTeamTiles(true);
 		} else {
-			
+			robotPool.getMainRobot().getTeamMate().getField().addFromTeammate(tiles);
 		}
 	}
 
