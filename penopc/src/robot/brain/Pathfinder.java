@@ -1,6 +1,7 @@
 package robot.brain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -15,10 +16,10 @@ import field.simulation.FieldSimulation;
 public class Pathfinder {
 	
 	public static List<Tile> findShortestPath(Robot robot, Tile endTile) {
-		return findShortestPath(robot, endTile, false);
+		return findShortestPath(robot, endTile, new ArrayList<Integer>());
 	}
 	
-	public static List<Tile> findShortestPath(Robot robot, Tile endTile, boolean ignoreSeesaw) {
+	public static List<Tile> findShortestPath(Robot robot, Tile endTile, Collection<Integer> ignoredSeesaws) {
 		FieldRepresentation field = robot.getField();
 		
 		int h = endTile.getPosition().manhattanDistance(robot.getCurrTile().getPosition());
@@ -36,12 +37,19 @@ public class Pathfinder {
 			List<Tile> toAdd = field.getPassableNeighbours(current.getTile());
 			for (Tile tile : toAdd) {
 				//ignore seesaw
-				Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
+				/**Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
 				if (ignoreSeesaw && current.equals(start) && tile.getPosition()
 						.equals(dirForw.getPositionInDirection(current.getPos()))) {
 					//System.out.println("ignored seesaw " + tile.getPosition());
 					continue;
+				}*/
+				if (robot.getField().getTileAt(current.getPos()).hasBarcocde()) {
+					int barcode = robot.getField().getTileAt(current.getPos()).getBarcode().getDecimal();
+					if (ignoredSeesaws.contains(barcode) && robot.getField().hasSeesawBorder(tile)) {
+						continue;
+					}
 				}
+				
 				
 				int cAdd = current.getC() + 1;
 				int hAdd = endTile.getPosition().manhattanDistance(tile.getPosition());

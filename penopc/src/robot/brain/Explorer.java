@@ -131,46 +131,6 @@ public class Explorer {
 		}
 
 		DebugBuffer.addInfo("finish");
-
-		DebugBuffer.addInfo("looking for friend");
-		// wait till teammate is set
-		while (!robot.hasTeamMate()) { }
-		
-		DebugBuffer.addInfo("found friend");
-		DebugBuffer.addInfo("sending tiles to friend");
-		// make collection of tilesmsges
-		Collection<peno.htttp.Tile> tilesMsg = robot.getField().convertToMessage();
-		try {
-			// send tiles
-			robot.getClient().sendTiles(tilesMsg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		DebugBuffer.addInfo("waiting for team tiles");
-		// wait till teammate has sent tiles
-		while (!robot.receivedTeamTiles()) { }
-		DebugBuffer.addInfo("received team tiles");
-		
-		boolean mergedFields = false;
-		try {
-			// merge fields
-			robot.getField().mergeFields(robot.getTeamMate().getField());
-
-			DebugBuffer.addInfo("fields merged");
-			
-			mergedFields = true;
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-			// explore more
-		}
-
-		// check merged field ?
-
-
-		waitTillRobotStops(robot, 1000);
-		
-		robot.goToTeamMate();
 	}
 	
 	public static boolean isPaused() {
@@ -183,29 +143,6 @@ public class Explorer {
 	
 	public static void resume() {
 		pause = false;
-	}
-	
-	public static void waitTillRobotStops(Robot robot, int base) {
-		try {
-			if (!robot.isSim()) {
-				Thread.sleep(base);
-			} else {
-				Thread.sleep(50);
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		while (robot.isMoving()) {
-			try {
-				if (!robot.isSim()) {
-					Thread.sleep(100);
-				} else {
-					Thread.sleep(20);
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 }

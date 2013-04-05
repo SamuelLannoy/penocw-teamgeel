@@ -202,6 +202,7 @@ public class Robot extends RobotModel{
 			@Override
 			public void run() {
 				Explorer.explore(Robot.this);
+				teamComm();
 				
 			}
 		});
@@ -720,16 +721,31 @@ public class Robot extends RobotModel{
 	}
 	
 	public void moveAcrossSeesawPhysical() {
-		pauseLightSensor();
-		moveForward(800);
-		Explorer.waitTillRobotStops(this, 2500);
-		moveForward(400);
-		Explorer.waitTillRobotStops(this, 400);
-		this.orientOnWhiteLine(false);
-		Explorer.waitTillRobotStops(this, 400);
-		moveForward(190);
-		Explorer.waitTillRobotStops(this, 400);
-		resumeLightSensor();
+		if (!isSim()) {
+			pauseLightSensor();
+			moveForward(800);
+			waitTillStandby(2500);
+			moveForward(400);
+			waitTillStandby(400);
+			this.orientOnWhiteLine(false);
+			
+			// flush barcode values before moving
+			hasCorrectBarcode();
+			hasWrongBarcode();
+			
+			waitTillStandby(400);
+			moveForward(190);
+			waitTillStandby(400);
+			resumeLightSensor();
+		} else {
+			moveForward(1200);
+			waitTillStandby(400);
+			// flush barcode values before moving
+			hasCorrectBarcode();
+			hasWrongBarcode();
+			moveForward(400);
+			waitTillStandby(400);
+		}
 //		moveForward(400);
 //		try {
 //			Thread.sleep(250);
@@ -774,43 +790,34 @@ public class Robot extends RobotModel{
 	}
 	
 	public void goToTeamMate() {
+		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
-		boolean ignoreSeesaw = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
-			try {
-				ignoreSeesaw = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoreSeesaw);
-			} catch (IllegalStateException e) {
-				break;
-			}
+			reachedDestination = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoredSeesaws);
 			// TODO check win
 		}
 	}
 	
 	public void goToTile(TilePosition tilePos) {
+		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
-		boolean ignoreSeesaw = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
-			try {
-				ignoreSeesaw = goToTileLoop(tilePos, ignoreSeesaw);
-			} catch (IllegalStateException e) {
-				break;
-			}
+			reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
 		}
 	}
 	
-	private boolean goToTileLoop(TilePosition tilePos, boolean ignoreSeesaw) {
-		boolean ret = false;
+	private boolean goToTileLoop(TilePosition tilePos, Collection<Integer> ignoredSeesaws) {
 		// can we find a path to the tile ?
 		try {
 			// yes we can
-			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoreSeesaw);
+			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoredSeesaws);
 			// update path list for gui
 			setAStartTileList(tileList);
 			
 			if (tileList.size() == 1) { // this means we arrived
-				throw new IllegalStateException();
+				return true;
 			}
 			
 			// TODO check if it is safe to move
@@ -821,19 +828,23 @@ public class Robot extends RobotModel{
 			
 			// travel to second tile, because first one is always our own tile
 			travelToNextTile(tileList.get(1));
-			waitTillStandby(500);
+			waitTillStandby(750);
 			
 			// is the tile I moved on a seesaw barcode tile?
 			if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
 				// boolean for A*
-				ret = seesawAction();
+				boolean ignore = seesawAction();
+				// don't cross seesaw in A* if we couldn't cross it
+				if (ignore) {
+					ignoredSeesaws.add(getCurrTile().getBarcode().getDecimal());
+				}
 			}
 			
 		} catch (IllegalArgumentException e) {
 			// no we can't
 			e.printStackTrace();
 		}
-		return ret;
+		return false;
 	}
 	
 	/**
@@ -909,7 +920,7 @@ public class Robot extends RobotModel{
 						Tile ctile = getCurrTile();
 						getField().registerSeesaw(ctile.getPosition(), getDirection());
 						
-						seesawAction();
+						//seesawAction();
 						
 						TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
 						toExplore.add(afterWipPos);
@@ -1137,7 +1148,52 @@ public class Robot extends RobotModel{
 		// this is the case when we cross the seesaw or when we come across any object barcode
 	}
 	
+	public void teamComm() {
+		DebugBuffer.addInfo("looking for friend");
+		// wait till teammate is set
+		while (!hasTeamMate()) { }
+
+		DebugBuffer.addInfo("found friend");
+		DebugBuffer.addInfo("sending tiles to friend");
+		// make collection of tilesmsges
+		Collection<peno.htttp.Tile> tilesMsg = getField().convertToMessage();
+		try {
+			// send tiles
+			getClient().sendTiles(tilesMsg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		DebugBuffer.addInfo("waiting for team tiles");
+		// wait till teammate has sent tiles
+		while (!receivedTeamTiles()) { }
+		DebugBuffer.addInfo("received team tiles");
+
+		try {
+			// merge fields
+			getField().mergeFields(getTeamMate().getField());
+
+			DebugBuffer.addInfo("fields merged");
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+			// explore more
+		}
+	
+		// check merged field ?
+	
+	
+		waitTillStandby(1000);
+		
+		goToTeamMate();
+	}
+	
 	public void waitTillStandby(int base) {
+		waitTillStandbyInner(base/3);
+		waitTillStandbyInner(base/3);
+		waitTillStandbyInner(base/3);
+	}
+	
+	private void waitTillStandbyInner(int base) {
 		try {
 			if (!isSim()) {
 				Thread.sleep(base);

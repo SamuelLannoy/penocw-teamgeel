@@ -128,7 +128,6 @@ public class FieldSimulation extends Field {
 				//DebugBuffer.addInfo("b " + tile.getPosition());
 				Barcode barcode = tile.getBarcode();
 				if (barcode.isSeesawDownCode()) {
-					//DebugBuffer.addInfo("c " + tile.getPosition());
 					border.setDown();
 				} else if (barcode.isSeesawUpCode()) {
 					border.setUp();
