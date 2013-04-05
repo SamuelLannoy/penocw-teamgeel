@@ -65,8 +65,17 @@ public class Explorer {
 		Collections.sort(toExplore, new Comparator<TilePosition>() {
 			@Override
 			public int compare(TilePosition arg0, TilePosition arg1) {
-				int mh1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0)).size();
-				int mh2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1)).size();
+				int mh1, mh2;
+				try {
+					mh1 = Pathfinder.findShortestPathWithRobotCollision(robot, robot.getField().getTileAt(arg0), robot.getRobotSpottedTiles()).size();
+				} catch (IllegalArgumentException e) {
+					mh1 = Integer.MAX_VALUE;
+				}
+				try {
+					mh2 = Pathfinder.findShortestPathWithRobotCollision(robot, robot.getField().getTileAt(arg1), robot.getRobotSpottedTiles()).size();
+				} catch (IllegalArgumentException e) {
+					mh2 = Integer.MAX_VALUE;
+				}
 				//int mh1 = arg0.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
 				//int mh2 = arg1.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
 				if (mh1 < mh2) return -1;

@@ -30,4 +30,6 @@ public interface ISimulator extends AbstractRobotConnector {
 	public abstract void setSeesawStatus(SeesawStatus status);
 	
 	public abstract void setSimField(FieldSimulation world);
+	
+	public abstract boolean isRobotInFront();
 }

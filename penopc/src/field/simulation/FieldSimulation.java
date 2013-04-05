@@ -368,6 +368,22 @@ public class FieldSimulation extends Field {
 		}
 	}
 	
+	public boolean isRobotInFront() {
+		Tile tile = getCurrentTile();
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation());
+		TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+		TilePosition dNextTilePos = dir.getPositionInDirection(nextTilePos);
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			DebugBuffer.addInfo("me " + nextTilePos + " other " + modelTilePos);
+			if (nextTilePos.equals(modelTilePos) || dNextTilePos.equals(modelTilePos)) {
+				DebugBuffer.addInfo("collision");
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	
 	
 	/*

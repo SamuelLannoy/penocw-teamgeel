@@ -304,4 +304,10 @@ public class SimulatorConnector implements ISimulator {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean isRobotInFront() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

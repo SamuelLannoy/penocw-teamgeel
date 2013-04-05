@@ -192,6 +192,14 @@ public class DrawCanvas extends Canvas{
 			g.setColor(Color.CYAN);
 			g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
 		}
+		
+		// draw robot spotted tiles
+		for (TilePosition tilePos : robotPool.getMainRobot().getRobotSpottedTiles()) {
+			x = tilePos.getX();
+			y = tilePos.getY();
+			g.setColor(Color.RED);
+			g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+		}
 
 		//ghost
 		if (robotPool.getMainRobot().isSim()){

@@ -20,6 +20,14 @@ public class Pathfinder {
 	}
 	
 	public static List<Tile> findShortestPath(Robot robot, Tile endTile, Collection<Integer> ignoredSeesaws) {
+		return findShortestPath(robot, endTile, ignoredSeesaws, new ArrayList<TilePosition>());
+	}
+	
+	public static List<Tile> findShortestPathWithRobotCollision(Robot robot, Tile endTile, Collection<TilePosition> ignoredTiles) {
+		return findShortestPath(robot, endTile, new ArrayList<Integer>(), ignoredTiles);
+	}
+	
+	public static List<Tile> findShortestPath(Robot robot, Tile endTile, Collection<Integer> ignoredSeesaws, Collection<TilePosition> ignoredTiles) {
 		FieldRepresentation field = robot.getField();
 		
 		int h = endTile.getPosition().manhattanDistance(robot.getCurrTile().getPosition());
@@ -44,6 +52,8 @@ public class Pathfinder {
 					}
 				}
 				
+				if (ignoredTiles.contains(tile.getPosition()))
+					continue;				
 				
 				int cAdd = current.getC() + 1;
 				int hAdd = endTile.getPosition().manhattanDistance(tile.getPosition());

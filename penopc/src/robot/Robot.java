@@ -3,7 +3,9 @@ package robot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import messenger.PenoHtttpTeamCommunicator;
 
@@ -277,8 +279,14 @@ public class Robot extends RobotModel{
 			throw new IllegalArgumentException("tile is not next to current tile " + tile.getPosition());
 		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) == 0)
 			return;
-		int diffx = tile.getPosition().getX() - getCurrTile().getPosition().getX();
-		int diffy = tile.getPosition().getY() - getCurrTile().getPosition().getY();
+		turnToTile(tile.getPosition());
+		moveNext();
+		//System.out.println("moveto " + tile.getPosition());
+	}
+	
+	private void turnToTile(TilePosition tilePos) {
+		int diffx = tilePos.getX() - getCurrTile().getPosition().getX();
+		int diffy = tilePos.getY() - getCurrTile().getPosition().getY();
 		if (diffx == 0 && diffy == 1) {
 			turnToAngle(0);
 			//turnLeft(getPosition().getRotation());
@@ -292,8 +300,6 @@ public class Robot extends RobotModel{
 			turnToAngle(-90);
 			//turnRight(270-getPosition().getRotation());
 		}
-		moveNext();
-		//System.out.println("moveto " + tile.getPosition());
 	}
 	
 	public void travelFromTileToTile(Tile start, Tile finish, Tile prev) {
@@ -338,13 +344,10 @@ public class Robot extends RobotModel{
 		//DebugBuffer.addInfo("traveling from "+ start.getPosition() + " to " + finish.getPosition());
 	}
 	
-	private int counter = 0;
-	
 	public void moveNext() {
 		//if (counter == 0){
 			orientOnWhiteLine(false);
 			moveForward(230);
-			counter++;
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;
@@ -796,11 +799,13 @@ public class Robot extends RobotModel{
 	}
 	
 	public void goToTeamMate() {
+		// TODO never go to teammate on seesaw?
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
 			setCurrentAction("Moving to teammate at " + getTeamMate().getCurrTile().getPosition());
+			decreaseSpottedRobotTiles();
 			reachedDestination = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoredSeesaws);
 			// TODO check win
 		}
@@ -808,11 +813,12 @@ public class Robot extends RobotModel{
 	
 	public void goToTile(TilePosition tilePos) {
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
-		setCurrentAction("Moving to tile " + tilePos);
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
+			decreaseSpottedRobotTiles();
 			tilePos = Explorer.recalcExplore(this, tilePos);
+			setCurrentAction("Moving to tile " + tilePos);
 			reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
 		}
 	}
@@ -821,7 +827,7 @@ public class Robot extends RobotModel{
 		// can we find a path to the tile ?
 		try {
 			// yes we can
-			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoredSeesaws);
+			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoredSeesaws, getRobotSpottedTiles());
 			// update path list for gui
 			setAStartTileList(tileList);
 			
@@ -829,25 +835,34 @@ public class Robot extends RobotModel{
 				return true;
 			}
 			
-			// TODO check if it is safe to move
+			// check if there is a robot in front of us
+			turnToTile(tileList.get(1).getPosition());
+			waitTillStandby(1000);
+			boolean safe = checkIfSafe();
 			
-			// before moving flush barcode values
-			hasWrongBarcode();
-			hasCorrectBarcode();
-			
-			// travel to second tile, because first one is always our own tile
-			//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
-			travelToNextTile(tileList.get(1));
-			waitTillStandby(750);
-			
-			// is the tile I moved on a seesaw barcode tile?
-			if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
-				// boolean for A*
-				boolean ignore = seesawAction();
-				// don't cross seesaw in A* if we couldn't cross it
-				if (ignore) {
-					ignoredSeesaws.add(getCurrTile().getBarcode().getDecimal());
+			if (safe) {
+				// before moving flush barcode values
+				hasWrongBarcode();
+				hasCorrectBarcode();
+				
+				// travel to second tile, because first one is always our own tile
+				//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
+				travelToNextTile(tileList.get(1));
+				waitTillStandby(750);
+				
+				// is the tile I moved on a seesaw barcode tile?
+				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+					// boolean for A*
+					boolean ignore = seesawAction();
+					// don't cross seesaw in A* if we couldn't cross it
+					if (ignore) {
+						ignoredSeesaws.add(getCurrTile().getBarcode().getDecimal());
+					}
 				}
+			} else {
+				DebugBuffer.addInfo("Robot spotted at " + tileList.get(1).getPosition());
+				robotSpottedTiles.put(tileList.get(1).getPosition(), 3);
+				return false;
 			}
 			
 		} catch (IllegalArgumentException e) {
@@ -855,6 +870,15 @@ public class Robot extends RobotModel{
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	private boolean checkIfSafe() {
+		//return true;
+		if (isSim()) {
+			return !((ISimulator)robotConn).isRobotInFront();
+		} else {
+			return true;
+		}
 	}
 	
 	/**
@@ -1169,8 +1193,16 @@ public class Robot extends RobotModel{
 	
 	public void teamComm() {
 		setCurrentAction("Looking for friend");
-		// wait till teammate is set
-		while (!hasTeamMate()) { }
+		// wait till teammate is set, meanwhile go explore
+		Explorer.explore(this, new EndingCondition() {
+			@Override
+			public boolean isLastTile(Robot robot) {
+				return robot.hasTeamMate();
+			}
+		});
+		
+		// wait till my teammate is here
+		while (!hasTeamMate());
 		
 		getField().foundTeamMate(comm);
 
@@ -1211,7 +1243,7 @@ public class Robot extends RobotModel{
 			});
 		}
 	
-		// check merged field ?
+		// TODO check merged field ?
 	
 	
 		waitTillStandby(2000);
@@ -1256,5 +1288,21 @@ public class Robot extends RobotModel{
 
 	public void setCurrentAction(String currentAction) {
 		this.currentAction = currentAction;
+	}
+	
+	private Map<TilePosition, Integer> robotSpottedTiles = new HashMap<TilePosition, Integer>();
+	
+	public Collection<TilePosition> getRobotSpottedTiles() {
+		return robotSpottedTiles.keySet();
+	}
+	
+	private void decreaseSpottedRobotTiles() {
+		for (TilePosition tilePos : robotSpottedTiles.keySet()) {
+			if (robotSpottedTiles.get(tilePos) == 0) {
+				robotSpottedTiles.remove(tilePos);
+			} else {
+				robotSpottedTiles.put(tilePos, robotSpottedTiles.get(tilePos) - 1);
+			}
+		}
 	}
 }
