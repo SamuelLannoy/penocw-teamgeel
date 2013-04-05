@@ -310,7 +310,13 @@ public class FieldRepresentation extends Field {
 			
 			Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
 
-			addBorders(borders);
+			for (Border border : borders) {
+				if (border instanceof SeesawBorder) {
+					overWriteBorder(border);
+				} else {
+					addBorder(border);
+				}
+			}
 		}
 	}
 	

@@ -28,8 +28,7 @@ public class Explorer {
 
 			@Override
 			public boolean isLastTile(Robot robot) {
-				//return false;
-				return robot.hasBall();
+				return false;
 			}
 			
 		});
@@ -46,11 +45,43 @@ public class Explorer {
 		});
 	}
 	
-	public static void explore(final Robot robot, EndingCondition endCond) {
+	private static LinkedList<TilePosition> toExplore;
+	
+	private static TilePosition current;
+	
+	public static TilePosition recalcExplore(Robot robot, TilePosition current) {
+		toExplore.add(current);
+		robot.getToExplore().add(current);
+		
+		sortExplore(robot);
+		
+		current = toExplore.removeFirst();
+		robot.getToExplore().remove(current);
+		return current;
+	}
+	
+	public static void sortExplore(final Robot robot) {
+		// sort tiles on a* length
+		Collections.sort(toExplore, new Comparator<TilePosition>() {
+			@Override
+			public int compare(TilePosition arg0, TilePosition arg1) {
+				int mh1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0)).size();
+				int mh2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1)).size();
+				//int mh1 = arg0.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
+				//int mh2 = arg1.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
+				if (mh1 < mh2) return -1;
+				if (mh1 > mh2) return 1;
+				return 0;
+			}
+			
+		});
+	}
+	
+	public static void explore(Robot robot, EndingCondition endCond) {
 		
 		FieldRepresentation field = robot.getField();
 		// list of nodes that need to be explored
-		LinkedList<TilePosition> toExplore = new LinkedList<TilePosition>();
+		toExplore = new LinkedList<TilePosition>();
 		// list of tiles that are explored
 		HashSet<TilePosition> explored = new HashSet<TilePosition>();
 		// first explore tile defined
@@ -73,7 +104,7 @@ public class Explorer {
 		// main loop : stop when explore list or last tile has been met due to ending condition
 		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
 			// pop first
-			TilePosition current = toExplore.removeFirst();
+			current = toExplore.removeFirst();
 			robot.getToExplore().remove(current);
 			
 			
@@ -106,21 +137,7 @@ public class Explorer {
 				}
 			}
 			
-			// sort tiles on a* length
-			Collections.sort(toExplore, new Comparator<TilePosition>() {
-
-				@Override
-				public int compare(TilePosition arg0, TilePosition arg1) {
-					int mh1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0)).size();
-					int mh2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1)).size();
-					//int mh1 = arg0.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
-					//int mh2 = arg1.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
-					if (mh1 < mh2) return -1;
-					if (mh1 > mh2) return 1;
-					return 0;
-				}
-				
-			});
+			//sortExplore(robot);
 			
 			
 			//DebugBuffer.addInfo("list " + toExplore);

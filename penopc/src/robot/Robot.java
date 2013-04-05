@@ -207,7 +207,7 @@ public class Robot extends RobotModel{
 			
 			@Override
 			public void run() {
-				Explorer.explore(Robot.this);
+				Explorer.exploreTillObjectFound(Robot.this);
 				teamComm();
 				
 			}
@@ -812,6 +812,7 @@ public class Robot extends RobotModel{
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
+			tilePos = Explorer.recalcExplore(this, tilePos);
 			reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
 		}
 	}
@@ -835,7 +836,7 @@ public class Robot extends RobotModel{
 			hasCorrectBarcode();
 			
 			// travel to second tile, because first one is always our own tile
-			DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
+			//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
 			travelToNextTile(tileList.get(1));
 			waitTillStandby(750);
 			
@@ -1192,7 +1193,8 @@ public class Robot extends RobotModel{
 			// merge fields
 			getField().mergeFields(getTeamMate().getField());
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			DebugBuffer.addInfo("exploring more");
+			//e.printStackTrace();
 			Explorer.explore(this, new EndingCondition() {
 				
 				@Override

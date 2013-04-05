@@ -37,12 +37,6 @@ public class Pathfinder {
 			List<Tile> toAdd = field.getPassableNeighbours(current.getTile());
 			for (Tile tile : toAdd) {
 				//ignore seesaw
-				/**Direction dirForw = Direction.fromAngle(robot.getPosition().getRotation());
-				if (ignoreSeesaw && current.equals(start) && tile.getPosition()
-						.equals(dirForw.getPositionInDirection(current.getPos()))) {
-					//System.out.println("ignored seesaw " + tile.getPosition());
-					continue;
-				}*/
 				if (robot.getField().getTileAt(current.getPos()).hasBarcocde()) {
 					int barcode = robot.getField().getTileAt(current.getPos()).getBarcode().getDecimal();
 					if (ignoredSeesaws.contains(barcode) && robot.getField().hasSeesawBorder(tile)) {
