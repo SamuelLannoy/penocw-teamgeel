@@ -82,7 +82,6 @@ public class Main extends JFrame {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
-						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -97,7 +96,6 @@ public class Main extends JFrame {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
 						movement_window.append(robot.getPosition() + "\n");
-						last_movement_window.setText(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -163,6 +161,7 @@ public class Main extends JFrame {
 			debugTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
+						robot_current_action.setText(robot.getCurrentAction());
 						try {
 							// update debug info.
 				    		synchronized(DebugBuffer.getDebuginfo()) {
@@ -269,7 +268,7 @@ public class Main extends JFrame {
 	private JToggleButton toggle_simulator;
 	private JButton button_terminate;
 	private JTextArea movement_window;
-	private JTextArea last_movement_window;
+	private JTextArea robot_current_action;
 	private JButton btnExplore;
 	private List<Integer> plotList = Collections.synchronizedList(new ArrayList<Integer>());
 	private PlotCanvas canvas_Light;
@@ -358,8 +357,8 @@ public class Main extends JFrame {
 		JScrollPane scrollPane_debugwindow = new JScrollPane();
 		scrollPane_debugwindow.setBounds(10, 275, 460, 100);
 		
-		last_movement_window = new JTextArea();
-		last_movement_window.setBounds(10, 480, 250, 23);
+		robot_current_action = new JTextArea();
+		robot_current_action.setBounds(10, 480, 250, 23);
 
 		contentPane.setLayout(null);
 		
@@ -374,7 +373,7 @@ public class Main extends JFrame {
 		debugwindow = new JTextArea();
 		scrollPane_debugwindow.setViewportView(debugwindow);
 		debugwindow.append("Maak een keuze uit robot of simulator.\n");
-		contentPane.add(last_movement_window);
+		contentPane.add(robot_current_action);
 		
 		toggle_robot = new JToggleButton("robot");
 		toggle_robot.setBounds(10, 7, 67, 23);

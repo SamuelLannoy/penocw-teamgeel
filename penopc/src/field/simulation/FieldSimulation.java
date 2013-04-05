@@ -278,7 +278,7 @@ public class FieldSimulation extends Field {
 				Border border = getBorderOfPos(tile, corners[i][0], corners[i][1]);
 				if (border != null && !border.isPassable()) {
 					ballMap.removeObjectAtId(tile.getPosition());
-					DebugBuffer.addInfo("robot collected ball");
+					//DebugBuffer.addInfo("robot collected ball");
 					return true;
 				}
 			}

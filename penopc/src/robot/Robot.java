@@ -100,6 +100,7 @@ public class Robot extends RobotModel{
 
 	public void initialize() throws CommunicationException, IOException {
 		robotConn.initialize();
+		setCurrentAction("Idle");
 		
 		/*setField(FieldFactory.fieldFromFile("c:\\demo2.txt"));
 		currTile = getField().getTileMap().getObjectAtId(new field.Position(0, 0));*/
@@ -257,11 +258,11 @@ public class Robot extends RobotModel{
 			delta += 360;
 		if (delta < 0) {
 			turnLeft(-delta);
-			DebugBuffer.addInfo("l " + delta);
+			//DebugBuffer.addInfo("l " + delta);
 			//System.out.println("l " + delta);
 		} else {
 			turnRight(delta);
-			DebugBuffer.addInfo("r " + delta);
+			//DebugBuffer.addInfo("r " + delta);
 			//System.out.println("r " + delta);
 		}
 	}
@@ -326,7 +327,7 @@ public class Robot extends RobotModel{
 
 		if (Math.abs(turn) > 0 && getField().getTileAt(start.getPosition()).getBarcode() != null) {
 			moveForward(60);
-			DebugBuffer.addInfo("testcode");
+			//DebugBuffer.addInfo("testcode");
 		}
 		moveNext();
 		//DebugBuffer.addInfo("traveling from "+ start.getPosition() + " to " + finish.getPosition());
@@ -457,7 +458,7 @@ public class Robot extends RobotModel{
 	public boolean hasCorrectBarcode() {
 		if (correctBarcode) {
 			correctBarcode = false;
-			DebugBuffer.addInfo("has correct barcode!");
+			//DebugBuffer.addInfo("has correct barcode!");
 			return true;
 		}
 		return false;
@@ -468,7 +469,7 @@ public class Robot extends RobotModel{
 	public boolean hasWrongBarcode() {
 		if (wrongBarcode) {
 			wrongBarcode = false;
-			DebugBuffer.addInfo("has wrong barcode!");
+			//DebugBuffer.addInfo("has wrong barcode!");
 			return true;
 		}
 		return false;
@@ -479,7 +480,7 @@ public class Robot extends RobotModel{
 		correctBarcode = SensorBuffer.getLightUpdates().contains(1) || correctBarcode;
 		wrongBarcode = SensorBuffer.getLightUpdates().contains(3) || wrongBarcode;
 		if (SensorBuffer.getLightUpdates().size() > 0) {
-			DebugBuffer.addInfo("lijst "+SensorBuffer.getLightUpdates());
+			//DebugBuffer.addInfo("lijst "+SensorBuffer.getLightUpdates());
 			//DebugBuffer.addInfo("cb " + correctBarcode + " c1 " + SensorBuffer.getLightUpdates().contains(1));
 			//DebugBuffer.addInfo("wb " + wrongBarcode + " c3 " + SensorBuffer.getLightUpdates().contains(3));
 		}
@@ -794,6 +795,7 @@ public class Robot extends RobotModel{
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
+			setCurrentAction("Moving to teammate at " + getTeamMate().getCurrTile().getPosition());
 			reachedDestination = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoredSeesaws);
 			// TODO check win
 		}
@@ -801,6 +803,7 @@ public class Robot extends RobotModel{
 	
 	public void goToTile(TilePosition tilePos) {
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
+		setCurrentAction("Moving to tile " + tilePos);
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
 		while (!reachedDestination) {
@@ -827,6 +830,7 @@ public class Robot extends RobotModel{
 			hasCorrectBarcode();
 			
 			// travel to second tile, because first one is always our own tile
+			DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
 			travelToNextTile(tileList.get(1));
 			waitTillStandby(750);
 			
@@ -880,12 +884,12 @@ public class Robot extends RobotModel{
 			}
 			
 			if (correct) {// correcte barcode
-				DebugBuffer.addInfo("correct barcode");
+				//DebugBuffer.addInfo("correct barcode");
 				
 				// get barcode of current tile
 				Barcode code = getCurrTile().getBarcode();
 				
-				DebugBuffer.addInfo("test: " + code.getType());
+				//DebugBuffer.addInfo("test: " + code.getType());
 				
 				// do action based on the barcode type
 				switch (code.getType()) {
@@ -987,7 +991,12 @@ public class Robot extends RobotModel{
 		return toExplore;
 	}
 	
+	private Collection<TilePosition> toExplore = new ArrayList<TilePosition>();
 	
+	public Collection<TilePosition> getToExplore() {
+		return toExplore;
+	}
+
 	/**
 	 * 
 	 * @return true if crossed seesaw, false if we didn't cross it
@@ -1004,6 +1013,7 @@ public class Robot extends RobotModel{
 		}
 		// is seesaw open?
 		if(SensorBuffer.getInfrared() < 4 ){
+			setCurrentAction("Crossing seesaw at " + ctile.getPosition());
 			// yes, this means we have to cross it
 			// register open seesaw position
 			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawDownCode());
@@ -1036,6 +1046,7 @@ public class Robot extends RobotModel{
 			
 			return false;
 		} else {
+			setCurrentAction("Can not cross seesaw at " + ctile.getPosition());
 			// not open
 			// register closed seesaw position
 			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
@@ -1047,6 +1058,7 @@ public class Robot extends RobotModel{
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
+		setCurrentAction("Picking up object at " + ctile.getPosition());
 		
 		System.out.println("PICKUP");
 		setHasFoundOwnBarcode(true);
@@ -1075,7 +1087,7 @@ public class Robot extends RobotModel{
 				robot.moveBackward(100);
 				robot.turnRight(90);
 				waitTillRobotStops(robot, 250);*/
-		DebugBuffer.addInfo("pick obj up");
+		//DebugBuffer.addInfo("pick obj up");
 		startMovingForward();
 		while(!SensorBuffer.getTouched()){};
 		try {
@@ -1084,7 +1096,7 @@ public class Robot extends RobotModel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugBuffer.addInfo("picked up");
+		//DebugBuffer.addInfo("picked up");
 		stopMoving();
 		moveBackward(100);
 		turnLeft(180);
@@ -1117,13 +1129,14 @@ public class Robot extends RobotModel{
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
-		System.out.println("WRONG OBJ");
+		setCurrentAction("Found other player object at " + ctile.getPosition());
+		//System.out.println("WRONG OBJ");
 		
 		if (!isSim()) {
 			// execute move away from wrong object
 			pauseLightSensor();
 			scanOnlyLines(true);
-			DebugBuffer.addInfo("PAUSE");
+			//DebugBuffer.addInfo("PAUSE");
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -1135,7 +1148,7 @@ public class Robot extends RobotModel{
 			waitTillStandby(250);
 			moveForward(750);
 			waitTillStandby(250);
-			DebugBuffer.addInfo("RESUME");
+			//DebugBuffer.addInfo("RESUME");
 			scanOnlyLines(false);
 			resumeLightSensor();
 			setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
@@ -1149,12 +1162,11 @@ public class Robot extends RobotModel{
 	}
 	
 	public void teamComm() {
-		DebugBuffer.addInfo("looking for friend");
+		setCurrentAction("Looking for friend");
 		// wait till teammate is set
 		while (!hasTeamMate()) { }
 
-		DebugBuffer.addInfo("found friend");
-		DebugBuffer.addInfo("sending tiles to friend");
+		setCurrentAction("Sending tiles to friend");
 		// make collection of tilesmsges
 		Collection<peno.htttp.Tile> tilesMsg = getField().convertToMessage();
 		try {
@@ -1164,16 +1176,14 @@ public class Robot extends RobotModel{
 			e.printStackTrace();
 		}
 
-		DebugBuffer.addInfo("waiting for team tiles");
+		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles
 		while (!receivedTeamTiles()) { }
-		DebugBuffer.addInfo("received team tiles");
+		setCurrentAction("Merging tiles");
 
 		try {
 			// merge fields
 			getField().mergeFields(getTeamMate().getField());
-
-			DebugBuffer.addInfo("fields merged");
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			// explore more
@@ -1208,11 +1218,21 @@ public class Robot extends RobotModel{
 				if (!isSim()) {
 					Thread.sleep(100);
 				} else {
-					Thread.sleep(20);
+					Thread.sleep(50);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private String currentAction;
+
+	public String getCurrentAction() {
+		return currentAction;
+	}
+
+	public void setCurrentAction(String currentAction) {
+		this.currentAction = currentAction;
 	}
 }

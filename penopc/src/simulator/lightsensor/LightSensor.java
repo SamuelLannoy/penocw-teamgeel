@@ -77,7 +77,7 @@ public class LightSensor {
 					SensorBuffer.addLightUpdate(1);
 					//Barcode bc = maze.getTileMap().getObjectAtId(FieldSimulation.convertToTilePosition(connector.getTDistanceX(), connector.getTDistanceY())).getBarcode();
 					Barcode bc = maze.getCurrentTile().getBarcode();
-					DebugBuffer.addInfo("code " + bc.getDecimal());
+					//DebugBuffer.addInfo("code " + bc.getDecimal());
 					if (bc.getDecimal() <= 7) {
 						SensorBuffer.addBarcodeType(BarcodeType.OBJECT.toString());
 						if ((bc.getDecimal() % 4) == connector.getObjectNr()) {

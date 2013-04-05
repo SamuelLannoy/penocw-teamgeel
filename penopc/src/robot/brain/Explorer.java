@@ -66,6 +66,7 @@ public class Explorer {
 					&& !robot.getField().isExplored(tile.getPosition())) {
 				TilePosition node = tile.getPosition();
 				toExplore.add(node);
+				robot.getToExplore().add(node);
 			}
 		}
 		
@@ -73,14 +74,16 @@ public class Explorer {
 		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
 			// pop first
 			TilePosition current = toExplore.removeFirst();
+			robot.getToExplore().remove(current);
 			
 			
 			boolean quit = false;
 			// TODO: do not remove if straight tile
 			while  (robot.getField().isSure(current)) {
 				if (toExplore.size() > 0) {
-					DebugBuffer.addInfo("exploring " + current);
+					//DebugBuffer.addInfo("exploring " + current);
 					current = toExplore.removeFirst();
+					robot.getToExplore().remove(current);
 					explored.add(current);
 				} else {
 					quit = true;
@@ -99,6 +102,7 @@ public class Explorer {
 			for (TilePosition pos : toAdd) {
 				if (!field.isExplored(pos) && !explored.contains(pos) && !toExplore.contains(pos)) {
 					toExplore.add(pos);
+					robot.getToExplore().add(pos);
 				}
 			}
 			
@@ -119,7 +123,7 @@ public class Explorer {
 			});
 			
 			
-			DebugBuffer.addInfo("list " + toExplore);
+			//DebugBuffer.addInfo("list " + toExplore);
 			// reset barcode values
 			robot.hasCorrectBarcode();
 			robot.hasWrongBarcode();
@@ -130,6 +134,7 @@ public class Explorer {
 			}
 		}
 
+		robot.getToExplore().clear();
 		DebugBuffer.addInfo("finish");
 	}
 	

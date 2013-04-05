@@ -71,9 +71,6 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		//playerNumber += 1;
 		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
 		robotPool.getMainRobot().setPlayerNr(playerNumber);
-
-		
-
 	}
 
 	@Override
@@ -93,8 +90,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void playerFoundObject(String playerID, int playerNumber) {
-		robotPool.getRobot(getPoolID(playerID)).setHasBall(true);
-		DebugBuffer.addInfo("player " + playerID + " found object");
+		
 	}
 
 	@Override

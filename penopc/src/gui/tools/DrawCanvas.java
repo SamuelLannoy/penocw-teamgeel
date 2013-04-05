@@ -152,9 +152,24 @@ public class DrawCanvas extends Canvas{
 		//current tile
 		int x = robotPool.getMainRobot().getCurrTile().getPosition().getX();
 		int y = robotPool.getMainRobot().getCurrTile().getPosition().getY();
-		g.setColor(Color.RED);
+		g.setColor(Color.ORANGE);
 		g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+
+		// teammate current tile
+		if (robotPool.getMainRobot().hasTeamMate()) {
+			x = robotPool.getMainRobot().getTeamMate().getCurrTile().getPosition().getX();
+			y = robotPool.getMainRobot().getTeamMate().getCurrTile().getPosition().getY();
+			g.setColor(Color.GREEN);
+			g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+		}
 		
+		// draw explore tiles
+		for (TilePosition tilePos : robotPool.getMainRobot().getToExplore()) {
+			x = tilePos.getX();
+			y = tilePos.getY();
+			g.setColor(Color.CYAN);
+			g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+		}
 
 		//ghost
 		if (robotPool.getMainRobot().isSim()){

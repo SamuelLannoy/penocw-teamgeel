@@ -61,7 +61,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void playerFoundObject(String playerID, int playerNumber) {
-
+		robotPool.getRobot(getPoolID(playerID)).setHasBall(true);
+		DebugBuffer.addInfo("player " + playerID + " found object");
 	}
 
 	@Override
