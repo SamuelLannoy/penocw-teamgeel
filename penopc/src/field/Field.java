@@ -79,6 +79,30 @@ public abstract class Field{
 		return getBorderInDirection(tile.getPosition(), dir);
 	}
 	
+	public Border getTopBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	public Border getBottomBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getSouthPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	public Border getLeftBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getLeftPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
+	public Border getRightBorderOfTile(Tile tile)
+			throws IllegalArgumentException {
+		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getRightPosition());
+		return borderMap.getObjectAtId(pos);
+	}
+	
 	/*
 	 * Ball Methods
 	 */
@@ -113,34 +137,6 @@ public abstract class Field{
 	
 	public Iterator<Ball> ballIterator() {
 		return ballMap.iterator();
-	}
-	
-	/*
-	 * Internal methods
-	 */
-	
-	protected Border getTopBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	
-	protected Border getBottomBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getSouthPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	
-	protected Border getLeftBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getLeftPosition());
-		return borderMap.getObjectAtId(pos);
-	}
-	
-	protected Border getRightBorderOfTile(Tile tile)
-			throws IllegalArgumentException {
-		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getRightPosition());
-		return borderMap.getObjectAtId(pos);
 	}
 	
 	/*

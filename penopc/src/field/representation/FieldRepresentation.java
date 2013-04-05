@@ -413,31 +413,31 @@ public class FieldRepresentation extends Field {
 	private peno.htttp.Tile convertToTileMsg(TilePosition tilePos) {
 		Map<Direction, Border> borders = new HashMap<Direction, Border>();
 		Tile tile = getTileAt(tilePos);
-		
+
 		try {
-		borders.put(Direction.TOP, getTopBorderOfTile(tile));
-		borders.put(Direction.BOTTOM, getBottomBorderOfTile(tile));
-		borders.put(Direction.LEFT, getLeftBorderOfTile(tile));
-		borders.put(Direction.RIGHT, getRightBorderOfTile(tile));
-		
-		String sentToken = MazePart.getToken(borders, tile);
-		System.out.println("sent: " + sentToken);
-		if (sentToken.equals(""))
-			return null;
-		
-		return new peno.htttp.Tile(tile.getPosition().getX(),
-				tile.getPosition().getY(),
-				sentToken);
-		
+			borders.put(Direction.TOP, getTopBorderOfTile(tile));
+			borders.put(Direction.BOTTOM, getBottomBorderOfTile(tile));
+			borders.put(Direction.LEFT, getLeftBorderOfTile(tile));
+			borders.put(Direction.RIGHT, getRightBorderOfTile(tile));
+
+			String sentToken = MazePart.getToken(borders, tile);
+			System.out.println("sent: " + sentToken);
+			if (sentToken.equals(""))
+				return null;
+
+			return new peno.htttp.Tile(tile.getPosition().getX(),
+					tile.getPosition().getY(),
+					sentToken);
+
 		} catch (IllegalArgumentException e) {
 
-			
+
 			return new peno.htttp.Tile(tile.getPosition().getX(),
 					tile.getPosition().getY(),
 					"unknown");
 		}
 	}
-	
+
 	/*
 	 * Keep track of translation/rotation to map teammate field to ours
 	 */

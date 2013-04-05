@@ -34,4 +34,24 @@ public class DebugBuffer {
 	public static List<String> getDebuginfo() {
 		return debuginfo;
 	}
+	
+	/**
+	 * COMM INFO
+	 */
+	
+	private static List<String> comminfo = Collections.synchronizedList(new ArrayList<String>());
+	
+	public static void updateComminfo(ArrayList<String> comminfo) {
+		for(int i = 0; i < comminfo.size(); i++) {
+			DebugBuffer.addInfo(comminfo.get(i));
+		}
+	}
+	
+	public static void addComm(String info) {
+		comminfo.add(System.currentTimeMillis() + " .. " + info);
+	}
+	
+	public static List<String> getComminfo() {
+		return debuginfo;
+	}
 }

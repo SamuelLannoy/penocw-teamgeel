@@ -7,6 +7,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.awt.image.BufferedImage;
 import java.text.AttributedCharacterIterator;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -58,6 +59,7 @@ public class DrawCanvas extends Canvas{
 	
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
+		createBufferStrategy(2);
 		if (robotPool != null) {
 			//if (robotPool.getMainRobot().getClient().isPlaying()) {
 			rescale();
@@ -72,7 +74,8 @@ public class DrawCanvas extends Canvas{
 		}
 	}
 	
-	private void drawLobby(Graphics g) {
+	// TODO add this somewhere else (new canvas?)
+	/*private void drawLobby(Graphics g) {
 		PlayerClient client = robotPool.getMainRobot().getClient();
 		
 		if (client.isPaused()) {
@@ -86,7 +89,7 @@ public class DrawCanvas extends Canvas{
 			g.drawString(drawString, 20, 40 + 20 * i);
 			i++;
 		}
-	}
+	}*/
 	
 	// zoekt de uiterste afmetingen van het doolhof en herschaald de map hieraan.
 	private void rescale(){

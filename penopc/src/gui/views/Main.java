@@ -170,6 +170,13 @@ public class Main extends JFrame {
 								}
 								DebugBuffer.getDebuginfo().clear();
 				    		}
+							// update comm info.
+				    		synchronized(DebugBuffer.getComminfo()) {
+								for(String comminfo : DebugBuffer.getComminfo()) {
+									textArea_messages.append(""+comminfo+"\n");
+								}
+								DebugBuffer.getComminfo().clear();
+				    		}
 						}
 						catch (NullPointerException e) {
 							

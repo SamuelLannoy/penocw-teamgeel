@@ -14,7 +14,6 @@ import communication.SeesawStatus;
 import peno.htttp.PlayerClient;
 
 import robot.brain.EndingCondition;
-import robot.brain.ExploreNode;
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
@@ -42,8 +41,6 @@ public class Robot extends RobotModel{
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
-	private PlayerClient client;
-	private RobotPool robotPool;
 	private PenoHtttpTeamCommunicator comm;
 
 	public Robot(int connectionType) {
@@ -51,16 +48,10 @@ public class Robot extends RobotModel{
 	}
 	
 	public void setClient(PlayerClient client) {
-		this.client = client;
-		comm = new PenoHtttpTeamCommunicator(getClient());
-	}
-	
-	public PlayerClient getClient() {
-		return client;
+		comm = new PenoHtttpTeamCommunicator(client);
 	}
 	
 	public void setRobotPool(RobotPool robotPool) {
-		this.robotPool = robotPool;
 		if (isSim()) {
 			((ISimulator)robotConn).setRobotPool(robotPool);
 		}
@@ -398,26 +389,20 @@ public class Robot extends RobotModel{
 		getPosition().updateRotation(robotConn.getRotationTurned());
 		connUpdateCounter++;
 		if (connUpdateCounter == 10) {
-	    	if (client != null && client.isPlaying()) { 
-	    		try {
-	    			client.updatePosition(
-	    					getCurrTile().getPosition().getX() * 40 +
-	    					getPosition().getPosX(),
-	    					getCurrTile().getPosition().getY() * 40 +
-	    					getPosition().getPosY(),
-	    					getPosition().getRotation());
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    	connUpdateCounter = 0;
+			if (comm != null) { 
+				comm.updatePosition(
+						getCurrTile().getPosition().getX() * 40 +
+						getPosition().getPosX(),
+						getCurrTile().getPosition().getY() * 40 +
+						getPosition().getPosY(),
+						getPosition().getRotation());
+			}
+			connUpdateCounter = 0;
 		}
 		
 		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
-			if (client.isPlaying()) {
+			/*if (client.isPlaying()) {
 				try {
 					client.foundObject();
 				} catch (IllegalStateException e) {
@@ -425,7 +410,7 @@ public class Robot extends RobotModel{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
 		
 		// Set whether the current tile is a start tile, a finish tile or an ordinary tile
@@ -1048,13 +1033,7 @@ public class Robot extends RobotModel{
 			// register open seesaw position
 			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawDownCode());
 			// lock seesaw
-			try {
-				getClient().lockSeesaw(ctile.getBarcode().getDecimal());
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			comm.lockSeesaw(ctile.getBarcode().getDecimal());
 			// move across the seesaw
 			moveAcrossSeesawPhysical();
 			waitTillStandby(500);
@@ -1062,13 +1041,7 @@ public class Robot extends RobotModel{
 			// register closed seesaw position
 			getField().registerSeesawPosition(ctile.getPosition(), dirForw, ctile.getBarcode().isSeesawUpCode());
 			// unlock seesaw
-			try {
-				getClient().unlockSeesaw();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			comm.unlockSeesaw();
 
 			// we know we are at end of seesaw position
 			TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
@@ -1139,19 +1112,11 @@ public class Robot extends RobotModel{
 
 		DebugBuffer.addInfo("OUT: my team is " + getTeamNr());
 		// send object found + join team via rabbitmq
-		getClient().hasFoundObject();
-		try {
-			getClient().joinTeam(getTeamNr());
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
+		comm.foundObject();
+		comm.joinTeam(getTeamNr());
 
 		setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
-				field.getTileAt(
+				getField().getTileAt(
 						dirForw.opposite().getPositionInDirection(ctile.getPosition())));
 	}
 	
@@ -1182,7 +1147,7 @@ public class Robot extends RobotModel{
 			scanOnlyLines(false);
 			resumeLightSensor();
 			setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
-					field.getTileAt(
+					getField().getTileAt(
 							dirForw.opposite().getPositionInDirection(ctile.getPosition())));
 			
 		}
@@ -1193,6 +1158,7 @@ public class Robot extends RobotModel{
 	
 	public void teamComm() {
 		setCurrentAction("Looking for friend");
+		waitTillStandby(2000);
 		// wait till teammate is set, meanwhile go explore
 		Explorer.explore(this, new EndingCondition() {
 			@Override
@@ -1209,12 +1175,7 @@ public class Robot extends RobotModel{
 		setCurrentAction("Sending tiles to friend");
 		// make collection of tilesmsges
 		Collection<peno.htttp.Tile> tilesMsg = getField().convertToMessage();
-		try {
-			// send tiles
-			getClient().sendTiles(tilesMsg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		comm.sendTiles(tilesMsg);
 
 		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles
