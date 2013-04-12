@@ -1,4 +1,4 @@
-package messenger;
+package peno.htttp.impl;
 
 import java.io.IOException;
 

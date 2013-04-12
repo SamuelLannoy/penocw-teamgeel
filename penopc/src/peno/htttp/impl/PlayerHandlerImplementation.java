@@ -1,4 +1,4 @@
-package messenger;
+package peno.htttp.impl;
 
 import java.util.List;
 
@@ -57,18 +57,18 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	}
 
 	@Override
-	public void playerJoining(String playerID) {
-		DebugBuffer.addInfo("player " + playerID + " joining");
+	public void playerJoining(String playerId) {
+		DebugBuffer.addInfo("player " + playerId + " joining");
 	}
 
 	@Override
-	public void playerDisconnected(String playerID, DisconnectReason reason) {
-		DebugBuffer.addInfo("player " + playerID + " disconnected because of " + reason.toString());
+	public void playerDisconnected(String playerId, DisconnectReason disconnectReason) {
+		DebugBuffer.addInfo("player " + playerId + " disconnected because of " + disconnectReason.toString());
 	}
 
 	@Override
-	public void playerReady(String playerID, boolean isReady) {
-		DebugBuffer.addInfo("player " + playerID + " ready: " + isReady);
+	public void playerReady(String playerId, boolean isReady) {
+		DebugBuffer.addInfo("player " + playerId + " ready: " + isReady);
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	}
 
 	@Override
-	public void playerJoined(String playerID) {
-		DebugBuffer.addInfo("player " + playerID + " joined");
+	public void playerJoined(String playerId) {
+		DebugBuffer.addInfo("player " + playerId + " joined");
 	}
 
 	@Override
-	public void teamConnected(String partnerID) {
-		robot.setTeamMateID(partnerID);
+	public void teamConnected(String partnerId) {
+		robot.setTeamMateID(partnerId);
 	}
 
 	@Override

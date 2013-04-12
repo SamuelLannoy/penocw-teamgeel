@@ -1,4 +1,4 @@
-package messenger;
+package team.communication;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import messenger.RabbitMQ;
 
 import com.rabbitmq.client.Connection;
 
@@ -19,6 +21,7 @@ import field.representation.FieldRepresentation;
 import peno.htttp.Callback;
 import peno.htttp.PlayerClient;
 import peno.htttp.Tile;
+import peno.htttp.impl.PlayerHandlerImplementation;
 import robot.DebugBuffer;
 import robot.Robot;
 
@@ -30,6 +33,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 	}
 	
 	private PlayerHandlerImplementation handler;
+	private PlayerClient client;
 	
 	@Override
 	public void connect(Robot robot, String gameId, String playerId) throws IOException {
@@ -37,14 +41,8 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 		handler = new PlayerHandlerImplementation(robot);
 		
 		PlayerClient client = new PlayerClient(connection, handler, gameId, playerId);
-		setClient(client);
-		connectionSuccesful();
-	}
-	
-	private PlayerClient client;
-
-	private void setClient(PlayerClient client) {
 		this.client = client;
+		connectionSuccesful();
 	}
 
 	@Override
@@ -91,7 +89,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 	public void sendNewTiles(FieldRepresentation fieldRepresentation, TilePosition... tilePositions) {
 		checkConnected();
 		for (TilePosition tilePosition :  tilePositions) {
-			sendTiles(convertToTileMsg(fieldRepresentation, tilePosition));
+			sendTiles(convertToTileMessage(fieldRepresentation, tilePosition));
 		}
 	}
 	
@@ -216,16 +214,16 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 		Iterator<field.Tile> it = fieldRepresentation.tileIterator();
 		while (it.hasNext()) {
 			field.Tile tile = it.next();
-			peno.htttp.Tile toadd = convertToTileMsg(fieldRepresentation, tile.getPosition());
+			peno.htttp.Tile toadd = convertToTileMessage(fieldRepresentation, tile.getPosition());
 			if (toadd != null)
 				tilesMsg.add(toadd);
 		}
 		return tilesMsg;
 	}
 	
-	private peno.htttp.Tile convertToTileMsg(FieldRepresentation fieldRepresentation, TilePosition tilePos) {
+	private peno.htttp.Tile convertToTileMessage(FieldRepresentation fieldRepresentation, TilePosition tilePosition) {
 		Map<Direction, Border> borders = new HashMap<Direction, Border>();
-		field.Tile tile = fieldRepresentation.getTileAt(tilePos);
+		field.Tile tile = fieldRepresentation.getTileAt(tilePosition);
 
 		try {
 			borders.put(Direction.TOP, fieldRepresentation.getTopBorderOfTile(tile));

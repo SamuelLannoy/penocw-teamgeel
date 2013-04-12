@@ -28,11 +28,11 @@ import javax.swing.border.EmptyBorder;
 import com.rabbitmq.client.Connection;
 
 import peno.htttp.*;
+import peno.htttp.impl.PlayerHandlerImplementation;
+import peno.htttp.impl.SpectatorHandlerImplementation;
 
-import messenger.PlayerHandlerImplementation;
 import messenger.Messenger;
 import messenger.RabbitMQ;
-import messenger.SpectatorHandlerImplementation;
 
 import robot.DebugBuffer;
 import robot.Robot;
@@ -67,9 +67,7 @@ public class Main extends JFrame {
 	private Timer mapTimer;
 	private Timer debugTimer;
 	private Timer sensorTimer;
-	private PlayerHandlerImplementation handler;
 	private SpectatorHandlerImplementation sHandler;
-	private PlayerClient client;
 	private SpectatorClient sClient;
 	private JFrame frame2;
 	private JPanel contentPane2;
@@ -707,39 +705,11 @@ public class Main extends JFrame {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		//handler = new PlayerHandlerImplementation(robot);
 		sHandler = new SpectatorHandlerImplementation(robotPool, playerID, world);
 		Connection conn = RabbitMQ.createConnection();
-		//client = new PlayerClient(conn, handler, BROADCAST_ID, playerID);
 		sClient = new SpectatorClient(conn, sHandler, BROADCAST_ID);
 		
 		robot.connectToGame(playerID, BROADCAST_ID);
-		
-		//robotPool.getMainRobot().setClient(client);
-		
-		/*DebugBuffer.addInfo("joining lobby as " + playerID);
-		client.join(new Callback<Void>() {
-			
-			@Override
-			public void onSuccess(Void result) {
-				DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
-				try {
-					client.setReady(true);
-					//DebugBuffer.addInfo("x " + client.isFull() + " x " + client.canStart());
-					
-					//client.start();
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable t) {
-				
-			}
-		});*/
 		
 		sClient.start();
 

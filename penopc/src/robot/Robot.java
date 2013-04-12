@@ -7,18 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import messenger.PenoHtttpTeamCommunicator;
-import messenger.TeamCommunicator;
 
 import communication.SeesawStatus;
-
-import peno.htttp.PlayerClient;
 
 import robot.brain.EndingCondition;
 import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
+import team.communication.PenoHtttpTeamCommunicator;
+import team.communication.TeamCommunicator;
 
 import exception.CommunicationException;
 import field.Barcode;

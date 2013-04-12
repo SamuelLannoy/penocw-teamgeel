@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import messenger.PenoHtttpTeamCommunicator;
-import messenger.TeamCommunicator;
+import team.communication.PenoHtttpTeamCommunicator;
+import team.communication.TeamCommunicator;
+
 
 
 import field.*;

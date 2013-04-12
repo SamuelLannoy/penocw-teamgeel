@@ -1,4 +1,4 @@
-package messenger;
+package team.communication;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public abstract class TeamCommunicator {
 		return connected;
 	}
 	
-	public void checkConnected() {
+	protected void checkConnected() {
 		if (!isConnected()) {
 			throw new IllegalStateException("TeamCommunicator not connected!");
 		}
