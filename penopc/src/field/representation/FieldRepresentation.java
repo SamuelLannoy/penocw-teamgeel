@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import messenger.PenoHtttpTeamCommunicator;
+import messenger.TeamCommunicator;
 
 
 import field.*;
@@ -24,9 +25,9 @@ public class FieldRepresentation extends Field {
 	
 	private boolean teamMateMode = false;
 	
-	private PenoHtttpTeamCommunicator comm;
+	private TeamCommunicator comm;
 	
-	public void foundTeamMate(PenoHtttpTeamCommunicator comm) {
+	public void foundTeamMate(TeamCommunicator comm) {
 		teamMateMode = true;
 		this.comm = comm;
 		
@@ -43,7 +44,7 @@ public class FieldRepresentation extends Field {
 		registerBorder(discoveredFromPosition, discoverDirection, WhiteBorder.class);
 		
 		if (teamMateMode) {
-			comm.sendTiles(convertToTileMsg(newTilePosition));
+			comm.sendNewTiles(this, newTilePosition);
 		}
 	}
 	
@@ -85,11 +86,12 @@ public class FieldRepresentation extends Field {
 		addTile(fifthTilePosition);
 		
 		if (teamMateMode) {
-			comm.sendTiles(convertToTileMsg(barcodePosition),
-					convertToTileMsg(secondTilePosition),
-					convertToTileMsg(thirdTilePosition),
-					convertToTileMsg(fourthTilePosition),
-					convertToTileMsg(fifthTilePosition));
+			comm.sendNewTiles(this,
+					barcodePosition,
+					secondTilePosition,
+					thirdTilePosition,
+					fourthTilePosition,
+					fifthTilePosition);
 		}
 	}
 	
@@ -129,8 +131,9 @@ public class FieldRepresentation extends Field {
 		registerBorder(objectTilePosition, right, PanelBorder.class);
 
 		if (teamMateMode) {
-			comm.sendTiles(convertToTileMsg(barcodePosition),
-					convertToTileMsg(objectTilePosition));
+			comm.sendNewTiles(this,
+					barcodePosition,
+					objectTilePosition);
 		}
 	}
 	
@@ -153,7 +156,7 @@ public class FieldRepresentation extends Field {
 			addBorder(newBorder);
 		}
 		if (teamMateMode) {
-			comm.sendTiles(convertToTileMsg(tilePosition));
+			comm.sendNewTiles(this, tilePosition);
 		}
 	}
 	
@@ -176,7 +179,7 @@ public class FieldRepresentation extends Field {
 		
 
 		if (teamMateMode) {
-			comm.sendTiles(convertToTileMsg(barcodePosition));
+			comm.sendNewTiles(this, barcodePosition);
 		}
 	}
 	
@@ -398,44 +401,6 @@ public class FieldRepresentation extends Field {
 			}
 		}
 		return ret;
-	}
-	
-	public Collection<peno.htttp.Tile> convertToMessage() {
-		Collection<peno.htttp.Tile> tilesMsg = new ArrayList<peno.htttp.Tile>(tileMap.getKeys().size());
-		for (Tile tile : tileMap) {
-			peno.htttp.Tile toadd = convertToTileMsg(tile.getPosition());
-			if (toadd != null)
-				tilesMsg.add(toadd);
-		}
-		return tilesMsg;
-	}
-	
-	private peno.htttp.Tile convertToTileMsg(TilePosition tilePos) {
-		Map<Direction, Border> borders = new HashMap<Direction, Border>();
-		Tile tile = getTileAt(tilePos);
-
-		try {
-			borders.put(Direction.TOP, getTopBorderOfTile(tile));
-			borders.put(Direction.BOTTOM, getBottomBorderOfTile(tile));
-			borders.put(Direction.LEFT, getLeftBorderOfTile(tile));
-			borders.put(Direction.RIGHT, getRightBorderOfTile(tile));
-
-			String sentToken = MazePart.getToken(borders, tile);
-			System.out.println("sent: " + sentToken);
-			if (sentToken.equals(""))
-				return null;
-
-			return new peno.htttp.Tile(tile.getPosition().getX(),
-					tile.getPosition().getY(),
-					sentToken);
-
-		} catch (IllegalArgumentException e) {
-
-
-			return new peno.htttp.Tile(tile.getPosition().getX(),
-					tile.getPosition().getY(),
-					"unknown");
-		}
 	}
 
 	/*

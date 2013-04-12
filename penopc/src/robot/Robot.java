@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import messenger.PenoHtttpTeamCommunicator;
+import messenger.TeamCommunicator;
 
 import communication.SeesawStatus;
 
@@ -41,15 +42,29 @@ public class Robot extends RobotModel{
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
-	private PenoHtttpTeamCommunicator comm;
+	private TeamCommunicator comm;
 
 	public Robot(int connectionType) {
 		robotConn = ConnectionFactory.getConnection(connectionType);
+		comm = new PenoHtttpTeamCommunicator();
 	}
 	
-	public void setClient(PlayerClient client) {
-		comm = new PenoHtttpTeamCommunicator(client);
+	public void connectToGame(String playerId, String gameId) {
+		try {
+			comm.connect(this, gameId, playerId);
+			comm.joinGame();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+	
+	public void setReady() {
+		comm.setReady(true);
+	}
+	
+	/*public void setClient(PlayerClient client) {
+		comm = new PenoHtttpTeamCommunicator(client);
+	}*/
 	
 	public void setRobotPool(RobotPool robotPool) {
 		if (isSim()) {
@@ -1176,8 +1191,7 @@ public class Robot extends RobotModel{
 
 		setCurrentAction("Sending tiles to friend");
 		// make collection of tilesmsges
-		Collection<peno.htttp.Tile> tilesMsg = getField().convertToMessage();
-		comm.sendTiles(tilesMsg);
+		comm.sendInitialField(getField());
 
 		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles

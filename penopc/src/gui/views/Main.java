@@ -706,15 +706,17 @@ public class Main extends JFrame {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		handler = new PlayerHandlerImplementation(robotPool, playerID, world);
+		//handler = new PlayerHandlerImplementation(robot);
 		sHandler = new SpectatorHandlerImplementation(robotPool, playerID, world);
 		Connection conn = RabbitMQ.createConnection();
-		client = new PlayerClient(conn, handler, BROADCAST_ID, playerID);
+		//client = new PlayerClient(conn, handler, BROADCAST_ID, playerID);
 		sClient = new SpectatorClient(conn, sHandler, BROADCAST_ID);
 		
-		robotPool.getMainRobot().setClient(client);
+		robot.connectToGame(playerID, BROADCAST_ID);
 		
-		DebugBuffer.addInfo("joining lobby as " + playerID);
+		//robotPool.getMainRobot().setClient(client);
+		
+		/*DebugBuffer.addInfo("joining lobby as " + playerID);
 		client.join(new Callback<Void>() {
 			
 			@Override
@@ -736,7 +738,7 @@ public class Main extends JFrame {
 			public void onFailure(Throwable t) {
 				
 			}
-		});
+		});*/
 		
 		sClient.start();
 

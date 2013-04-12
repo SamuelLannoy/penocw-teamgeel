@@ -1,11 +1,7 @@
 package messenger;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
-import field.Field;
-import field.fromfile.FieldFactory;
 import field.representation.FieldRepresentation;
 import field.simulation.FieldSimulation;
 
@@ -15,27 +11,14 @@ import peno.htttp.Tile;
 import robot.DebugBuffer;
 import robot.Position;
 import robot.Robot;
-import robot.RobotModel;
-import robot.RobotPool;
 
 public class PlayerHandlerImplementation implements PlayerHandler {
 	
-	RobotPool robotPool;
-	String ownId;
-	FieldSimulation field;
+	private Robot robot;
 
-	public PlayerHandlerImplementation(RobotPool pool, String ownId, FieldSimulation field) {
+	public PlayerHandlerImplementation(Robot robot) {
 		super();
-		robotPool = pool;
-		this.ownId = ownId;
-		this.field = field;
-	}
-	
-	private String getPoolID(String playerID) {
-		if (playerID.equals(ownId)) {
-			return "main";
-		}
-		return playerID;
+		this.robot = robot;
 	}
 	
 	@Override
@@ -45,7 +28,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 				robotPool.addRobot(new Robot(1), id);
 			}
 		}*/
-		DebugBuffer.addInfo("game started with " + robotPool.getRobotPoolSize() + " robots");
+		DebugBuffer.addInfo("game started");
 	}
 
 	@Override
@@ -67,10 +50,10 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void gameRolled(int playerNumber, int objectNr) {
-		robotPool.getMainRobot().setObjectNr(objectNr);
+		robot.setObjectNr(objectNr);
 		//playerNumber += 1;
 		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
-		robotPool.getMainRobot().setPlayerNr(playerNumber);
+		robot.setPlayerNr(playerNumber);
 	}
 
 	@Override
@@ -100,17 +83,17 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamConnected(String partnerID) {
-		robotPool.getMainRobot().setTeamMateID(partnerID);
+		robot.setTeamMateID(partnerID);
 	}
 
 	@Override
 	public void teamTilesReceived(List<Tile> tiles) {
-		if (!robotPool.getMainRobot().receivedTeamTiles()) {
+		if (!robot.receivedTeamTiles()) {
 			FieldRepresentation teamMateField = new FieldRepresentation(tiles);
-			robotPool.getMainRobot().getTeamMate().setField(teamMateField);			
-			robotPool.getMainRobot().setReceivedTeamTiles(true);
+			robot.getTeamMate().setField(teamMateField);			
+			robot.setReceivedTeamTiles(true);
 		} else {
-			robotPool.getMainRobot().getTeamMate().getField().addFromTeammate(tiles);
+			robot.getTeamMate().getField().addFromTeammate(tiles);
 		}
 	}
 
@@ -123,19 +106,19 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamPosition(double x, double y, double angle) {
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
-		x = x + robotPool.getMainRobot().getField().getTranslX() * 40;
-		y = y + robotPool.getMainRobot().getField().getTranslY() * 40;
-		angle = angle + robotPool.getMainRobot().getField().getRotation();
+		x = x + robot.getField().getTranslX() * 40;
+		y = y + robot.getField().getTranslY() * 40;
+		angle = angle + robot.getField().getRotation();
 		//DebugBuffer.addInfo("teammate new: " + x + " " + y);
 		
 		//DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
 
 		double[] tilePos = FieldSimulation.convertToInTilePos(new double[]{x,y});
 		
-		robotPool.getMainRobot().getTeamMate().setPosition(new Position(
+		robot.getTeamMate().setPosition(new Position(
 				tilePos[0], tilePos[1], angle
 				), new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
-		robotPool.getMainRobot().getTeamMate()
+		robot.getTeamMate()
 			.setCurrTile(new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
 	}
 
