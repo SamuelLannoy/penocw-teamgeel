@@ -45,15 +45,20 @@ public class Explorer {
 		});
 	}
 	
-	private static LinkedList<TilePosition> toExplore;
+	private static LinkedList<TilePosition> toExplore = new LinkedList<TilePosition>();
+	
+	
+	public static Collection<TilePosition> getToExplore() {
+		return toExplore;
+	}
 	
 	private static TilePosition current;
 	
-	public static TilePosition recalcExplore(Robot robot, TilePosition current) {
+	public static TilePosition recalcExplore(Robot robot, TilePosition current, Collection<Integer> ignoredSeesaws) {
 		toExplore.add(current);
 		robot.getToExplore().add(current);
 		
-		sortExplore(robot);
+		sortExplore(robot, ignoredSeesaws);
 		
 		current = toExplore.removeFirst();
 		robot.getToExplore().remove(current);
@@ -61,18 +66,22 @@ public class Explorer {
 	}
 	
 	public static void sortExplore(final Robot robot) {
+		sortExplore(robot, Collections.<Integer>emptyList());
+	}
+	
+	public static void sortExplore(final Robot robot, final Collection<Integer> ignoredSeesaws) {
 		// sort tiles on a* length
 		Collections.sort(toExplore, new Comparator<TilePosition>() {
 			@Override
 			public int compare(TilePosition arg0, TilePosition arg1) {
 				int mh1, mh2;
 				try {
-					mh1 = Pathfinder.findShortestPathWithRobotCollision(robot, robot.getField().getTileAt(arg0), robot.getRobotSpottedTiles()).size();
+					mh1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0), ignoredSeesaws, robot.getRobotSpottedTiles()).size();
 				} catch (IllegalArgumentException e) {
 					mh1 = Integer.MAX_VALUE;
 				}
 				try {
-					mh2 = Pathfinder.findShortestPathWithRobotCollision(robot, robot.getField().getTileAt(arg1), robot.getRobotSpottedTiles()).size();
+					mh2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1), ignoredSeesaws, robot.getRobotSpottedTiles()).size();
 				} catch (IllegalArgumentException e) {
 					mh2 = Integer.MAX_VALUE;
 				}

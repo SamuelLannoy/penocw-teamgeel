@@ -1,6 +1,7 @@
 package gui.tools;
 
 import robot.*;
+import robot.brain.Explorer;
 import field.*;
 
 import java.awt.Canvas;
@@ -189,11 +190,20 @@ public class DrawCanvas extends Canvas{
 		}
 		
 		// draw explore tiles
-		for (TilePosition tilePos : robotPool.getMainRobot().getToExplore()) {
+		int i = 1;
+		try {
+		synchronized (Explorer.getToExplore()) {
+		for (TilePosition tilePos : Explorer.getToExplore()) {
 			x = tilePos.getX();
 			y = tilePos.getY();
 			g.setColor(Color.CYAN);
 			g.drawRect((startX - halfTileSize)  + (x * (tileSize)),(startY - halfTileSize) - (y * (tileSize)), tileSize, tileSize);
+			g.drawString(""+i, (startX)  + (x * (tileSize)),(startY) - (y * (tileSize)));
+			i++;
+		}
+		}
+		} catch (ConcurrentModificationException e) {
+			
 		}
 		
 		// draw robot spotted tiles

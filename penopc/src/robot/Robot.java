@@ -802,7 +802,7 @@ public class Robot extends RobotModel{
 		// redo this till we have found our destination
 		while (!reachedDestination) {
 			decreaseSpottedRobotTiles();
-			tilePos = Explorer.recalcExplore(this, tilePos);
+			tilePos = Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
 			setCurrentAction("Moving to tile " + tilePos);
 			reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
 		}
@@ -1005,6 +1005,8 @@ public class Robot extends RobotModel{
 		
 		return toExplore;
 	}
+	
+	
 	
 	private Collection<TilePosition> toExplore = new ArrayList<TilePosition>();
 	
