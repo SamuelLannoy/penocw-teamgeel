@@ -48,6 +48,16 @@ public class FieldSimulation extends Field {
 		this.localSimulator = simulator;
 	}
 	
+	private PenoHtttpWorldCommunicator comm;
+	
+	public void connectToGame(String gameId, String ownId) {
+		try {
+			comm = new PenoHtttpWorldCommunicator(ownId, gameId, robotPool, this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private Map<Integer, TilePosition> barcodeIndex = new HashMap<Integer, TilePosition>();
 	
 	public void initialize(String path) throws NumberFormatException, IOException {

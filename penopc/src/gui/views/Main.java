@@ -67,8 +67,6 @@ public class Main extends JFrame {
 	private Timer mapTimer;
 	private Timer debugTimer;
 	private Timer sensorTimer;
-	private SpectatorHandlerImplementation sHandler;
-	private SpectatorClient sClient;
 	private JFrame frame2;
 	private JPanel contentPane2;
 	private FieldSimulation world;
@@ -697,21 +695,14 @@ public class Main extends JFrame {
 			
 		}
 		
-		/*RobotModel test = new RobotModel();
-		test.setGlobalPosition(40, 0, 0);
-		robotPool.addRobot(test, "test");*/
-		
 		if (robot.isSim()) {
 			robot.setSimLoc(x, y, 0);
 		}
 		canvas.setRobotPool(robotPool);
-		sHandler = new SpectatorHandlerImplementation(robotPool, playerID, world);
-		Connection conn = RabbitMQ.createConnection();
-		sClient = new SpectatorClient(conn, sHandler, BROADCAST_ID);
+		
+		world.connectToGame(BROADCAST_ID, playerID);
 		
 		robot.connectToGame(playerID, BROADCAST_ID);
-		
-		sClient.start();
 
 
 	}

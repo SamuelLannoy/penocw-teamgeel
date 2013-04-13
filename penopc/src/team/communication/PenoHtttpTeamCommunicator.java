@@ -40,8 +40,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 		Connection connection = RabbitMQ.createConnection();
 		handler = new PlayerHandlerImplementation(robot);
 		
-		PlayerClient client = new PlayerClient(connection, handler, gameId, playerId);
-		this.client = client;
+		client = new PlayerClient(connection, handler, gameId, playerId);
 		connectionSuccesful();
 	}
 
