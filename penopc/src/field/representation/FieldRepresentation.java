@@ -1,19 +1,14 @@
 package field.representation;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
 
 
 
 import field.*;
 import field.fieldmerge.BarcodeNode;
-import field.fromfile.MazePart;
 
 public class FieldRepresentation extends Field {
 	public FieldRepresentation() {
@@ -284,49 +279,9 @@ public class FieldRepresentation extends Field {
 	 * Communication methods
 	 */
 	
-	public FieldRepresentation(Collection<peno.htttp.Tile> tileList) {
-		super();
-		addFromComm(tileList);
-	}
-	
-	public void addFromTeammate(Collection<peno.htttp.Tile> tileList) {
-		addFromComm(tileList);
-	}
-	
-	private void addFromComm(Collection<peno.htttp.Tile> tileList) {
-		for (peno.htttp.Tile tileMsg : tileList) {
-			String[] split = tileMsg.getToken().split("\\.");
-			MazePart part = MazePart.getPartFromString(split[0]);
-			
-			TilePosition tilePos = new TilePosition((int)tileMsg.getX(), (int)tileMsg.getY());
-			Tile added = null;
-			if (!hasTileAt(tilePos)){
-				added = new Tile(tilePos);
-				addTile(added);
-			} else {
-				added = getTileAt(tilePos);
-			}
-			
-			if (split.length >= 3) {
-				int nr = Integer.parseInt(split[2]);
-				added.setBarcode(new Barcode(nr));
-			}
-			
-			Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
-
-			for (Border border : borders) {
-				if (border instanceof SeesawBorder) {
-					overWriteBorder(border);
-				} else {
-					addBorder(border);
-				}
-			}
-		}
-	}
-	
-	public void mergeFields(FieldRepresentation field2) {
+	public void mergeFields(FieldRepresentation otherField) {
 		List<BarcodeNode> bc1 = getBarcodes();
-		List<BarcodeNode> bc2 = field2.getBarcodes();
+		List<BarcodeNode> bc2 = otherField.getBarcodes();
 		
 		bc1.retainAll(bc2);
 		bc2.retainAll(bc1);
@@ -340,14 +295,14 @@ public class FieldRepresentation extends Field {
 					System.out.println("first " + barcodeNode2);
 					int diffX = barcodeNode1.getPosition().getX() - barcodeNode2.getPosition().getX();
 					int diffY = barcodeNode1.getPosition().getY() - barcodeNode2.getPosition().getY();
-					field2 = field2.moveX(diffX);
-					field2 = field2.moveY(diffY);
+					otherField = otherField.moveX(diffX);
+					otherField = otherField.moveY(diffY);
 					setTranslX(diffX);
 					setTranslY(diffY);
 				}
 			}
 			
-			bc2 = field2.getBarcodes();
+			bc2 = otherField.getBarcodes();
 			bc2.retainAll(bc1);
 			
 			BarcodeNode barcodeNode1_2 = bc1.get(1);
@@ -364,20 +319,20 @@ public class FieldRepresentation extends Field {
 					System.out.println("rot " + P23 + " " + barcodeNode1_2.getPosition() + " " + barcodeNode2.getPosition());
 					int rotation = (int)(Math.acos((Math.pow(P12, 2) + Math.pow(P13, 2) - Math.pow(P23, 2)) / (2 * P12 * P13)) / Math.PI * 180 + .5);
 					System.out.println("rot " + rotation);
-					field2 = field2.rotate(rotation, barcodeNode1.getPosition());
+					otherField = otherField.rotate(rotation, barcodeNode1.getPosition());
 					setRotation(rotation);
 				}
 			}
 			
 
-			for (Tile tile : field2.tileMap) {
+			for (Tile tile : otherField.tileMap) {
 				if (!hasTileAt(tile.getPosition())) {
 					addTile(tile);
 					System.out.println("adding " + tile.getPosition());
 				}
 			}
 			
-			for (Border border : field2.borderMap) {
+			for (Border border : otherField.borderMap) {
 				if (!hasBorderAt(border.getBorderPos())) {
 					addBorder(border);
 					System.out.println("adding " + border.getBorderPos());

@@ -1,8 +1,15 @@
 package peno.htttp.impl;
 
+import java.util.Collection;
 import java.util.List;
 
+import field.Barcode;
+import field.Border;
+import field.SeesawBorder;
+import field.TilePosition;
+import field.fromfile.MazePart;
 import field.representation.FieldRepresentation;
+import field.representation.PenoHtttpFieldRepresentation;
 import field.simulation.FieldSimulation;
 
 import peno.htttp.DisconnectReason;
@@ -89,13 +96,15 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamTilesReceived(List<Tile> tiles) {
 		if (!robot.receivedTeamTiles()) {
-			FieldRepresentation teamMateField = new FieldRepresentation(tiles);
+			FieldRepresentation teamMateField = new PenoHtttpFieldRepresentation(tiles);
 			robot.getTeamMate().setField(teamMateField);			
 			robot.setReceivedTeamTiles(true);
 		} else {
-			robot.getTeamMate().getField().addFromTeammate(tiles);
+			((PenoHtttpFieldRepresentation)robot.getTeamMate().getField()).addTilesFromTeammate(tiles);
 		}
 	}
+	
+	
 
 	@Override
 	public void gameWon(int teamNumber) {
