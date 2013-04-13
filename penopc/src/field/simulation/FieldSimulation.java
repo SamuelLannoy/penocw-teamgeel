@@ -48,11 +48,12 @@ public class FieldSimulation extends Field {
 		this.localSimulator = simulator;
 	}
 	
-	private PenoHtttpWorldCommunicator comm;
+	private WorldCommunicator comm;
 	
 	public void connectToGame(String gameId, String ownId) {
 		try {
 			comm = new PenoHtttpWorldCommunicator(ownId, gameId, robotPool, this);
+			comm.connect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

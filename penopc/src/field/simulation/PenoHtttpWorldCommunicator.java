@@ -10,7 +10,7 @@ import peno.htttp.SpectatorClient;
 import peno.htttp.impl.SpectatorHandlerImplementation;
 import robot.RobotPool;
 
-public class PenoHtttpWorldCommunicator {
+public class PenoHtttpWorldCommunicator implements WorldCommunicator {
 	
 	private SpectatorClient client;
 	private SpectatorHandlerImplementation handler;
@@ -20,7 +20,10 @@ public class PenoHtttpWorldCommunicator {
 		handler = new SpectatorHandlerImplementation(pool, ownId, field);
 		
 		client = new SpectatorClient(connection, handler, gameId);
-		
+	}
+	
+	@Override
+	public void connect() throws IOException {
 		client.start();
 	}
 
