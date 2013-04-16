@@ -79,7 +79,7 @@ public class Main extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
-						movement_window.append(robot.getPosition() + "\n");
+						//movement_window.append(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -93,7 +93,7 @@ public class Main extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
-						movement_window.append(robot.getPosition() + "\n");
+						//movement_window.append(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -154,7 +154,7 @@ public class Main extends JFrame {
 		}
 	});
 			
-	private Thread debugthread = new Thread(new Runnable() {
+	/**private Thread debugthread = new Thread(new Runnable() {
 		public void run() {
 			debugTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
@@ -164,14 +164,14 @@ public class Main extends JFrame {
 							// update debug info.
 				    		synchronized(DebugBuffer.getDebuginfo()) {
 								for(String debuginfo : DebugBuffer.getDebuginfo()) {
-									debugwindow.append(""+debuginfo+"\n");
+									//debugwindow.append(""+debuginfo+"\n");
 								}
 								DebugBuffer.getDebuginfo().clear();
 				    		}
 							// update comm info.
 				    		synchronized(DebugBuffer.getComminfo()) {
 								for(String comminfo : DebugBuffer.getComminfo()) {
-									textArea_messages.append(""+comminfo+"\n");
+									//textArea_messages.append(""+comminfo+"\n");
 								}
 								DebugBuffer.getComminfo().clear();
 				    		}
@@ -184,7 +184,7 @@ public class Main extends JFrame {
 			});
 			debugTimer.start();
 		}
-	});
+	});**/
 	
 	/*private Thread messagethread = new Thread(new Runnable() {
 		public void run() {
@@ -203,45 +203,38 @@ public class Main extends JFrame {
 	private Thread sensorthread = new Thread(new Runnable() {
 		public void run() {
 			sensorTimer = new Timer(100, new ActionListener() {
-			    public void actionPerformed(ActionEvent evt) {
+				public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
 						// update light sensor data.
 			    		synchronized(SensorBuffer.getLightValues()) {
 							for(int val: SensorBuffer.getLightValues()) {
-								textArea_light.setText(""+val+"\n");
+								//textArea_light.setText(""+val+"\n");
 								plotList.add(val);
 							}
 							SensorBuffer.getLightValues().clear();
 			    		}
-						// random values test.
-						/*for (int j = 0; j < 1; j++){
-							double randNumber = Math.random();
-							double d = randNumber * 100;
-							int randomInt = (int)d;
-							plotList.add(randomInt);
-						}*/
 						for (int i = plotList.size(); i > 100; i--){
 							plotList.remove(plotList.size() - i);
 						}
-						canvas_Light.setData(plotList);
-						canvas_Light.update(canvas_Light.getGraphics());
+						//canvas_Light.setData(plotList);
+						//canvas_Light.update(canvas_Light.getGraphics());
 	
 						// update ultrasonic sensor data.
 						synchronized(SensorBuffer.getDistances()) {
 							if (SensorBuffer.lastDist.size() >= 4){
-								textArea_ultrasonic_front.setText(""+SensorBuffer.lastDist.get(0)+"\n");
-								textArea_ultrasonic_left.setText(""+SensorBuffer.lastDist.get(1)+"\n");
-								textArea_ultrasonic_back.setText(""+SensorBuffer.lastDist.get(2)+"\n");
-								textArea_ultrasonic_right.setText(""+SensorBuffer.lastDist.get(3)+"\n");
-								SensorBuffer.lastDist.clear();
+								//textArea_ultrasonic_front.setText(""+SensorBuffer.lastDist.get(0)+"\n");
+								//textArea_ultrasonic_left.setText(""+SensorBuffer.lastDist.get(1)+"\n");
+								//textArea_ultrasonic_back.setText(""+SensorBuffer.lastDist.get(2)+"\n");
+								//textArea_ultrasonic_right.setText(""+SensorBuffer.lastDist.get(3)+"\n");
+								if (!sensorDispActive) SensorBuffer.lastDist.clear();
 							}
 						}
 	
 						// update pressure sensor data.
-						textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
+						//textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
 						
 						//update infrared sensor data.
-						textArea_infrared.setText("Ahead: "+SensorBuffer.getInfrared());
+						//textArea_infrared.setText("Ahead: "+SensorBuffer.getInfrared());
 						
 						if (!SensorBuffer.getBarcodes().isEmpty()){
 							Barcode barcode = new Barcode(SensorBuffer.getBarcodes().get(0));
@@ -256,9 +249,9 @@ public class Main extends JFrame {
 							if (SensorBuffer.getDistancesAD().size() >= 10){
 								for (int i = 0; i < 10; i++){
 									//textArea_multiscan.append("scanned on position:" + "\n" + robot.getPosition() + "\n");
-									textArea_multiscan.append((36 * i) + " graden, " + SensorBuffer.getDistancesAD().get(i) + " mm" +"\n");
+									//textArea_multiscan.append((36 * i) + " graden, " + SensorBuffer.getDistancesAD().get(i) + " mm" +"\n");
 								}
-								SensorBuffer.getDistancesAD().clear();
+								if (!sensorDispActive) SensorBuffer.getDistancesAD().clear();
 							}
 						}
 						
@@ -302,7 +295,16 @@ public class Main extends JFrame {
 	private JMenuItem debugWindow;
 	private JMenuItem positionDisp;
 	private JMenuItem debugDisp;
-
+	private boolean sensorDispActive;
+	
+	protected List<Integer> getPlot(){
+		return plotList;
+	}
+	
+	protected void deactivateSensorDisp(){
+		sensorDispActive = false;
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -327,7 +329,7 @@ public class Main extends JFrame {
 		createEvents();
 		mapthread.start();
 		sensorthread.start();
-		debugthread.start();
+		//debugthread.start();
 		//messagethread.start();
 	}
 	
@@ -368,6 +370,7 @@ public class Main extends JFrame {
 		views.add(debugDisp);
 		
 		positionDisp = new JMenuItem("PositionDisplay");
+	
 		views.add(positionDisp);
 		
 		contentPane = new JPanel();
@@ -659,6 +662,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (robot != null){
 					SensorDisplay sensorDisplay = new SensorDisplay(robot, Main.this);
+					sensorDispActive = true;
 				}
 			}
 		});

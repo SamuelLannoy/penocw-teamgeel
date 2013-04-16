@@ -46,17 +46,7 @@ public class SensorDisplay extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
 						// update light sensor data.
-			    		synchronized(SensorBuffer.getLightValues()) {
-							for(int val: SensorBuffer.getLightValues()) {
-								textArea_light.setText(""+val+"\n");
-								plotList.add(val);
-							}
-							SensorBuffer.getLightValues().clear();
-			    		}
-						for (int i = plotList.size(); i > 100; i--){
-							plotList.remove(plotList.size() - i);
-						}
-						canvas_Light.setData(plotList);
+						canvas_Light.setData(parent.getPlot());
 						canvas_Light.update(canvas_Light.getGraphics());
 	
 						// update ultrasonic sensor data.
@@ -110,13 +100,16 @@ public class SensorDisplay extends JFrame {
 	private PlotCanvas canvas_Light;
 	private JTextArea textArea_infrared;
 	private JTextArea textArea_multiscan;
+	private List<Integer> plot;
+	
 	/**
 	 * Create the frame.
 	 */
-	public SensorDisplay(Robot robot, Main parent) {
+	public SensorDisplay(Robot robot, final Main parent) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
+				parent.deactivateSensorDisp();
 				sensorTimer.stop();
 			}
 		});
