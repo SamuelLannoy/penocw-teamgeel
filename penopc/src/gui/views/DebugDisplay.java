@@ -81,7 +81,6 @@ public class DebugDisplay extends JFrame {
 		
 		debugwindow = new JTextArea();
 		scrollPane_debugwindow.setViewportView(debugwindow);
-		debugwindow.append("Maak een keuze uit robot of simulator.\n");
 		debugthread.start();
 	}
 
