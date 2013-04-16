@@ -269,8 +269,7 @@ public class Main extends JFrame {
 		}
 	});
 	
-	private JMenu advanced;
-	private JMenu sensorDisp;
+	private JMenuItem sensorDisp;
 	private JToggleButton toggle_robot;
 	private JToggleButton toggle_simulator;
 	private JButton button_terminate;
@@ -287,7 +286,7 @@ public class Main extends JFrame {
 	private JTextArea textArea_ultrasonic_front;
 	private DrawCanvas canvas;
 	private DrawCanvas canvas2;
-	private JMenuItem mntmAdvanced;
+	private JMenuItem advanced;
 	private BarCodeCanvas barcode_canvas;
 	private JButton btn_resume;
 	private JButton btn_pause;
@@ -300,9 +299,9 @@ public class Main extends JFrame {
 	private JTextArea otherTeamTextArea1;
 	private JTextArea otherTeamTextArea2;
 	private JTextArea textArea_infrared;
-	private JMenu debugWindow;
-	private JMenu positionDisp;
-	private JMenu debugDisp;
+	private JMenuItem debugWindow;
+	private JMenuItem positionDisp;
+	private JMenuItem debugDisp;
 
 	/**
 	 * Launch the application.
@@ -356,17 +355,24 @@ public class Main extends JFrame {
 		});
 		File.add(mntmExit);
 		
-		advanced = new JMenu("Advanced");
+		JMenu views = new JMenu("Views");
+		menuBar.add(views);
+		
+		advanced = new JMenuItem("Advanced");
 		menuBar.add(advanced);
+		views.add(advanced);
 		
-		sensorDisp = new JMenu("SensorDisplay");
+		sensorDisp = new JMenuItem("SensorDisplay");
 		menuBar.add(sensorDisp);
+		views.add(sensorDisp);
 		
-		debugDisp = new JMenu("DebugDisplay");
+		debugDisp = new JMenuItem("DebugDisplay");
 		menuBar.add(debugDisp);
+		views.add(debugDisp);
 		
-		positionDisp = new JMenu("PositionDisplay");
+		positionDisp = new JMenuItem("PositionDisplay");
 		menuBar.add(positionDisp);
+		views.add(positionDisp);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
