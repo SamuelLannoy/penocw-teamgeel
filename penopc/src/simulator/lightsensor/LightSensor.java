@@ -50,17 +50,16 @@ public class LightSensor {
 		readValue();
 		return lastColor;
 	}
+	
 	private int lastVal = 63;
 	private int counter;
-	private int hoeveel;
 	private boolean wasOnBarcode = false;
 	private Barcode lastBarcode;
+	
 	public int readValue(){
 		int randomness = !connector.isMoving() ? (int)(Math.random()*2) : ((int)(Math.random()*7) < 6 ? (int)(Math.random()*6) : (int)(Math.random()*15));
 		int posneg = Math.random() > 0.5 ? 1 : -1;
 		int value=0;
-		if(randomness>7)
-			System.out.println(hoeveel++);
 		if(connector.isMoving()){
 			if (maze.isOnWhiteBorder()){
 				if (!maze.isOnBarcode()) {
