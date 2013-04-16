@@ -642,9 +642,5 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public void resumeLightSensor() {
 		pausedLightSensor = false;
 	}
-
-	@Override
-	public boolean isRobotInFront() {
-		return getField().isRobotInFront();
-	}
+	
 }
