@@ -387,12 +387,23 @@ public class FieldSimulation extends Field {
 		for (RobotModel model : robotPool.getOtherRobots()) {
 			TilePosition modelTilePos = model.getCurrTile().getPosition();
 			DebugBuffer.addInfo("me " + nextTilePos + " other " + modelTilePos);
+			// Check if the robot is on the next two tiles
 			if (nextTilePos.equals(modelTilePos) || dNextTilePos.equals(modelTilePos)) {
-				DebugBuffer.addInfo("collision");
-				return true;
+				// Check if there are no walls in between
+				if(!(getBorderInDirection(tile, dir) instanceof PanelBorder) ||
+						!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
+					DebugBuffer.addInfo("collision");
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+	
+	public boolean checkIfSafe() {
+		// TODO
+		
+		return !isRobotInFront() && true; 
 	}
 	
 	
