@@ -400,10 +400,6 @@ public class Robot extends RobotModel{
 		travelListOfTiles(Pathfinder.findShortestPath(this, tile));
 	}
 	
-	private boolean isWall(int x) {
-		return (x<40);
-	}
-	
 	private int connUpdateCounter = 0;
 	
 	public void updatePosition() {		
