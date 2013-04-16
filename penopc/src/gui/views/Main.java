@@ -362,15 +362,12 @@ public class Main extends JFrame {
 		views.add(advanced);
 		
 		sensorDisp = new JMenuItem("SensorDisplay");
-		menuBar.add(sensorDisp);
 		views.add(sensorDisp);
 		
 		debugDisp = new JMenuItem("DebugDisplay");
-		menuBar.add(debugDisp);
 		views.add(debugDisp);
 		
 		positionDisp = new JMenuItem("PositionDisplay");
-		menuBar.add(positionDisp);
 		views.add(positionDisp);
 		
 		contentPane = new JPanel();
