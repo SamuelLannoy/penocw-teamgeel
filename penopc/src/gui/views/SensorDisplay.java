@@ -40,42 +40,6 @@ public class SensorDisplay extends JFrame {
 	private Timer sensorTimer;
 	private List<Integer> plotList = Collections.synchronizedList(new ArrayList<Integer>());
 	
-	/**private Timer timer = new Timer(500, new ActionListener() {
-	    public void actionPerformed(ActionEvent evt) {
-	    	if (robot != null) {
-				// update light sensor data.
-	    		synchronized(SensorBuffer.getLightValues()) {
-					for(int val: SensorBuffer.getLightValues()) {
-						textArea_light.setText(""+val+"\n");
-						plotList.add(val);
-					}
-					SensorBuffer.getLightValues().clear();
-	    		}
-				
-				for (int i = plotList.size(); i > 100; i--){
-					plotList.remove(plotList.size() - i);
-				}
-				canvas_Light.setData(plotList);
-				canvas_Light.update(canvas_Light.getGraphics());
-
-				// update ultrasonic sensor data.
-				synchronized(SensorBuffer.getDistances()) {
-					if (SensorBuffer.canClear()){
-						textArea_ultrasonic_front.setText(""+SensorBuffer.getDistances().get(0)+"\n");
-						textArea_ultrasonic_left.setText(""+SensorBuffer.getDistances().get(1)+"\n");
-						textArea_ultrasonic_back.setText(""+SensorBuffer.getDistances().get(2)+"\n");
-						textArea_ultrasonic_right.setText(""+SensorBuffer.getDistances().get(3)+"\n");
-						SensorBuffer.getDistances().clear();
-						SensorBuffer.setClear(false);
-					}
-				}
-
-				// update pressure sensor data.
-				textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
-	    	}
-	    }    
-	});**/
-	
 	private Thread sensorthread = new Thread(new Runnable() {
 		public void run() {
 			sensorTimer = new Timer(100, new ActionListener() {
