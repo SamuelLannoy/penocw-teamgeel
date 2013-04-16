@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -1280,9 +1281,11 @@ public class Robot extends RobotModel{
 	}
 	
 	private void decreaseSpottedRobotTiles() {
-		for (TilePosition tilePos : robotSpottedTiles.keySet()) {
+		Iterator<TilePosition> it = robotSpottedTiles.keySet().iterator();
+		while(it.hasNext()) {
+			TilePosition tilePos = it.next();
 			if (robotSpottedTiles.get(tilePos) == 0) {
-				robotSpottedTiles.remove(tilePos);
+				it.remove();
 			} else {
 				robotSpottedTiles.put(tilePos, robotSpottedTiles.get(tilePos) - 1);
 			}
