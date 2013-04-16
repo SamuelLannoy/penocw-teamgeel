@@ -359,7 +359,6 @@ public class Main extends JFrame {
 		menuBar.add(views);
 		
 		advanced = new JMenuItem("Advanced");
-		menuBar.add(advanced);
 		views.add(advanced);
 		
 		sensorDisp = new JMenuItem("SensorDisplay");
