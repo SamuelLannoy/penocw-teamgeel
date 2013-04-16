@@ -577,7 +577,7 @@ public class Advanced extends JFrame {
 				
 				sensor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						SensorDisplay sensor = new SensorDisplay(robot);
+						SensorDisplay sensor = new SensorDisplay(robot,parent);
 					}
 				});
 				map.addActionListener(new ActionListener() {
