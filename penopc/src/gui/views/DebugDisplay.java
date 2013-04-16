@@ -73,6 +73,7 @@ public class DebugDisplay extends JFrame {
 		debugwindow = new JTextArea();
 		scrollPane_debugwindow.setViewportView(debugwindow);
 		debugthread.start();
+		this.setVisible(true);
 	}
 
 }

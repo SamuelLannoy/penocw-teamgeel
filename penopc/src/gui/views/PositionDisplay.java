@@ -59,6 +59,7 @@ public class PositionDisplay extends JFrame {
 		movePane.setViewportView(movement_window);
 		
 		posthread.start();
+		this.setVisible(true);
 	}
 
 }
