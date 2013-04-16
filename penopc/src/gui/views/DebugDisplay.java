@@ -73,6 +73,7 @@ public class DebugDisplay extends JFrame {
 		
 		robot_current_action = new JTextArea();
 		robot_current_action.setBounds(10, 310, 280, 40);
+		contentPane.add(robot_current_action);
 		
 		JScrollPane scrollPane_debugwindow = new JScrollPane();
 		scrollPane_debugwindow.setBounds(10, 10, 280, 280);
@@ -81,7 +82,6 @@ public class DebugDisplay extends JFrame {
 		debugwindow = new JTextArea();
 		scrollPane_debugwindow.setViewportView(debugwindow);
 		debugwindow.append("Maak een keuze uit robot of simulator.\n");
-		contentPane.add(robot_current_action);
 		debugthread.start();
 	}
 
