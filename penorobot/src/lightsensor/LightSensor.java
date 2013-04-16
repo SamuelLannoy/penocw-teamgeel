@@ -34,12 +34,8 @@ public class LightSensor {
 	}
 	
 	public void calibrateLightSensor(){
-		System.out.println("calibrate white light");
-		Button.waitForAnyPress();
-		sensor.calibrateHigh();
-		System.out.println("calibrate black light");
-		Button.waitForAnyPress();
-		sensor.calibrateLow();
+		sensor.setHigh(490);
+		sensor.setLow(344);
 	}
 	
 	public int readValue() {
