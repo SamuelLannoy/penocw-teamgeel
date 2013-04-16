@@ -34,8 +34,15 @@ public class LightSensor {
 	}
 	
 	public void calibrateLightSensor(){
-		sensor.setHigh(490);
-		sensor.setLow(344);
+//		System.out.println("calibratewhite");
+//		Button.waitForAnyPress();
+//		sensor.calibrateHigh();
+//		System.out.println("calibrateblack");
+//		Button.waitForAnyPress();
+//		sensor.calibrateLow();
+//		Buffer.addDebug("high:"+sensor.getHigh() + " low:"+sensor.getLow());
+		sensor.setHigh(487);
+		sensor.setLow(303);
 	}
 	
 	public int readValue() {
@@ -77,23 +84,31 @@ public class LightSensor {
 		int emptybuffer = 0;
 		int counterBlack = 0;
 		Color temp;
+		boolean barcodehelper=false;
 		boolean alreadyBarcode = false;
 		if(!turnOnBarcode){
-			while (buffer<10 || emptybuffer<10) { // 10 keer bruin na elkaar --> einde lijn of barcode
+			Buffer.addDebug("in if");
+			System.out.println("in if");
+			while (buffer<10 && emptybuffer<10) { // 10 keer bruin na elkaar --> einde lijn of barcode
 				if(Robot.getInstance().isMoving()){
 					temp = Color.getColor(readValue());
 					setLastColor(temp);
 					if(temp == Color.BROWN){
 						if(list.size()!=0){
-							list.add(temp);
-							buffer++;
+							if(!barcodehelper){
+								list.add(temp);
+								buffer++;
+							}
 						}
 						else{
+							if(!barcodehelper)
 							emptybuffer++;
 						}
 					} else{
 						if(list.size() == 0){
 							if(temp == Color.BLACK){
+								Buffer.addDebug("barcodehelperterugfalse");
+								barcodehelper=false;
 								counterBlack++;
 							}
 						}
@@ -108,13 +123,23 @@ public class LightSensor {
 								System.out.println("isScanningBarcode");
 								Robot.getInstance().setScanning(true);
 								Robot.getInstance().stop();
-								Robot.getInstance().travel(-80,false);
-								
+								int buff = 0;
+								Robot.getInstance().backward();
+								Color tem;
+								while (buff<10){
+									tem = Color.getColor(readValue());
+									if(tem == Color.BROWN)
+										buff++;
+									else
+										buff=0;
+								}
+								Robot.getInstance().stop();
 								list.clear();
 								counterBlack = 0;
 								buffer = 0;
 								emptybuffer = 0;
 								alreadyBarcode = true;
+								barcodehelper=true;
 								Robot.getInstance().setTravelSpeed(Robot.DEFAULT_TRAVEL_SPEED);
 								Robot.getInstance().forward();
 							}
@@ -184,7 +209,11 @@ public class LightSensor {
 			return null; //if a barcode is scanned but we dont want to use this information
 		}
 		else{
+			buffer=0;
+			Buffer.addDebug("in else");
+			System.out.println("in else");
 			while(buffer < 10){
+				Buffer.addDebug("moerhaso");
 				if(Color.getColor(readValue()).equals(Color.BROWN)){
 					buffer++;
 				}
@@ -193,7 +222,6 @@ public class LightSensor {
 				}
 			}
 			Robot.getInstance().setOnBrownAfterBarcode(true);
-			LightSensorVigilante.setTurningOnBarcode(false);
 			return LightSensorUpdate.BROWN;
 		}
 

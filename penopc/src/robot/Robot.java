@@ -169,7 +169,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnLeft(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde()) {
+		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnLeft(angle);
@@ -177,7 +177,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnRight(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde()) {
+		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnRight(angle);
@@ -295,7 +295,7 @@ public class Robot extends RobotModel{
 			return;
 		turnToTile(tile.getPosition());
 		moveNext();
-		//System.out.println("moveto " + tile.getPosition());
+		System.out.println("moveto " + tile.getPosition());
 	}
 	
 	private void turnToTile(TilePosition tilePos) {
@@ -303,15 +303,19 @@ public class Robot extends RobotModel{
 		int diffy = tilePos.getY() - getCurrTile().getPosition().getY();
 		if (diffx == 0 && diffy == 1) {
 			turnToAngle(0);
+			System.out.println("angle " + 0);
 			//turnLeft(getPosition().getRotation());
 		} else if (diffx == 0 && diffy == -1) {
 			turnToAngle(180);
+			System.out.println("angle " + 180);
 			//turnRight(180-getPosition().getRotation());
 		} else if (diffx == 1 && diffy == 0) {
 			turnToAngle(90);
+			System.out.println("angle " + 90);
 			//turnRight(90-getPosition().getRotation());
 		} else if (diffx == -1 && diffy == 0) {
 			turnToAngle(-90);
+			System.out.println("angle " + -90);
 			//turnRight(270-getPosition().getRotation());
 		}
 	}
@@ -1154,7 +1158,7 @@ public class Robot extends RobotModel{
 		
 		if (!isSim()) {
 			// execute move away from wrong object
-			pauseLightSensor();
+			//pauseLightSensor();
 			scanOnlyLines(true);
 			//DebugBuffer.addInfo("PAUSE");
 			try {
@@ -1170,7 +1174,7 @@ public class Robot extends RobotModel{
 			waitTillStandby(250);
 			//DebugBuffer.addInfo("RESUME");
 			scanOnlyLines(false);
-			resumeLightSensor();
+			//resumeLightSensor();
 			setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
 					getField().getTileAt(
 							dirForw.opposite().getPositionInDirection(ctile.getPosition())));
