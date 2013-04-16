@@ -65,11 +65,14 @@ public class DebugDisplay extends JFrame {
 		this.parent = parent;
 		setTitle("Debug Display");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 300, 300);
+		setBounds(100, 100, 300, 360);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		robot_current_action = new JTextArea();
+		robot_current_action.setBounds(10, 310, 280, 40);
 		
 		JScrollPane scrollPane_debugwindow = new JScrollPane();
 		scrollPane_debugwindow.setBounds(10, 10, 280, 280);
