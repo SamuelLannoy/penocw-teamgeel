@@ -447,8 +447,8 @@ public class Robot {
 		}
 
 		public void turnBarcode() {
-			// TODO Auto-generated method stub
 			LightSensorVigilante.setTurningOnBarcode(true);
+			Button.waitForAnyPress(100);
 			Robot.getInstance().rotateLeft(180, false);
 			while(!cond){
 				Robot.getInstance().forward();

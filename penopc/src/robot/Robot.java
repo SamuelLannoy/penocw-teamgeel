@@ -177,7 +177,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnRight(double angle) {
-		if (getCurrTile().hasBarcocde()) {
+		if (!isSim() && getCurrTile().hasBarcocde()) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnRight(angle);
