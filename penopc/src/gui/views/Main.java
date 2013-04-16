@@ -20,10 +20,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import com.rabbitmq.client.Connection;
 
@@ -266,7 +268,9 @@ public class Main extends JFrame {
 			sensorTimer.start();
 		}
 	});
-
+	
+	private JMenu advanced;
+	private JMenu sensorDisp;
 	private JToggleButton toggle_robot;
 	private JToggleButton toggle_simulator;
 	private JButton button_terminate;
@@ -296,6 +300,9 @@ public class Main extends JFrame {
 	private JTextArea otherTeamTextArea1;
 	private JTextArea otherTeamTextArea2;
 	private JTextArea textArea_infrared;
+	private JMenu debugWindow;
+	private JMenu positionDisp;
+	private JMenu debugDisp;
 
 	/**
 	 * Launch the application.
@@ -349,9 +356,17 @@ public class Main extends JFrame {
 		});
 		File.add(mntmExit);
 		
-		mntmAdvanced = new JMenuItem("Advanced");
-
-		File.add(mntmAdvanced);
+		advanced = new JMenu("Advanced");
+		menuBar.add(advanced);
+		
+		sensorDisp = new JMenu("SensorDisplay");
+		menuBar.add(sensorDisp);
+		
+		debugDisp = new JMenu("DebugDisplay");
+		menuBar.add(debugDisp);
+		
+		positionDisp = new JMenu("PositionDisplay");
+		menuBar.add(positionDisp);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -359,19 +374,20 @@ public class Main extends JFrame {
 		
 		JScrollPane scrollPane_debugwindow = new JScrollPane();
 		scrollPane_debugwindow.setBounds(10, 275, 460, 100);
+		contentPane.add(scrollPane_debugwindow);
 		
 		robot_current_action = new JTextArea();
 		robot_current_action.setBounds(10, 480, 250, 23);
 
 		contentPane.setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 400, 250, 78);
-		contentPane.add(scrollPane);
+		JScrollPane movePane = new JScrollPane();
+		movePane.setBounds(10, 400, 250, 78);
+		contentPane.add(movePane);
 		
 		movement_window = new JTextArea();
-		scrollPane.setViewportView(movement_window);
-		contentPane.add(scrollPane_debugwindow);
+		movePane.setViewportView(movement_window);
+		
 		
 		debugwindow = new JTextArea();
 		scrollPane_debugwindow.setViewportView(debugwindow);
@@ -534,9 +550,26 @@ public class Main extends JFrame {
 		textArea_infrared.setBounds(270, 480, 200, 30);
 		contentPane.add(textArea_infrared);
 		
-		Label label = new Label("infrared");
+		JLabel label = new JLabel("infrared");
 		label.setBounds(286, 456, 62, 22);
 		contentPane.add(label);
+		
+		// Controls
+		JPanel panel_controls = new JPanel();
+		panel_controls.setBounds(10, 10, 280, 150);
+		panel_controls.setBorder(new TitledBorder(null, "Controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		//contentPane.add(panel_controls);
+		panel_controls.setLayout(null);
+		
+		// Lobby
+		JPanel panel_lobby = new JPanel();
+		panel_lobby.setBounds(10, 160, 280, 75);
+		panel_lobby.setBorder(new TitledBorder(null, "RabbitMQ lobby", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		//contentPane.add(panel_lobby);
+		panel_lobby.setLayout(null);
+		
+		JTable table_lobby = new JTable(4,4);
+		panel_lobby.add(table_lobby);
 		
 	}
 	
@@ -612,10 +645,34 @@ public class Main extends JFrame {
 			}
 		});
 		
-		mntmAdvanced.addActionListener(new ActionListener() {
+		advanced.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (robot != null){
 					Advanced advanced = new Advanced(robotPool, Main.this);
+				}
+			}
+		});
+		
+		sensorDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (robot != null){
+					SensorDisplay sensorDisplay = new SensorDisplay(robot, Main.this);
+				}
+			}
+		});
+		
+		debugDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (robot != null){
+					DebugDisplay debugDisplay = new DebugDisplay(robot, Main.this);
+				}
+			}
+		});
+		
+		positionDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (robot != null){
+					PositionDisplay positionDisplay = new PositionDisplay(robot, Main.this);
 				}
 			}
 		});
