@@ -7,17 +7,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-
-import communication.SeesawStatus;
-import communication.Status;
 
 import field.*;
 import field.representation.FieldRepresentation;
 
 import robot.DebugBuffer;
 import robot.Robot;
-import robot.SensorBuffer;
 
 public class Explorer {
 	

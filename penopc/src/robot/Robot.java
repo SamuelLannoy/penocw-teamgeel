@@ -38,7 +38,8 @@ public class Robot extends RobotModel{
 	
 	private AbstractRobotConnector robotConn;
 	//private Position position = new Position();
-	private FieldRepresentation field = new FieldRepresentation();
+	private FieldRepresentation fieldRepresentation = new FieldRepresentation();
+	private FieldSimulation fieldSimulation;
 	private boolean isBusy = false;
 	private Tile startTile;
 	private Tile endTile;
@@ -405,10 +406,6 @@ public class Robot extends RobotModel{
 		travelListOfTiles(Pathfinder.findShortestPath(this, tile));
 	}
 	
-	private boolean isWall(int x) {
-		return (x<40);
-	}
-	
 	private int connUpdateCounter = 0;
 	
 	public void updatePosition() {		
@@ -453,7 +450,7 @@ public class Robot extends RobotModel{
 		}
 		
 		passedWhiteBorder();
-		if (passedWhite && !isSeesawMode()/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
+		if (passedWhite/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
 			passedWhite = false;
 			//System.out.println("LINE");
 			Direction dir = Direction.fromPos(getPosition());
@@ -538,10 +535,10 @@ public class Robot extends RobotModel{
 	}
 	
 	public FieldRepresentation getField() {
-		return field;
+		return fieldRepresentation;
 	}
 	public void setField(FieldRepresentation f) {
-		field = f;
+		fieldRepresentation = f;
 	}
 	
 	private void findBorderObjects(){
@@ -723,16 +720,6 @@ public class Robot extends RobotModel{
 		this.startPos = startPos;
 	}
 	
-	private boolean seesawMode = false;
-
-	public boolean isSeesawMode() {
-		return seesawMode;
-	}
-
-	public void setSeesawMode(boolean seesawMode) {
-		this.seesawMode = seesawMode;
-	}
-	
 	public void pauseLightSensor() {
 		robotConn.pauseLightSensor();
 	}
@@ -807,7 +794,10 @@ public class Robot extends RobotModel{
 	}
 	
 	public void setSimField(FieldSimulation world) {
-		((ISimulator)robotConn).setSimField(world);
+		if (isSim()) {
+			((ISimulator)robotConn).setSimField(world);
+		}
+		setFieldSimulation(world);
 	}
 	
 	public void goToTeamMate() {
@@ -884,13 +874,14 @@ public class Robot extends RobotModel{
 		return false;
 	}
 	
+	// Used for e.g. ultrasonic sensor
+	private boolean isRobotInFront() {
+		return getFieldSimulation().isRobotInFront();
+	}
+	
+	// Used for robot detection
 	private boolean checkIfSafe() {
-		//return true;
-		if (isSim()) {
-			return !((ISimulator)robotConn).isRobotInFront();
-		} else {
-			return true;
-		}
+		return getFieldSimulation().checkIfSafe();
 	}
 	
 	/**
@@ -982,8 +973,8 @@ public class Robot extends RobotModel{
 			TilePosition current = getCurrTile().getPosition();
 			// if border at back is defined do new tile scan
 			Direction dirx = getDirection().opposite();
-			if (field.hasBackBorder(current, dirx) &&
-					!(field.getBorderInDirection(current, dirx) instanceof UnsureBorder)) {
+			if (fieldRepresentation.hasBackBorder(current, dirx) &&
+					!(fieldRepresentation.getBorderInDirection(current, dirx) instanceof UnsureBorder)) {
 				newTileScan();
 
 			} else { // else scan 360
@@ -993,14 +984,14 @@ public class Robot extends RobotModel{
 			System.out.println("scan command given " + current + " rt " + getCurrTile());
 
 			// wait till tile border results have been given
-			while (!field.isExplored(current)) {
+			while (!fieldRepresentation.isExplored(current)) {
 				waitTillStandby(1000);
 			}
 			System.out.println("done scanning");
 
 			// check for gray borders in every direction
 			for (Direction dir : Direction.values()) {
-				if (field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+				if (fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
 					// turn and move to gray border
 					turnToAngle(dir.toAngle());
 					moveForward(55);
@@ -1008,10 +999,10 @@ public class Robot extends RobotModel{
 					// scan border again, time outs with 3 tries
 					// after 3 tries add white border with new tile
 					int counter = 0;
-					while (field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+					while (fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
 						checkScan();
 						waitTillStandby(900);
-						if (counter == 2 && field.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+						if (counter == 2 && fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
 							getField().registerNewTile(dir, current);
 							break;
 						}
@@ -1023,7 +1014,7 @@ public class Robot extends RobotModel{
 				}
 				
 				// if a white border was scanned add it to explore list
-				if (field.getBorderInDirection(current, dir) instanceof WhiteBorder) {
+				if (fieldRepresentation.getBorderInDirection(current, dir) instanceof WhiteBorder) {
 					TilePosition pos = dir.getPositionInDirection(current);
 					toExplore.add(pos);
 				}
@@ -1295,5 +1286,13 @@ public class Robot extends RobotModel{
 				robotSpottedTiles.put(tilePos, robotSpottedTiles.get(tilePos) - 1);
 			}
 		}
+	}
+
+	public FieldSimulation getFieldSimulation() {
+		return fieldSimulation;
+	}
+
+	public void setFieldSimulation(FieldSimulation fieldSimulation) {
+		this.fieldSimulation = fieldSimulation;
 	}
 }
