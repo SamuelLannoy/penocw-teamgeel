@@ -12,7 +12,7 @@ public class LightSensorVigilante extends Thread {
 	
 	private static boolean pause = false;
 	private static boolean onlyLines = false;
-	//private static boolean noLines = false;
+	private static boolean turnBarcode = false;
 	
 	/**
 	 * Pause the lightsensor
@@ -27,6 +27,10 @@ public class LightSensorVigilante extends Thread {
 	 */
 	public static void resume() {
 		pause = false;
+	}
+	
+	public static void setTurningOnBarcode(boolean set){
+		turnBarcode = set;
 	}
 	
 	/**
@@ -70,7 +74,7 @@ public class LightSensorVigilante extends Thread {
 				LightSensorUpdate update = null;
 				boolean curOnlyLines = onlyLines; //not possible to change this variable if a scan is in progress
 				//boolean curNoLines = noLines;
-					update = lightsensor.LightSensor.getInstance().lightSensorVigilante(curOnlyLines);
+					update = lightsensor.LightSensor.getInstance().lightSensorVigilante(curOnlyLines, turnBarcode);
 					Robot.getInstance().setScanning(false);
 //					if(update.equals(LightSensorUpdate.UNKNOWN)){ //barcode not read correctly or not known?
 //						int i = 0;

@@ -136,6 +136,15 @@ public enum Encoding {
 				boolean immediateReturn) {
 			LightSensorVigilante.resume();
 		}
+	},
+	TURNBARCODE{
+
+		@Override
+		public void execute(double param1, double param2,
+				boolean immediateReturn) {
+			Robot.getInstance().turnBarcode();
+		}
+		
 	};
 	
 	public abstract void execute(double param1, double param2, boolean immediateReturn);

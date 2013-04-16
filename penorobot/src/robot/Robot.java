@@ -445,4 +445,21 @@ public class Robot {
 		public int getTeamNr(){
 			return teamNr;
 		}
+
+		public void turnBarcode() {
+			// TODO Auto-generated method stub
+			LightSensorVigilante.setTurningOnBarcode(true);
+			Robot.getInstance().rotateLeft(180, false);
+			while(!cond){
+				Robot.getInstance().forward();
+			}
+			Robot.getInstance().setOnBrownAfterBarcode(false);
+			Robot.getInstance().stop();
+		}
+
+		public void setOnBrownAfterBarcode(boolean b) {
+			cond = b;
+		}
+		
+		private boolean cond = false;
 }
