@@ -167,11 +167,19 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnLeft(double angle) {
-		robotConn.turnLeft(angle);
+		if (getCurrTile().hasBarcocde()) {
+			
+		} else {
+			robotConn.turnLeft(angle);
+		}
 	}
 	
 	public void turnRight(double angle) {
-		robotConn.turnRight(angle);
+		if (getCurrTile().hasBarcocde()) {
+			
+		} else {
+			robotConn.turnRight(angle);
+		}
 	}
 	
 	public double getRotationTurned() {
