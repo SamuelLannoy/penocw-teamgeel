@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import communication.CommandEncoder;
 import communication.SeesawStatus;
 
 import robot.brain.EndingCondition;
@@ -168,16 +169,16 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnLeft(double angle) {
-		if (getCurrTile().hasBarcocde()) {
-			
+		if (!isSim() && getCurrTile().hasBarcocde()) {
+			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnLeft(angle);
 		}
 	}
 	
 	public void turnRight(double angle) {
-		if (getCurrTile().hasBarcocde()) {
-			
+		if (!isSim() && getCurrTile().hasBarcocde()) {
+			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnRight(angle);
 		}

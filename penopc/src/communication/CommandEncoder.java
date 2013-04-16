@@ -196,5 +196,9 @@ public class CommandEncoder implements AbstractRobotConnector {
 	public void resumeLightSensor() {
 		Bluetooth.getInstance().send(Encoding.PAUSELIGHTSENSOR.ordinal(),0,0,false);
 	}
+	
+	public void turnOnBarcode(){
+		Bluetooth.getInstance().send(Encoding.TURNBARCODE.ordinal(), 0, 0, false);
+	}
 
 }
