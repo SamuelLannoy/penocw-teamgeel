@@ -10,7 +10,7 @@ import lejos.nxt.SensorPort;
 public class UltrasonicSensor {
 	private static lejos.nxt.UltrasonicSensor sensor;
 	private static final int dangerousDistance = 50; //TODO 5 cm? 
-	public static final double[] CORRECTION = {9,4,-9,-4};
+	public static final double[] CORRECTION = {9,4,-9,-4}; //front,left,back,right
 	
 	private static final UltrasonicSensor instance = new UltrasonicSensor();
 	
