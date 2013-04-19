@@ -231,6 +231,25 @@ public class Main extends JFrame {
 								textArea_ultrasonic_left.setText(""+SensorBuffer.lastDist.get(1)+"\n");
 								textArea_ultrasonic_back.setText(""+SensorBuffer.lastDist.get(2)+"\n");
 								textArea_ultrasonic_right.setText(""+SensorBuffer.lastDist.get(3)+"\n");
+//								front.add(SensorBuffer.lastDist.get(0));
+//								left.add(SensorBuffer.lastDist.get(1));
+//								right.add(SensorBuffer.lastDist.get(3));
+//								System.out.println(front.size());
+//								
+//								if(front.size() == threshold){
+//									System.out.println("Front");
+//									for(int i=0; i<front.size(); i++){
+//										System.out.println(front.get(i));
+//									}
+//									System.out.println("Left");
+//									for(int i=0; i<left.size(); i++){
+//										System.out.println(left.get(i));
+//									}
+//									System.out.println("Right");
+//									for(int i=0; i<right.size(); i++){
+//										System.out.println(right.get(i));
+//									}
+//								}
 								SensorBuffer.lastDist.clear();
 							}
 						}
@@ -622,6 +641,16 @@ public class Main extends JFrame {
 		
 		btnExplore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+//				for(int i =0;i<threshold; i++){
+//					robot.newTileScan();
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+				
 				robot.explore();
 				resetCanvas();
 			}

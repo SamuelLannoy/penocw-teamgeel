@@ -31,6 +31,7 @@ public class LightSensorVigilante extends Thread {
 	
 	public static void setTurningOnBarcode(boolean set){
 		turnBarcode = set;
+		Buffer.addDebug("postsettingturnbarcodeinvigilante");
 	}
 	
 	/**

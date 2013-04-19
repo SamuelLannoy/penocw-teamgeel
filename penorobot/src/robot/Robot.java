@@ -199,6 +199,7 @@ public class Robot {
 			buffer = 0;
 			Robot.getInstance().stop();
 			PilotController.stopStream();
+			
 			PILOT.reset();
 			PILOT.rotateRight();
 			buffer = 0;
@@ -447,14 +448,24 @@ public class Robot {
 		}
 
 		public void turnBarcode() {
+			Buffer.addDebug("presetturningonbarcode");
+			System.out.println("presetturningonbarcode");
+			LightSensorVigilante.pause();
 			LightSensorVigilante.setTurningOnBarcode(true);
+			Buffer.addDebug("postsetturningonbarcode");
+			System.out.println("postsetturningonbarcode");
 			Button.waitForAnyPress(100);
 			Robot.getInstance().rotateLeft(180, false);
+			LightSensorVigilante.resume();
+			Buffer.addDebug("post180");
+			System.out.println("post180");
+			Robot.getInstance().forward();
 			while(!cond){
-				Robot.getInstance().forward();
 			}
 			Robot.getInstance().setOnBrownAfterBarcode(false);
 			Robot.getInstance().stop();
+			Robot.getInstance().travel(50,false);
+			LightSensorVigilante.setTurningOnBarcode(false);
 		}
 
 		public void setOnBrownAfterBarcode(boolean b) {
