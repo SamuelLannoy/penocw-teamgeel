@@ -870,11 +870,6 @@ public class Robot extends RobotModel{
 		return false;
 	}
 	
-	// Used for e.g. ultrasonic sensor
-	private boolean isRobotInFront() {
-		return getFieldSimulation().isRobotInFront();
-	}
-	
 	// Used for robot detection
 	private boolean checkIfSafe() {
 		return getFieldSimulation().checkIfSafe();

@@ -379,6 +379,7 @@ public class FieldSimulation extends Field {
 		}
 	}
 	
+	
 	public boolean isRobotInFront() {
 		Tile tile = getCurrentTile();
 		Direction dir = Direction.fromAngle(localSimulator.getTRotation());
@@ -392,7 +393,46 @@ public class FieldSimulation extends Field {
 				// Check if there are no walls in between
 				if(!(getBorderInDirection(tile, dir) instanceof PanelBorder) ||
 						!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
-					DebugBuffer.addInfo("collision");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean isRobotLeft() {
+		Tile tile = getCurrentTile();
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation()).left();
+		TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+		TilePosition dNextTilePos = dir.getPositionInDirection(nextTilePos);
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			DebugBuffer.addInfo("me " + nextTilePos + " other " + modelTilePos);
+			// Check if the robot is on the next two tiles
+			if (nextTilePos.equals(modelTilePos) || dNextTilePos.equals(modelTilePos)) {
+				// Check if there are no walls in between
+				if(!(getBorderInDirection(tile, dir) instanceof PanelBorder) ||
+						!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean isRobotRight() {
+		Tile tile = getCurrentTile();
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation()).right();
+		TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+		TilePosition dNextTilePos = dir.getPositionInDirection(nextTilePos);
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			DebugBuffer.addInfo("me " + nextTilePos + " other " + modelTilePos);
+			// Check if the robot is on the next two tiles
+			if (nextTilePos.equals(modelTilePos) || dNextTilePos.equals(modelTilePos)) {
+				// Check if there are no walls in between
+				if(!(getBorderInDirection(tile, dir) instanceof PanelBorder) ||
+						!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
 					return true;
 				}
 			}
@@ -401,9 +441,35 @@ public class FieldSimulation extends Field {
 	}
 	
 	public boolean checkIfSafe() {
-		// TODO
+		boolean rightSafe = true;
+		boolean leftSafe = true;
 		
-		return !isRobotInFront() && true; 
+		Tile tile = getCurrentTile();
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation());
+		TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+		TilePosition leftTilePos = dir.left().getPositionInDirection(nextTilePos);
+		TilePosition rightTilePos = dir.right().getPositionInDirection(nextTilePos);
+		
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			DebugBuffer.addInfo("me " + nextTilePos + " other " + modelTilePos);
+			// Check if the robot is on the forward-left tile
+			if (leftTilePos.equals(modelTilePos)) {
+				// Check if there are no walls in between
+				if(!(getBorderInDirection(nextTilePos, dir.left()) instanceof PanelBorder)) {
+					leftSafe = false;
+				}
+			}
+			// Check if the robot is on the forward-right tile
+			if (rightTilePos.equals(modelTilePos)) {
+				// Check if there are no walls in between
+				if(!(getBorderInDirection(nextTilePos, dir.right()) instanceof PanelBorder)) {
+					rightSafe = false;
+				}
+			}
+		}
+		
+		return !isRobotInFront() || rightSafe || leftSafe; 
 	}
 	
 	
