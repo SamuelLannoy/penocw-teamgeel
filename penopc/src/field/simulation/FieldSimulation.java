@@ -480,6 +480,7 @@ public class FieldSimulation extends Field {
 	}
 	
 	
+	
 	/*
 	 * Starting position / direction
 	 */

@@ -3,6 +3,8 @@ package peno.htttp.impl;
 import java.io.IOException;
 
 import field.Field;
+import field.Direction;
+import field.TilePosition;
 import field.fromfile.FieldFactory;
 import field.simulation.FieldSimulation;
 import peno.htttp.DisconnectReason;
@@ -69,9 +71,30 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	public void playerUpdate(String playerID, int playerNumber, double x,
 			double y, double angle, boolean foundObject) {
 		//playerNumber = playerNumber+1;
+		/*int[] newpos = TilePosition.rotate((int)field
+				.getStartDir(playerNumber).opposite().toAngle(), new TilePosition((int)x, (int)y), new TilePosition(0, 0));
+		DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);*/
+		int[] newpos = new int[] {(int)x,(int)y};
+		switch(field.getStartDir(playerNumber)) {
+			case BOTTOM:
+				newpos = new int[] {(int)x,-(int)y};
+				break;
+			case LEFT:
+				newpos = new int[] {-(int)y,(int)x};
+				break;
+			case RIGHT:
+				newpos = new int[] {(int)y,-(int)x};
+				break;
+			case TOP:
+				break;
+			default:
+				break;
+			
+		}
+		//DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);
 		robotPool.updateRobot(getPoolID(playerID),
-				x + field.getStartPos(playerNumber).getX() * 40,
-				y + field.getStartPos(playerNumber).getY() * 40,
+				newpos[0] + field.getStartPos(playerNumber).getX(),
+				newpos[1] + field.getStartPos(playerNumber).getY(),
 				angle + field.getStartDir(playerNumber).toAngle());
 	}
 	
@@ -114,8 +137,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 				//DebugBuffer.addInfo("real pos = " + tile.getPosition());
 				robotPool.getMainRobot().setSimLoc(tile.getPosition().getX() * 40,
 						tile.getPosition().getY() * 40,
-						field.getStartDir(playerNumber).toAngle());
-				robotPool.getMainRobot().setPosition(new robot.Position(0, 0, field.getStartDir(playerNumber).toAngle()));
+						field.getStartDir(playerNumber).toAngle() * Math.PI / 180);
+				//robotPool.getMainRobot().setPosition(new robot.Position(0, 0, field.getStartDir(playerNumber).toAngle()));
 			}
 		}
 	}

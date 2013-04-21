@@ -415,10 +415,8 @@ public class Robot extends RobotModel{
 		if (connUpdateCounter == 200) {
 			if (comm != null) { 
 				comm.updatePosition(
-						getCurrTile().getPosition().getX() * 40 +
-						getPosition().getPosX(),
-						getCurrTile().getPosition().getY() * 40 +
-						getPosition().getPosY(),
+						getCurrTile().getPosition().getX(),
+						getCurrTile().getPosition().getY(),
 						getPosition().getRotation());
 			}
 			connUpdateCounter = 0;
