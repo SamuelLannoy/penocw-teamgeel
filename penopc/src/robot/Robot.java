@@ -845,18 +845,34 @@ public class Robot extends RobotModel{
 				hasWrongBarcode();
 				hasCorrectBarcode();
 				
-				// travel to second tile, because first one is always our own tile
-				//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
-				travelToNextTile(tileList.get(1));
-				waitTillStandby(750);
-				
-				// is the tile I moved on a seesaw barcode tile?
-				if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+
+				if (getField().pathRunsThroughSeesaw(getAStarTileList()) &&
+						getField().isExplored(getCurrTile().getPosition()) &&
+						(getCurrTile().hasBarcocde() &&
+								getCurrTile().getBarcode().isSeesaw())) {
+					// travel across seesaw if necessary
 					// boolean for A*
 					boolean ignore = seesawAction();
 					// don't cross seesaw in A* if we couldn't cross it
 					if (ignore) {
 						ignoredSeesaws.add(getCurrTile().getBarcode().getDecimal());
+					}
+				} else {
+					// travel to second tile, because first one is always our own tile
+					//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
+					travelToNextTile(tileList.get(1));
+					waitTillStandby(750);
+				}
+
+				if (getField().isExplored(getCurrTile().getPosition())){
+					// is the tile I moved on a seesaw barcode tile?
+					if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+						// boolean for A*
+						boolean ignore = seesawAction();
+						// don't cross seesaw in A* if we couldn't cross it
+						if (ignore) {
+							ignoredSeesaws.add(getCurrTile().getBarcode().getDecimal());
+						}
 					}
 				}
 			} else {

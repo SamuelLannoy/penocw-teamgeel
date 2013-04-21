@@ -1,6 +1,7 @@
 package field.representation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import team.communication.TeamCommunicator;
@@ -211,6 +212,16 @@ public class FieldRepresentation extends Field {
 				!(getBorderInDirection(getTileAt(pos), Direction.BOTTOM) instanceof UnsureBorder) &&
 				!(getBorderInDirection(getTileAt(pos), Direction.LEFT) instanceof UnsureBorder) &&
 				!(getBorderInDirection(getTileAt(pos), Direction.RIGHT) instanceof UnsureBorder);
+	}
+	
+	public boolean pathRunsThroughSeesaw(Collection<Tile> tiles){
+		for (Tile tile : tiles) {
+			if (isExplored(tile.getPosition()) &&
+					isSeesawTile(tile)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean hasBackBorder(TilePosition tilePos, Direction backDirection) {
