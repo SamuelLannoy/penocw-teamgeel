@@ -3,6 +3,7 @@ package robot;
 import corner.Corner;
 import field.Field;
 import field.Tile;
+import field.TilePosition;
 import field.simulation.FieldSimulation;
 
 public class RobotModel {
@@ -32,23 +33,29 @@ public class RobotModel {
 	}
 	
 	public void setGlobalPosition(double x, double y, double angle) {
-		double[] position = FieldSimulation.convertToInTilePos(new double[] {x, y });
-		field.TilePosition tpos = FieldSimulation.convertToTilePosition(x, y);
-		setPosition(new Position(position[0], position[1], angle), new Tile(tpos));
+		/*double[] position = FieldSimulation.convertToInTilePos(new double[] {x, y });*/
+		field.TilePosition tpos = new TilePosition((int)x, (int)y);
+
+		//DebugBuffer.addInfo("Setting pos " + tpos);
+		setPosition(new Position(0, 0, angle), new Tile(tpos));
 	}
 	
 	private double width = 6;
 	private double length = 10;
 	
-	public double[][] getCorners() {
-		double ta = -getPosition().getRotation() * Math.PI / 180;
+	public double[][] getCorners(double offset) {
+		double ta = -(getPosition().getRotation() - offset) * Math.PI / 180;
 		return Corner.getCorners(0, 0, width, length, ta);
 	}
 	
-	public double[] getCornersX() {
+	public double[][] getCorners() {
+		return getCorners(0);
+	}
+	
+	public double[] getCornersX(double offset) {
 		double[] xarr = new double[4];
 		
-		double[][] arr = getCorners();
+		double[][] arr = getCorners(offset);
 		
 		xarr[0] = arr[0][0];
 		xarr[1] = arr[1][0];
@@ -58,10 +65,14 @@ public class RobotModel {
 		return xarr;
 	}
 	
-	public double[] getCornersY() {
+	public double[] getCornersX() {
+		return getCornersX(0);
+	}
+	
+	public double[] getCornersY(double offset) {
 		double[] yarr = new double[4];
 		
-		double[][] arr = getCorners();
+		double[][] arr = getCorners(offset);
 		
 		yarr[0] = arr[0][1];
 		yarr[1] = arr[1][1];
@@ -69,6 +80,10 @@ public class RobotModel {
 		yarr[3] = arr[3][1];
 		
 		return yarr;
+	}
+	
+	public double[] getCornersY() {
+		return getCornersY(0);
 	}
 	
 	//TODO: remove method

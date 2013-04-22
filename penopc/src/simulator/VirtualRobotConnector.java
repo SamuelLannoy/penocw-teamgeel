@@ -107,7 +107,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public void setSimLoc(double x, double y, double angle) {
 		tdistancex = x;
 		tdistancey = y;
-		tRotation = angle;
+		tRotation = angle / Math.PI * 180;
 		this.angle = angle;
 		setStartx(x);
 		setStarty(y);
@@ -470,7 +470,6 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	private void setupField() {
 		if (maze == null) {
 			maze = new FieldSimulation("C:\\demo2.txt");
-//			maze = new FieldSimulation("/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		}
 	}
 	
@@ -643,5 +642,4 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public void resumeLightSensor() {
 		pausedLightSensor = false;
 	}
-	
 }
