@@ -380,7 +380,7 @@ public class FieldSimulation extends Field {
 	}
 	
 	/**
-	 * USE: ultrasonic sensor
+	 * USE: ultrasonic sensor & robot detection
 	 */
 	public boolean isRobotInFront() {
 		Tile tile = getCurrentTile();
