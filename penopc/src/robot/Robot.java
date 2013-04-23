@@ -557,18 +557,24 @@ public class Robot extends RobotModel{
 		if (distances.size() >= 4) {
 			for (int i = 0; i < 4; i++){
 				Direction dir = getDirection();
-				if (i == 1)
+				boolean interference = false;
+				if (i == 1) { // left
 					dir = dir.left();
-				if (i == 2)
+					interference = fieldSimulation.isRobotLeft();
+				} else if (i == 2) { // back
 					dir = dir.opposite();
-				if (i == 3)
+				} else if (i == 3) { // right
 					dir = dir.right();
+					interference = fieldSimulation.isRobotRight();
+				} else { // front
+					interference = fieldSimulation.isRobotInFront();
+				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
-					if (distance < 25){
+					if (distance < 25 && !interference){
 						getField().registerBorder(getCurrTile().getPosition(),
 								dir, PanelBorder.class);
-					} else if (distance >= 25 && distance < 45){
+					} else if (distance >= 25 && distance < 45 && !interference){
 						getField().registerBorder(getCurrTile().getPosition(),
 								dir, UnsureBorder.class);
 					} else {
@@ -654,7 +660,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public boolean hasTeamMate() {
-		return getTeamMateNr() != null && !getTeamMateNr().equals("");
+		return getTeamMateID() != null && !getTeamMateID().equals("");
 	}
 	
 	private FieldRepresentation teamMateField = new FieldRepresentation();
@@ -679,7 +685,7 @@ public class Robot extends RobotModel{
 	
 	private String teamMateID;
 
-	public String getTeamMateNr() {
+	public String getTeamMateID() {
 		return teamMateID;
 	}
 

@@ -438,6 +438,8 @@ public class FieldSimulation extends Field {
 	
 	/**
 	 * USE: robot detection
+	 * 
+	 * TODO: teammate bij naar elkaar toegaan
 	 */
 	public boolean checkIfSafe() {
 		boolean frontSafe = true;
