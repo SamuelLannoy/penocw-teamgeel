@@ -1130,7 +1130,7 @@ public class Robot extends RobotModel{
 		//DebugBuffer.addInfo("pick obj up");
 		startMovingForward();
 		while(!SensorBuffer.getTouched()){
-			System.out.println(SensorBuffer.getTouched());
+			System.out.print("");
 		};
 		try {
 			Thread.sleep(1000);
