@@ -53,7 +53,7 @@ import gui.tools.PlotCanvas;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	
-	private final static String BROADCAST_ID = "teamgeellobby2";
+	private final static String BROADCAST_ID = "teamgeellobby";
 	private final static String LOBBY_ID = "Exchange";
 	
 	private JPanel contentPane;
@@ -680,9 +680,9 @@ public class Main extends JFrame {
 		
 		
 		robotPool = new RobotPool(robot);
-		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
+//		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
 		canvas.setField(world);
-//		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
+		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		robot.initialize();
 		if (robot.isSim()) {
 			robot.setSimField(world);
