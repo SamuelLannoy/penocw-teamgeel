@@ -460,9 +460,15 @@ public class Robot {
 			Buffer.addDebug("post180");
 			System.out.println("post180");
 			Robot.getInstance().forward();
+			Buffer.addDebug("forw");
+			System.out.println("forw");
 			while(!cond){
+				Buffer.addDebug("while cond");
+				System.out.println("while cond");
 			}
 			Robot.getInstance().setOnBrownAfterBarcode(false);
+			Buffer.addDebug("stop");
+			System.out.println("stop");
 			Robot.getInstance().stop();
 			Robot.getInstance().travel(50,false);
 			LightSensorVigilante.setTurningOnBarcode(false);
