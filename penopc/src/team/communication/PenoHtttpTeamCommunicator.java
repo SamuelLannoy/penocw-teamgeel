@@ -190,7 +190,8 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			retryBufferedSends();
+			//TODO: IllegalStateException (Already joined a team.) 
+			//retryBufferedSends();
 		}
 	}
 

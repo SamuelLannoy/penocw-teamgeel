@@ -12,6 +12,10 @@ public class ObjectMap<S,T> implements Iterable<T> {
 		
 	}
 	
+	public ObjectMap(ObjectMap<S,T> original) {
+		this.objectMap = new HashMap<S,T>(original.objectMap);
+	}
+	
 	private Map<S, T> objectMap = new HashMap<S, T>();
 	
 	public void addObject(S id, T object)

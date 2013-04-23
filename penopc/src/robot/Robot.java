@@ -226,7 +226,6 @@ public class Robot extends RobotModel{
 			public void run() {
 				Explorer.exploreTillObjectFound(Robot.this);
 				teamComm();
-				
 			}
 		});
 		r.start();
@@ -412,7 +411,7 @@ public class Robot extends RobotModel{
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
 		connUpdateCounter++;
-		if (connUpdateCounter == 100) {
+		if (connUpdateCounter == 50) {
 			if (comm != null) { 
 				comm.updatePosition(
 						getCurrTile().getPosition().getX(),
@@ -890,8 +889,7 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-//		return getFieldSimulation().checkIfSafe();
-		return true;
+		return getFieldSimulation().checkIfSafe();
 	}
 	
 	/**
@@ -1122,7 +1120,9 @@ public class Robot extends RobotModel{
 				waitTillRobotStops(robot, 250);*/
 		//DebugBuffer.addInfo("pick obj up");
 		startMovingForward();
-		while(!SensorBuffer.getTouched()){};
+		while(!SensorBuffer.getTouched()){
+			System.out.println(SensorBuffer.getTouched());
+		};
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

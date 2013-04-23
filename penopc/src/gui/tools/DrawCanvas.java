@@ -410,7 +410,8 @@ public class DrawCanvas extends Canvas{
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
 		g.setColor(Color.WHITE);
-		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
+		ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>(robotPool.getMainRobot().getField().getBorderMap());
+		for (Border currentBorder : borderMap){
 			int x1 = currentBorder.getBorderPos().getPosition1().getX();
 			int y1 = currentBorder.getBorderPos().getPosition1().getY();
 			int x2 = currentBorder.getBorderPos().getPosition2().getX();
