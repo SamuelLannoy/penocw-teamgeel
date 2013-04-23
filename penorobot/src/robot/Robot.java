@@ -157,7 +157,7 @@ public class Robot {
 			int buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<40) {
+			while (buffer<20) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -170,7 +170,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white");
-			while (buffer<15) {
+			while (buffer<10) {
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else if (Color.getColor(lightSensor.readValue()) == Color.BROWN){
@@ -186,7 +186,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<15) {
+			while (buffer<2) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -204,7 +204,7 @@ public class Robot {
 			PILOT.rotateRight();
 			buffer = 0;
 			//Buffer.addDebug("Begin white 2");
-			while (buffer<15) {
+			while (buffer<10) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -221,7 +221,7 @@ public class Robot {
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
-			while (buffer<25) {
+			while (buffer<15) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -233,7 +233,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 3");
-			while (buffer<15) {
+			while (buffer<10) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -470,8 +470,12 @@ public class Robot {
 			Buffer.addDebug("stop");
 			System.out.println("stop");
 			Robot.getInstance().stop();
-			Robot.getInstance().travel(50,false);
 			LightSensorVigilante.setTurningOnBarcode(false);
+			Buffer.addDebug("postturningonbarcodefalse");
+			System.out.println("postturningonbarcodefalse");
+			Robot.getInstance().travel(50,false);
+			Buffer.addDebug("posttravel");
+			System.out.println("posttravel");
 		}
 
 		public void setOnBrownAfterBarcode(boolean b) {

@@ -213,7 +213,7 @@ public class LightSensor {
 			Buffer.addDebug("in else");
 			System.out.println("in else");
 			while(buffer < 10){
-				Buffer.addDebug("moerhaso");
+				Button.waitForAnyPress(10);
 				if(Color.getColor(readValue()).equals(Color.BROWN)){
 					buffer++;
 				}
