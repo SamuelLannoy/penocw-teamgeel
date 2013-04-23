@@ -371,7 +371,7 @@ public class Robot extends RobotModel{
 //			moveForward(230);
 			if(incr%3 == 0){
 				orientOnWhiteLine(false);
-				moveForward(230);
+				moveForward(240);
 			} else{
 				moveForward(400);
 			}
