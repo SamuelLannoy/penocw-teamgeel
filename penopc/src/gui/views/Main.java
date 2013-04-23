@@ -31,7 +31,6 @@ import peno.htttp.*;
 import peno.htttp.impl.PlayerHandlerImplementation;
 import peno.htttp.impl.SpectatorHandlerImplementation;
 
-import messenger.Messenger;
 import messenger.RabbitMQ;
 
 import robot.DebugBuffer;
