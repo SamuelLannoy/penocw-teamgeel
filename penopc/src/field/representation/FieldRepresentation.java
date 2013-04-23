@@ -329,6 +329,9 @@ public class FieldRepresentation extends Field {
 					double P23 = TilePosition.euclDistance(barcodeNode1_2.getPosition(), barcodeNode2.getPosition());
 					System.out.println("rot " + P23 + " " + barcodeNode1_2.getPosition() + " " + barcodeNode2.getPosition());
 					int rotation = (int)(Math.acos((Math.pow(P12, 2) + Math.pow(P13, 2) - Math.pow(P23, 2)) / (2 * P12 * P13)) / Math.PI * 180 + .5);
+					if (barcodeNode1_2.getPosition().isInNextQuarter(barcodeNode1.getPosition(), barcodeNode2.getPosition())) {
+						rotation *= -1;
+					}
 					System.out.println("rot " + rotation);
 					otherField = otherField.rotate(rotation, barcodeNode1.getPosition());
 					setRotation(rotation);
