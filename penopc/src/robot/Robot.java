@@ -362,10 +362,19 @@ public class Robot extends RobotModel{
 		//DebugBuffer.addInfo("traveling from "+ start.getPosition() + " to " + finish.getPosition());
 	}
 	
+	public int incr = 0;
+	
 	public void moveNext() {
 		//if (counter == 0){
-			orientOnWhiteLine(false);
-			moveForward(230);
+//			orientOnWhiteLine(false);
+//			moveForward(230);
+			if(incr%3 == 0){
+				orientOnWhiteLine(false);
+				moveForward(230);
+			} else{
+				moveForward(400);
+			}
+			incr++;
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;

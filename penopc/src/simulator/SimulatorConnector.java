@@ -175,7 +175,7 @@ public class SimulatorConnector implements ISimulator {
 	
 	private void setupField() {
 		if (getField() == null) {
-			field = new FieldSimulation("C:\\demo2.txt");
+//			field = new FieldSimulation("C:\\demo2.txt");
 //			field = new FieldSimulation("/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 			//maze.addBall(new Ball(1), new Position(0, 7));
 		}
