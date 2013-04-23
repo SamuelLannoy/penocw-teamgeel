@@ -469,7 +469,8 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 
 	private void setupField() {
 		if (maze == null) {
-			maze = new FieldSimulation("C:\\demo2.txt");
+//			maze = new FieldSimulation("C:\\demo2.txt");
+//			maze = new FieldSimulation("/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		}
 	}
 	
