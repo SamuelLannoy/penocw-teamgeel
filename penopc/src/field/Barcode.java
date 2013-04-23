@@ -121,7 +121,7 @@ public class Barcode {
 	}
 	
 	public boolean isSeesaw() {
-		return getDecimal() >= 11 && getDecimal() <= 25;
+		return getDecimal() >= 11 && getDecimal() <= 21;
 	}
 	
 	public boolean isSeesawDownCode() {

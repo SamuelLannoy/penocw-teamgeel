@@ -890,7 +890,8 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return getFieldSimulation().checkIfSafe();
+//		return getFieldSimulation().checkIfSafe();
+		return true;
 	}
 	
 	/**

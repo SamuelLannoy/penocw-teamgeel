@@ -5,6 +5,7 @@ import java.util.List;
 
 import field.Barcode;
 import field.Border;
+import field.Direction;
 import field.SeesawBorder;
 import field.TilePosition;
 import field.fromfile.MazePart;
@@ -115,20 +116,42 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamPosition(double x, double y, double angle) {
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
-		x = x + robot.getField().getTranslX() * 40;
-		y = y + robot.getField().getTranslY() * 40;
-		angle = angle + robot.getField().getRotation();
-		//DebugBuffer.addInfo("teammate new: " + x + " " + y);
+		//x = x + robot.getField().getTranslX();
+		//y = y + robot.getField().getTranslY();
+		angle = angle - robot.getField().getRotation();
 		
-		//DebugBuffer.addInfo("teammate pos: " + (int)(x / 40) + " " + (int)(y / 40));
+		int teamx = -robot.getField().getTranslX();
+		int teamy = -robot.getField().getTranslY();
+		DebugBuffer.addInfo("field tr: " + teamx + " " + teamy);
+		switch(Direction.fromAngle(robot.getField().getRotation())) {
+		case BOTTOM:
+			teamx += x;
+			teamy -= y;
+			break;
+		case LEFT:
+			teamx += y;
+			teamy -= x;
+			break;
+		case RIGHT:
+			teamx -= y;
+			teamy += x;
+			break;
+		case TOP:
+			teamx += x;
+			teamy += y;
+			break;
+		default:
+			break;
 
-		double[] tilePos = FieldSimulation.convertToInTilePos(new double[]{x,y});
+		}
+		
+		DebugBuffer.addInfo("teammate new: " + teamx + " " + teamy + " :: " + x + " " + y);
 		
 		robot.getTeamMate().setPosition(new Position(
-				tilePos[0], tilePos[1], angle
-				), new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
+				0, 0, angle
+				), new field.Tile(new TilePosition(teamx, teamy)));
 		robot.getTeamMate()
-			.setCurrTile(new field.Tile(FieldSimulation.convertToTilePosition(x, y)));
+			.setCurrTile(new field.Tile(new TilePosition(teamx, teamy)));
 	}
 
 }

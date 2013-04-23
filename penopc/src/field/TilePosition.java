@@ -1,5 +1,7 @@
 package field;
 
+import robot.DebugBuffer;
+
 public class TilePosition {
 	
 	public final static TilePosition POSITION_ZERO = new TilePosition(0, 0);
@@ -111,4 +113,32 @@ public class TilePosition {
 		return new int[] {x, y};
 	}
 
+	private int quarter(TilePosition center) {
+		TilePosition temp = new TilePosition(getX() - center.getX(), getY() - center.getY());
+		if (temp.getX() >= 0 && temp.getY() > 0) {
+			return 0;
+		} else if (temp.getX() > 0 && temp.getY() <= 0) {
+			return 3;
+		} else if (temp.getX() < 0 && temp.getY() >= 0 ) {
+			return 1;
+		} else if (temp.getX() <= 0 && temp.getY() < 0) {
+			return 2;
+		} else {
+			throw new IllegalStateException("This means this part of code is wrong");
+		}
+	}
+	
+	public boolean isInNextQuarter(TilePosition center, TilePosition other) {
+		int thisQuarter = this.quarter(center);
+		int otherQuarter = other.quarter(center);
+		DebugBuffer.addInfo(thisQuarter + " xx " + otherQuarter);
+		return ((thisQuarter + 1) % 4 == otherQuarter);
+	}
+	
+	public boolean isInPrevQuarter(TilePosition center, TilePosition other) {
+		int thisQuarter = this.quarter(center);
+		int otherQuarter = other.quarter(center);
+		DebugBuffer.addInfo(thisQuarter + " xx " + otherQuarter);
+		return ((thisQuarter - 1) % 4 == otherQuarter);
+	}
 }
