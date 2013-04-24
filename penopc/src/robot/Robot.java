@@ -363,6 +363,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public int incr = 0;
+	public int turns = 0;
 	
 	public void moveNext() {
 		//if (counter == 0){
@@ -371,7 +372,11 @@ public class Robot extends RobotModel{
 			if(incr%3 == 0){
 				orientOnWhiteLine(false);
 				moveForward(230);
-			} else{
+			} 
+//			else if(get){
+//				
+//			}
+			else{
 				moveForward(400);
 			}
 			incr++;
@@ -560,14 +565,14 @@ public class Robot extends RobotModel{
 				boolean interference = false;
 				if (i == 1) { // left
 					dir = dir.left();
-					interference = fieldSimulation.isRobotLeft();
+//					interference = fieldSimulation.isRobotLeft();
 				} else if (i == 2) { // back
 					dir = dir.opposite();
 				} else if (i == 3) { // right
 					dir = dir.right();
-					interference = fieldSimulation.isRobotRight();
+//					interference = fieldSimulation.isRobotRight();
 				} else { // front
-					interference = fieldSimulation.isRobotInFront();
+//					interference = fieldSimulation.isRobotInFront();
 				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
@@ -904,7 +909,8 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return getFieldSimulation().checkIfSafe();
+		return true;
+//		return getFieldSimulation().checkIfSafe();
 	}
 	
 	/**
