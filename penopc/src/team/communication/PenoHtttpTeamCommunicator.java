@@ -20,6 +20,8 @@ import field.representation.FieldRepresentation;
 
 import peno.htttp.Callback;
 import peno.htttp.PlayerClient;
+import peno.htttp.PlayerDetails;
+import peno.htttp.PlayerType;
 import peno.htttp.Tile;
 import peno.htttp.impl.PlayerHandlerImplementation;
 import robot.DebugBuffer;
@@ -39,8 +41,10 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 	public void connect(Robot robot, String gameId, String playerId) throws IOException {
 		Connection connection = RabbitMQ.createConnection();
 		handler = new PlayerHandlerImplementation(robot);
+		//TODO: PlayerTYPE.PHYSICAL veranderen
+		PlayerDetails playerDetails = new PlayerDetails(playerId, PlayerType.PHYSICAL, 20, 20);
 		
-		client = new PlayerClient(connection, handler, gameId, playerId);
+		client = new PlayerClient(connection, handler, gameId, playerDetails);
 		connectionSuccesful();
 	}
 
@@ -184,7 +188,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 		checkConnected();
 		if (canSend()) {
 			try {
-				client.updatePosition(x, y, angle);
+				client.updatePosition((long)x, (long)y, angle);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

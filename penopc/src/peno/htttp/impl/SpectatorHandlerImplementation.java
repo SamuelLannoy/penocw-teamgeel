@@ -8,6 +8,7 @@ import field.TilePosition;
 import field.fromfile.FieldFactory;
 import field.simulation.FieldSimulation;
 import peno.htttp.DisconnectReason;
+import peno.htttp.PlayerDetails;
 import peno.htttp.SpectatorHandler;
 import robot.DebugBuffer;
 import robot.Position;
@@ -68,8 +69,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	}
 
 	@Override
-	public void playerUpdate(String playerID, int playerNumber, double x,
-			double y, double angle, boolean foundObject) {
+	public void playerUpdate(PlayerDetails playerID, int playerNumber, long x,
+			long y, double angle, boolean foundObject) {
 		//playerNumber = playerNumber+1;
 		/*int[] newpos = TilePosition.rotate((int)field
 				.getStartDir(playerNumber).opposite().toAngle(), new TilePosition((int)x, (int)y), new TilePosition(0, 0));
@@ -92,7 +93,7 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 			
 		}
 		//DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);
-		robotPool.updateRobot(getPoolID(playerID),
+		robotPool.updateRobot(getPoolID(playerID.getPlayerID()),
 				newpos[0] + field.getStartPos(playerNumber).getX(),
 				newpos[1] + field.getStartPos(playerNumber).getY(),
 				angle + field.getStartDir(playerNumber).toAngle());
@@ -123,8 +124,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	}
 
 	@Override
-	public void playerRolled(String playerID, int playerNumber) {
-		if (ownId.equals(playerID)) {
+	public void playerRolled(PlayerDetails playerID, int playerNumber) {
+		if (ownId.equals(playerID.getPlayerID())) {
 			field.Tile tile = new field.Tile(field.getStartPos(playerNumber));
 			
 			/*robotPool.getMainRobot().setPosition(

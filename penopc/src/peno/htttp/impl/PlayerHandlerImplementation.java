@@ -114,7 +114,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	
 
 	@Override
-	public void teamPosition(double x, double y, double angle) {
+	public void teamPosition(long x, long y, double angle) {
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
 		x = x + robot.getField().getTranslX();
 		y = y + robot.getField().getTranslY();
@@ -161,5 +161,6 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 			.setCurrTile(new field.Tile(new TilePosition((int)x, (int)y)));
 		
 	}
+
 
 }
