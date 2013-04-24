@@ -87,8 +87,6 @@ public class LightSensor {
 		boolean barcodehelper=false;
 		boolean alreadyBarcode = false;
 		if(!turnOnBarcode){
-			Buffer.addDebug("in if");
-			System.out.println("in if");
 			while (buffer<10 && emptybuffer<10) { // 10 keer bruin na elkaar --> einde lijn of barcode
 				if(Robot.getInstance().isMoving()){
 					temp = Color.getColor(readValue());

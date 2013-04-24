@@ -19,7 +19,7 @@ import lightsensor.LightSensor;
  */
 public class Robot {
 		// Volgens verslag: 54.3, 54.9, 129.8 // 127.93
-		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.3, 54.7, 128.7, Motor.B, Motor.C, false);
+		private static final robot.DifferentialPilot PILOT = new robot.DifferentialPilot(54.55, 54.7, 128.7, Motor.B, Motor.C, false);
 		private static Robot instance = new Robot();
 		private boolean isScanning;
 		private boolean isCentering;
@@ -152,12 +152,12 @@ public class Robot {
 			double previousRotateSpeed = PILOT.getRotateSpeed();
 			
 			
-			
 			Robot.getInstance().forward();
 			int buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
 			while (buffer<20) {
+				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -170,41 +170,45 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white");
-			while (buffer<10) {
+			while (buffer<5) {
+				Button.waitForAnyPress(5);
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else if (Color.getColor(lightSensor.readValue()) == Color.BROWN){
 					buffer = 0;
 				}
-				if(touchSensor.isPressed()){
-					PILOT.travel(-30);
-					orientScan();
-					Robot.getInstance().forward();
-				}	
+//				if(touchSensor.isPressed()){
+//					PILOT.travel(-30);
+//					orientScan();
+//					Robot.getInstance().forward();
+//				}	
 			}
 			
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<2) {
+			while (buffer<5) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
+				Button.waitForAnyPress(5);
 
-				if (Color.getColor(lightSensor.readValue()) == Color.BROWN)
+				if (Color.getColor(lightSensor.readValueWithoutAdd()) == Color.BROWN)
 						buffer++;
 				else 
 					buffer = 0;
 			}
-			
-			buffer = 0;
+
 			Robot.getInstance().stop();
+			Robot.getInstance().travel(-30, false);
+			buffer = 0;
 			PilotController.stopStream();
 			
 			PILOT.reset();
 			PILOT.rotateRight();
 			buffer = 0;
 			//Buffer.addDebug("Begin white 2");
-			while (buffer<10) {
+			while (buffer<5) {
+				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -221,7 +225,8 @@ public class Robot {
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
-			while (buffer<15) {
+			while (buffer<5) {
+				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -233,7 +238,8 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 3");
-			while (buffer<10) {
+			while (buffer<5) {
+				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -252,7 +258,8 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 4");
-			while (buffer<15) {
+			while (buffer<5) {
+				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 
@@ -263,7 +270,7 @@ public class Robot {
 					buffer = 0;
 			}
 			Robot.getInstance().stop();
-			Robot.getInstance().travel(55, false);
+			Robot.getInstance().travel(40, false);
 			Robot.getInstance().stop();
 			setNoLines(false);
 			Buffer.addLightUpdate(LightSensorUpdate.LINE.ordinal());
@@ -302,10 +309,16 @@ public class Robot {
 				double min = Math.min(v1, v2);
 				distances[i] = max * .7 + min * .3;
 				if(i!=3){
-					rotateLeft(90, false);
+					if(i<2)
+					Motor.A.rotate(-100);
+//					rotateLeft(90, false);
 				}
+				if(i==2)
+					Motor.A.rotate(300);
+				else if(i==3)
+					Motor.A.rotate(-100);
 			}
-			rotateLeft(90, false);
+//			rotateLeft(90, false);
 			for (int i = 0; i < 4; i++) {
 				Buffer.addDistance((int)distances[i]);
 			}
@@ -473,7 +486,6 @@ public class Robot {
 			LightSensorVigilante.setTurningOnBarcode(false);
 			Buffer.addDebug("postturningonbarcodefalse");
 			System.out.println("postturningonbarcodefalse");
-			Robot.getInstance().travel(50,false);
 			Buffer.addDebug("posttravel");
 			System.out.println("posttravel");
 		}
