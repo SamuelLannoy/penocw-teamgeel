@@ -293,7 +293,7 @@ public class Robot extends RobotModel{
 			throw new IllegalArgumentException("tile is not next to current tile " + tile.getPosition());
 		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) == 0)
 			return;
-		turnToTile(tile.getPosition());
+		//turnToTile(tile.getPosition());
 		moveNext();
 		System.out.println("moveto " + tile.getPosition());
 	}
@@ -813,6 +813,9 @@ public class Robot extends RobotModel{
 	public void setSimField(FieldSimulation world) {
 		if (isSim()) {
 			((ISimulator)robotConn).setSimField(world);
+		} else {
+			SimulatedPhysicalRobot spr = new SimulatedPhysicalRobot(this);
+			spr.setSimField(world);
 		}
 		setFieldSimulation(world);
 	}
@@ -909,8 +912,8 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return true;
-//		return getFieldSimulation().checkIfSafe();
+		//return true;
+		return getFieldSimulation().checkIfSafe();
 	}
 	
 	/**

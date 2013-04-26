@@ -682,9 +682,7 @@ public class Main extends JFrame {
 		canvas.setField(world);
 //		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/Dropbox/PenOVerslagen/demo2.txt");
 		robot.initialize();
-		if (robot.isSim()) {
-			robot.setSimField(world);
-		}
+		robot.setSimField(world);
 		double x = 0;
 		double y = 0;
 		try {

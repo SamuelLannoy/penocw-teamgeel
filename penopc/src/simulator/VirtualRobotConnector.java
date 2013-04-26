@@ -145,6 +145,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	}
 	
 	private double rotationTurned = 0.0;
+	// in degrees
 	private double tRotation = 0.0;
 	
 	public double getTRotation() {
