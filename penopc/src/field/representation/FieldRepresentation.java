@@ -286,11 +286,62 @@ public class FieldRepresentation extends Field {
 		return retF;
 	}
 	
+	@Override
+	public FieldRepresentation clone() {
+		FieldRepresentation retF = new FieldRepresentation();
+		for (Tile tile : tileMap) {
+			retF.addTile(tile);
+		}
+		for (Border border : borderMap) {
+			retF.addBorder(border);
+		}
+		return retF;
+	}
+	
 	/*
 	 * Communication methods
 	 */
 	
+	public int[] getStartPosOfOther(FieldRepresentation other) {
+		List<BarcodeNode> bc1 = getBarcodes();
+		List<BarcodeNode> bc2 = other.getBarcodes();
+		
+		bc1.retainAll(bc2);
+		bc2.retainAll(bc1);
+		
+		int[] ret = new int[2];
+
+		if (bc1.size() >= 1) {
+			BarcodeNode barcodeNode1 = bc1.get(0);
+			
+			for (BarcodeNode barcodeNode2 : bc2) {
+				if (barcodeNode1.equals(barcodeNode2)) {
+					int diffX = barcodeNode1.getPosition().getX() - barcodeNode2.getPosition().getX();
+					int diffY = barcodeNode1.getPosition().getY() - barcodeNode2.getPosition().getY();
+					ret[0] = diffX;
+					ret[1] = diffY;
+				}
+			}
+		} else {
+			throw new IllegalStateException("fields do not share a barcode");
+		}
+		
+		return ret;
+	}
+	
+	private int[] otherStartPos = new int[2];
+	
+	
+	public int[] getOtherStartPos() {
+		return otherStartPos;
+	}
+
+	private void setOtherStartPos(int[] otherStartPos) {
+		this.otherStartPos = otherStartPos;
+	}
+
 	public void mergeFields(FieldRepresentation otherField) {
+		FieldRepresentation otherFieldClone = otherField.clone();
 		List<BarcodeNode> bc1 = getBarcodes();
 		List<BarcodeNode> bc2 = otherField.getBarcodes();
 		
@@ -334,6 +385,10 @@ public class FieldRepresentation extends Field {
 					}
 					System.out.println("rot " + rotation);
 					otherField = otherField.rotate(rotation, barcodeNode1.getPosition());
+					
+					otherFieldClone = otherFieldClone.rotate(rotation, TilePosition.POSITION_ZERO);
+					setOtherStartPos(getStartPosOfOther(otherFieldClone));
+					
 					setRotation(rotation);
 				}
 			}
@@ -343,6 +398,10 @@ public class FieldRepresentation extends Field {
 				if (!hasTileAt(tile.getPosition())) {
 					addTile(tile);
 					System.out.println("adding " + tile.getPosition());
+				} else {
+					if (!getTileAt(tile.getPosition()).hasBarcocde() && tile.hasBarcocde()) {
+						tile.setBarcode(tile.getBarcode());
+					}
 				}
 			}
 			

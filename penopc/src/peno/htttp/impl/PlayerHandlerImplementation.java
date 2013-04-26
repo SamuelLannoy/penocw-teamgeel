@@ -116,16 +116,16 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamPosition(long x, long y, double angle) {
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
-		x = x + robot.getField().getTranslX();
+		/*x = x + robot.getField().getTranslX();
 		y = y + robot.getField().getTranslY();
-		angle = angle - robot.getField().getRotation();
+		angle = angle - robot.getField().getRotation();*/
 		
-		/*int teamx = -robot.getField().getTranslX();
-		int teamy = -robot.getField().getTranslY();
+		int teamx = robot.getField().getOtherStartPos()[0];
+		int teamy = robot.getField().getOtherStartPos()[1];
 		DebugBuffer.addInfo("field tr: " + teamx + " " + teamy);
 		switch(Direction.fromAngle(robot.getField().getRotation())) {
 		case BOTTOM:
-			teamx += x;
+			teamx -= x;
 			teamy -= y;
 			break;
 		case LEFT:
@@ -151,14 +151,14 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 				0, 0, angle
 				), new field.Tile(new TilePosition(teamx, teamy)));
 		robot.getTeamMate()
-			.setCurrTile(new field.Tile(new TilePosition(teamx, teamy)));*/
+			.setCurrTile(new field.Tile(new TilePosition(teamx, teamy)));
 
 		
-		robot.getTeamMate().setPosition(new Position(
+		/*robot.getTeamMate().setPosition(new Position(
 				0, 0, angle
 				), new field.Tile(new TilePosition((int)x, (int)y)));
 		robot.getTeamMate()
-			.setCurrTile(new field.Tile(new TilePosition((int)x, (int)y)));
+			.setCurrTile(new field.Tile(new TilePosition((int)x, (int)y)));*/
 		
 	}
 

@@ -163,7 +163,7 @@ public class DrawCanvas extends Canvas{
 			//DebugBuffer.addInfo("pos: " + (r * 180 / Math.PI) + " " + rr);
 			switch(field.getStartDir(robotPool.getMainRobot().getPlayerNr())) {
 				case BOTTOM:
-					newpos = new int[] {-(int)other.getX(),(int)other.getY()};
+					newpos = new int[] {-(int)other.getX(),-(int)other.getY()};
 					break;
 				case LEFT:
 					newpos = new int[] {(int)other.getY(),-(int)other.getX()};
