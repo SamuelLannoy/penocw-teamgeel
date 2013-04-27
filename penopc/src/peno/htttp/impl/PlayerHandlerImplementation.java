@@ -120,8 +120,8 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		y = y + robot.getField().getTranslY();
 		angle = angle - robot.getField().getRotation();*/
 		
-		int teamx = robot.getField().getOtherStartPos()[0];
-		int teamy = robot.getField().getOtherStartPos()[1];
+		int teamx = robot.getField().getTeammateStartPos()[0];
+		int teamy = robot.getField().getTeammateStartPos()[1];
 		DebugBuffer.addInfo("field tr: " + teamx + " " + teamy);
 		switch(Direction.fromAngle(robot.getField().getRotation())) {
 		case BOTTOM:

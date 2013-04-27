@@ -329,15 +329,15 @@ public class FieldRepresentation extends Field {
 		return ret;
 	}
 	
-	private int[] otherStartPos = new int[2];
+	private int[] teammateStartPos = new int[2];
 	
 	
-	public int[] getOtherStartPos() {
-		return otherStartPos;
+	public int[] getTeammateStartPos() {
+		return teammateStartPos;
 	}
 
-	private void setOtherStartPos(int[] otherStartPos) {
-		this.otherStartPos = otherStartPos;
+	private void setTeammateStartPos(int[] otherStartPos) {
+		this.teammateStartPos = otherStartPos;
 	}
 
 	public void mergeFields(FieldRepresentation otherField) {
@@ -387,7 +387,7 @@ public class FieldRepresentation extends Field {
 					otherField = otherField.rotate(rotation, barcodeNode1.getPosition());
 					
 					otherFieldClone = otherFieldClone.rotate(rotation, TilePosition.POSITION_ZERO);
-					setOtherStartPos(getStartPosOfOther(otherFieldClone));
+					setTeammateStartPos(getStartPosOfOther(otherFieldClone));
 					
 					setRotation(rotation);
 				}
