@@ -145,6 +145,18 @@ public class Barcode {
 		return getDecimal() >= 0 && getDecimal() <= 7;
 	}
 	
+	public int getTeamNr() {
+		if (!isObject())
+			throw new IllegalArgumentException();
+		return (getDecimal() >= 4)? 1 : 0; 
+	}
+	
+	public int getObjectNr() {
+		if (!isObject())
+			throw new IllegalArgumentException();
+		return code[5] * 2 + code[6];
+	}
+	
 	public boolean isCheckPoint() {
 		return getDecimal() >= 26;
 	}

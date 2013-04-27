@@ -421,6 +421,18 @@ public class FieldRepresentation extends Field {
 			throw new IllegalStateException();
 		}
 	}
+	
+	/*private void parseTeamMatePlayerNumber(int myObjectNo, int myTeamNo) {
+		List<BarcodeNode> barcodes = getBarcodes();
+		for (BarcodeNode barcodeNode : barcodes) {
+			Barcode barcode = barcodeNode.getBarcode();
+			if (barcode.isObject()) {
+				if (barcode.getTeamNr() == myTeamNo && barcode.getObjectNr() != myObjectNo) {
+					
+				}
+			}
+		}
+	}*/
 
 	private List<BarcodeNode> getBarcodes() {
 		List<BarcodeNode> ret = new ArrayList<BarcodeNode>(tileMap.getObjectCollection().size() / 5);
