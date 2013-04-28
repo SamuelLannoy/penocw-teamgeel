@@ -291,11 +291,12 @@ public class Robot extends RobotModel{
 	public void travelToNextTile(Tile tile) {
 		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) > 1)
 			throw new IllegalArgumentException("tile is not next to current tile " + tile.getPosition());
+		sendPosition();
 		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) == 0)
 			return;
 		//turnToTile(tile.getPosition());
 		moveNext();
-		System.out.println("moveto " + tile.getPosition());
+		//System.out.println("moveto " + tile.getPosition());
 	}
 	
 	private void turnToTile(TilePosition tilePos) {
@@ -419,59 +420,39 @@ public class Robot extends RobotModel{
 		travelListOfTiles(Pathfinder.findShortestPath(this, tile));
 	}
 	
-	private int connUpdateCounter = 0;
 	
 	public void updatePosition() {		
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
-		connUpdateCounter++;
-		if (connUpdateCounter == 50) {
-			if (comm != null) { 
-				comm.updatePosition(
-						getCurrTile().getPosition().getX(),
-						getCurrTile().getPosition().getY(),
-						getPosition().getRotation());
-			}
-			connUpdateCounter = 0;
-		}
 		
 		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
-			/*if (client.isPlaying()) {
-				try {
-					client.foundObject();
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}*/
 		}
 		
-		// Set whether the current tile is a start tile, a finish tile or an ordinary tile
-		if(robotConn.isStartTile())
-			addAction(0);
-		else if(robotConn.isFinishTile())
-			addAction(1);
-		
-		//System.out.println("x " + SensorBuffer.canClear());
 		if (!SensorBuffer.canClear() && SensorBuffer.getDistances().size() >= 4) {
-			//System.out.println("scan values given");
 			findBorderObjects();
 		}
 		
 		passedWhiteBorder();
 		if (passedWhite/* || Math.abs(getPosition().getPosX()) > 30 || Math.abs(getPosition().getPosY()) > 30*/) {
 			passedWhite = false;
-			//System.out.println("LINE");
 			Direction dir = Direction.fromPos(getPosition());
 			field.TilePosition newPos = dir.getPositionInDirection(currTile.getPosition());
-			//System.out.println("dit " + dir);
 
 			getField().registerNewTile(getDirection(), getCurrTile().getPosition());
 			currTile = getField().getTileAt(newPos);
 
 			getPosition().resetPosition(dir);
+			sendPosition();
+		}
+	}
+	
+	public void sendPosition() {
+		if (comm != null) { 
+			comm.updatePosition(
+					getCurrTile().getPosition().getX(),
+					getCurrTile().getPosition().getY(),
+					(-getPosition().getRotation()) + 90);
 		}
 	}
 	

@@ -31,11 +31,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	
 	@Override
 	public void gameStarted() {
-		/*for (String id : players) {
-			if (!id.equals(ownId)) {
-				robotPool.addRobot(new Robot(1), id);
-			}
-		}*/
+		robot.sendPosition();
 		DebugBuffer.addInfo("game started");
 	}
 
@@ -43,12 +39,6 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	public void gameStopped() {
 		DebugBuffer.addInfo("game stopped");
 	}
-
-	/*@Override
-	public void playerPosition(String playerID, double x, double y, double angle) {
-		robotPool.updateRobot(getPoolID(playerID), x, y, angle);
-		//DebugBuffer.addInfo(playerID + ": " + x + " " + y + " " + angle);
-	}*/
 
 	@Override
 	public void gamePaused() {
@@ -115,6 +105,9 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamPosition(long x, long y, double angle) {
+		angle -= 90;
+		angle *= -1;
+		
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
 		/*x = x + robot.getField().getTranslX();
 		y = y + robot.getField().getTranslY();
