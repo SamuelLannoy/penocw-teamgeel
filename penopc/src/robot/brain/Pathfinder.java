@@ -44,7 +44,6 @@ public class Pathfinder {
 		ArrayList<Node> closedList = new ArrayList<Node>();
 		openList.add(start);
 		while (!openList.isEmpty()) {
-			DebugBuffer.addInfo(openList.toString());
 			Node current = openList.get(0);
 			closedList.add(current);
 			openList.remove(0);
