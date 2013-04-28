@@ -2,7 +2,9 @@ package field.representation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import team.communication.TeamCommunicator;
 
@@ -232,8 +234,8 @@ public class FieldRepresentation extends Field {
 	 * get methods for A*
 	 */
 	
-	public List<Tile> getPassableNeighbours(Tile tile) {
-		List<Tile> ret = new ArrayList<Tile>();
+	public Map<Direction, Tile> getPassableNeighbours(Tile tile) {
+		Map<Direction, Tile> ret = new HashMap<Direction, Tile>();
 		
 		for (Direction dir : Direction.values()) {
 			BorderPosition pos = dir.getBorderPositionInDirection(tile.getPosition());
@@ -241,7 +243,7 @@ public class FieldRepresentation extends Field {
 					(getBorderAt(pos).isPassable() || getBorderAt(pos) instanceof SeesawBorder)) {
 				TilePosition tpos = pos.getOtherPosition(tile.getPosition());
 				if (hasTileAt(tpos)) {
-					ret.add(getTileAt(tpos));
+					ret.put(dir, getTileAt(tpos));
 				}
 			}
 		}

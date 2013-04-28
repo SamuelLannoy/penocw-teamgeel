@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import field.*;
 import field.representation.FieldRepresentation;
@@ -70,13 +71,21 @@ public class Explorer {
 			@Override
 			public int compare(TilePosition arg0, TilePosition arg1) {
 				int mh1, mh2;
+				List<Tile> list1, list2;
+				int t1 = 0, t2 = 0;
 				try {
-					mh1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0), ignoredSeesaws, robot.getRobotSpottedTiles()).size();
+					list1 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg0),
+							ignoredSeesaws, robot.getRobotSpottedTiles());
+					t1 = Pathfinder.getLastT();
+					mh1 = list1.size();
 				} catch (IllegalArgumentException e) {
 					mh1 = Integer.MAX_VALUE;
 				}
 				try {
-					mh2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1), ignoredSeesaws, robot.getRobotSpottedTiles()).size();
+					list2 = Pathfinder.findShortestPath(robot, robot.getField().getTileAt(arg1),
+							ignoredSeesaws, robot.getRobotSpottedTiles());
+					t2 = Pathfinder.getLastT();
+					mh2 = list2.size();
 				} catch (IllegalArgumentException e) {
 					mh2 = Integer.MAX_VALUE;
 				}
@@ -84,6 +93,8 @@ public class Explorer {
 				//int mh2 = arg1.getTile().getPosition().manhattanDistance(robot.getCurrTile().getPosition());
 				if (mh1 < mh2) return -1;
 				if (mh1 > mh2) return 1;
+				if (t1 < t2) return -1;
+				if (t1 > t2) return 1;
 				return 0;
 			}
 			

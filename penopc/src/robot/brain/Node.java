@@ -1,5 +1,6 @@
 package robot.brain;
 
+import field.Direction;
 import field.TilePosition;
 import field.Tile;
 
@@ -8,7 +9,9 @@ public class Node {
 	private Tile tile;
 	private int C;
 	private int H;
+	private int T;
 	private Node prev;
+	private Direction direction;
 	
 	public Node(Tile tile, int c, int h, Node prev) {
 		super();
@@ -32,8 +35,20 @@ public class Node {
 	public int getF() {
 		return C+H;
 	}
+	public int getT() {
+		return T;
+	}
+	public void setT(int t) {
+		T = t;
+	}
 	public Node getPrev() {
 		return prev;
+	}
+	public Direction getDirection() {
+		return direction;
+	}
+	public void setDirection(Direction direction) {
+		this.direction = direction;
 	}
 	@Override
 	public int hashCode() {
@@ -63,7 +78,7 @@ public class Node {
 	
 	@Override
 	public String toString() {
-		return tile.getPosition().toString() + " c: " + getC() + " h: " + getH();
+		return tile.getPosition().toString() + " c: " + getC() + " h: " + getH() + " t: " + getT();
 	}
 
 }

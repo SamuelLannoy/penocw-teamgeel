@@ -289,4 +289,8 @@ public enum Direction {
 			return null;
 		}
 	}
+	
+	public int turnsTo(Direction other) {
+		return Math.abs(turnTo(other) / 90);
+	}
 }
