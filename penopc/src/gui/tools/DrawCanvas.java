@@ -41,9 +41,11 @@ public class DrawCanvas extends Canvas{
 	private int startY;
 	private int barStart;
 	private int barEnd;
+	private String title;
 	
-	public DrawCanvas(RobotPool robotPool){
+	public DrawCanvas(RobotPool robotPool, String title){
 		setRobotPool(robotPool);
+		this.title = title;
 		this.setVisible(true);
 	}
 	
@@ -63,6 +65,7 @@ public class DrawCanvas extends Canvas{
 		createBufferStrategy(2);
 		if (robotPool != null) {
 			//if (robotPool.getMainRobot().getClient().isPlaying()) {
+			paintTitle(g);
 			rescale();
 			paintTiles(g);
 			paintBorders(g);
@@ -92,6 +95,18 @@ public class DrawCanvas extends Canvas{
 		}
 	}*/
 	
+	public void setTitle(String title){
+		this.title = title;
+	}
+	
+	public String getTitle(){
+		return title;
+	}
+	
+	private void paintTitle(Graphics g) {
+		g.drawString(title, 20, 20);	
+	}
+
 	// zoekt de uiterste afmetingen van het doolhof en herschaald de map hieraan.
 	private void rescale(){
 		int maxX = 0;

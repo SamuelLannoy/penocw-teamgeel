@@ -51,6 +51,8 @@ import field.simulation.FieldSimulation;
 import gui.tools.BarCodeCanvas;
 import gui.tools.DrawCanvas;
 import gui.tools.PlotCanvas;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
@@ -59,7 +61,6 @@ public class Main extends JFrame {
 	private final static String LOBBY_ID = "Exchange";
 	
 	private JPanel contentPane;
-	private JTextArea debugwindow;
 	
 	private Robot robot;
 	private RobotPool robotPool;
@@ -266,36 +267,22 @@ public class Main extends JFrame {
 	private JToggleButton toggle_robot;
 	private JToggleButton toggle_simulator;
 	private JButton button_terminate;
-	private JTextArea movement_window;
-	private JTextArea robot_current_action;
 	private JButton btnExplore;
 	private List<Integer> plotList = Collections.synchronizedList(new ArrayList<Integer>());
 	private PlotCanvas canvas_Light;
-	private JTextArea textArea_ultrasonic_left;
-	private JTextArea textArea_ultrasonic_right;
-	private JTextArea textArea_light;
-	private JTextArea textArea_pressure;
-	private JTextArea textArea_ultrasonic_back;
-	private JTextArea textArea_ultrasonic_front;
 	private DrawCanvas canvas;
 	private DrawCanvas canvas2;
 	private JMenuItem advanced;
 	private BarCodeCanvas barcode_canvas;
 	private JButton btn_resume;
 	private JButton btn_pause;
-	private JTextArea textArea_multiscan;
-	private JLabel lblPosition;
-	private JTextArea textArea_messages;
-	private JButton btnSubmitBarcodes;
-	private JTextArea teamTextArea;
 	private JTextArea teamMateTextArea;
 	private JTextArea otherTeamTextArea1;
-	private JTextArea otherTeamTextArea2;
-	private JTextArea textArea_infrared;
 	private JMenuItem debugWindow;
 	private JMenuItem positionDisp;
 	private JMenuItem debugDisp;
 	private boolean sensorDispActive;
+	private JPanel panel_1;
 	
 	protected List<Integer> getPlot(){
 		return plotList;
@@ -376,188 +363,86 @@ public class Main extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
-		JScrollPane scrollPane_debugwindow = new JScrollPane();
-		scrollPane_debugwindow.setBounds(10, 275, 460, 100);
-		contentPane.add(scrollPane_debugwindow);
-		
-		robot_current_action = new JTextArea();
-		robot_current_action.setBounds(10, 480, 250, 23);
 
 		contentPane.setLayout(null);
-		
-		JScrollPane movePane = new JScrollPane();
-		movePane.setBounds(10, 400, 250, 78);
-		contentPane.add(movePane);
-		
-		movement_window = new JTextArea();
-		movePane.setViewportView(movement_window);
-		
-		
-		debugwindow = new JTextArea();
-		scrollPane_debugwindow.setViewportView(debugwindow);
-		debugwindow.append("Maak een keuze uit robot of simulator.\n");
-		contentPane.add(robot_current_action);
-		
-		toggle_robot = new JToggleButton("robot");
-		toggle_robot.setBounds(10, 7, 67, 23);
-		contentPane.add(toggle_robot);
-		
-		toggle_simulator = new JToggleButton("simulator");
-		toggle_simulator.setBounds(87, 7, 90, 23);
-		contentPane.add(toggle_simulator);
-		
-		button_terminate = new JButton("terminate");
-		button_terminate.setBounds(10, 41, 167, 23);
-		contentPane.add(button_terminate);
-				
-		btnExplore = new JButton("Explore");
-		btnExplore.setBounds(10, 75, 167, 43);
-		contentPane.add(btnExplore);
 		
 		canvas_Light = new PlotCanvas(plotList);
 		canvas_Light.setBounds(474, 513, 500, 128);
 		canvas_Light.setBackground(Color.black);
 		contentPane.add(canvas_Light);
 		
-		textArea_pressure = new JTextArea();
-		textArea_pressure.setBounds(10, 536, 128, 30);
-		contentPane.add(textArea_pressure);
-		
-		textArea_ultrasonic_left = new JTextArea();
-		textArea_ultrasonic_left.setText("");
-		textArea_ultrasonic_left.setBounds(148, 600, 128, 30);
-		contentPane.add(textArea_ultrasonic_left);
-		
-		Label label_left = new Label("left");
-		label_left.setBounds(148, 572, 62, 22);
-		contentPane.add(label_left);
-		
-		textArea_ultrasonic_right = new JTextArea();
-		textArea_ultrasonic_right.setText("");
-		textArea_ultrasonic_right.setBounds(286, 600, 128, 30);
-		contentPane.add(textArea_ultrasonic_right);
-		
-		textArea_ultrasonic_front = new JTextArea();
-		textArea_ultrasonic_front.setText("");
-		textArea_ultrasonic_front.setBounds(148, 536, 128, 30);
-		contentPane.add(textArea_ultrasonic_front);
-		
-		textArea_ultrasonic_back = new JTextArea();
-		textArea_ultrasonic_back.setText("");
-		textArea_ultrasonic_back.setBounds(283, 536, 128, 30);
-		contentPane.add(textArea_ultrasonic_back);
-		
-		Label label_right = new Label("right");
-		label_right.setBounds(286, 572, 62, 22);
-		contentPane.add(label_right);
-		
-		Label label_front = new Label("front");
-		label_front.setBounds(148, 508, 62, 22);
-		contentPane.add(label_front);
-		
-		Label label_back = new Label("back");
-		label_back.setBounds(286, 508, 62, 22);
-		contentPane.add(label_back);
-		
-		Label label_pressure = new Label("pressure");
-		label_pressure.setBounds(10, 508, 62, 22);
-		contentPane.add(label_pressure);
-		
-		Label label_light = new Label("light");
-		label_light.setBounds(10, 572, 62, 22);
-		contentPane.add(label_light);
-		
-		textArea_light = new JTextArea();
-		textArea_light.setText("");
-		textArea_light.setBounds(10, 600, 128, 30);
-		contentPane.add(textArea_light);
-		
 		canvas = new DrawCanvas(robotPool);
 		canvas.setBounds(474, 7, 500, 500);
 		canvas.setBackground(new Color(160, 82, 45));
 		contentPane.add(canvas);
 		
-		btn_pause = new JButton("Pause");
-
-		btn_pause.setBounds(187, 61, 89, 23);
-		contentPane.add(btn_pause);
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(10, 11, 290, 153);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		btnExplore = new JButton("Start Game");
+		btnExplore.setBounds(10, 90, 167, 43);
+		panel.add(btnExplore);
+		
+		toggle_robot = new JToggleButton("robot");
+		toggle_robot.setBounds(10, 22, 67, 23);
+		panel.add(toggle_robot);
+		
+		toggle_simulator = new JToggleButton("simulator");
+		toggle_simulator.setBounds(87, 22, 90, 23);
+		panel.add(toggle_simulator);
+		
+		button_terminate = new JButton("terminate");
+		button_terminate.setBounds(10, 56, 167, 23);
+		panel.add(button_terminate);
 		
 		btn_resume = new JButton("Resume");
-
-		btn_resume.setBounds(187, 95, 89, 23);
-		contentPane.add(btn_resume);
+		btn_resume.setBounds(187, 110, 89, 23);
+		panel.add(btn_resume);
 		
-		JScrollPane scrollPane_multiscan = new JScrollPane();
-		scrollPane_multiscan.setBounds(266, 400, 202, 49);
-		contentPane.add(scrollPane_multiscan);
+		btn_pause = new JButton("Pause");
+		btn_pause.setBounds(187, 76, 89, 23);
+		panel.add(btn_pause);
 		
-		textArea_multiscan = new JTextArea();
-		scrollPane_multiscan.setViewportView(textArea_multiscan);
+		panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "Lobby", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(41, 329, 290, 153);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
 		
-		JLabel lblMultiscanValues = new JLabel("multiscan values");
-		lblMultiscanValues.setBounds(266, 380, 104, 14);
-		contentPane.add(lblMultiscanValues);
+		JButton btnJoinLobby = new JButton("Join lobby");
+		btnJoinLobby.setBounds(10, 21, 89, 23);
+		panel_1.add(btnJoinLobby);
 		
-		lblPosition = new JLabel("position");
-		lblPosition.setBounds(10, 380, 54, 14);
-		contentPane.add(lblPosition);
+		JButton btnLeaveLobby = new JButton("Leave lobby");
+		btnLeaveLobby.setBounds(10, 55, 89, 23);
+		panel_1.add(btnLeaveLobby);
 		
-		JLabel lblTeam = new JLabel("Own barcode");
-		lblTeam.setBounds(286, 7, 90, 14);
-		contentPane.add(lblTeam);
+		JRadioButton rdbtnLocal = new JRadioButton("local");
+		rdbtnLocal.setBounds(10, 87, 109, 23);
+		panel_1.add(rdbtnLocal);
 		
-		JLabel lblTeammate = new JLabel("Login naam");
-		lblTeammate.setBounds(286, 45, 140, 14);
-		contentPane.add(lblTeammate);
+		JRadioButton rdbtnKuleuven = new JRadioButton("kuleuven");
+		rdbtnKuleuven.setBounds(10, 113, 109, 23);
+		panel_1.add(rdbtnKuleuven);
 		
-		teamTextArea = new JTextArea();
-		teamTextArea.setBounds(286, 20, 90, 24);
-		contentPane.add(teamTextArea);
+		JLabel lblTeammate = new JLabel("Login name");
+		lblTeammate.setBounds(150, 59, 140, 14);
+		panel_1.add(lblTeammate);
 		
 		teamMateTextArea = new JTextArea();
-		teamMateTextArea.setBounds(286, 60, 90, 24);
-		contentPane.add(teamMateTextArea);
+		teamMateTextArea.setBounds(117, 112, 90, 24);
+		panel_1.add(teamMateTextArea);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 150, 460, 100);
-		contentPane.add(scrollPane_1);
-		
-		textArea_messages = new JTextArea();
-		scrollPane_1.setViewportView(textArea_messages);
-		
-		JLabel lblMessages = new JLabel("messages");
-		lblMessages.setBounds(10, 129, 67, 14);
-		contentPane.add(lblMessages);
-		
-		JLabel lblDebugwindow = new JLabel("debugwindow");
-		lblDebugwindow.setBounds(10, 255, 67, 14);
-		contentPane.add(lblDebugwindow);
-		
-		btnSubmitBarcodes = new JButton("Submit barcodes");
-		btnSubmitBarcodes.setBounds(300, 125, 150, 23);
-		contentPane.add(btnSubmitBarcodes);
-		
-		JLabel lblOtherTeamBarcode = new JLabel("Start positie");
-		lblOtherTeamBarcode.setBounds(286, 85, 140, 14);
-		contentPane.add(lblOtherTeamBarcode);
+		JLabel lblOtherTeamBarcode = new JLabel("Lobby name");
+		lblOtherTeamBarcode.setBounds(140, 21, 140, 14);
+		panel_1.add(lblOtherTeamBarcode);
 		
 		otherTeamTextArea1 = new JTextArea();
-		otherTeamTextArea1.setBounds(286, 100, 90, 24);
-		contentPane.add(otherTeamTextArea1);
-		
-		otherTeamTextArea2 = new JTextArea();
-		otherTeamTextArea2.setBounds(380, 100, 90, 24);
-		contentPane.add(otherTeamTextArea2);
-		
-		textArea_infrared = new JTextArea();
-		textArea_infrared.setText("");
-		textArea_infrared.setBounds(270, 480, 200, 30);
-		contentPane.add(textArea_infrared);
-		
-		JLabel label = new JLabel("infrared");
-		label.setBounds(286, 456, 62, 22);
-		contentPane.add(label);
+		otherTeamTextArea1.setBounds(125, 86, 90, 24);
+		panel_1.add(otherTeamTextArea1);
 		
 		// Controls
 		JPanel panel_controls = new JPanel();
@@ -699,39 +584,6 @@ public class Main extends JFrame {
 		btn_resume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				robot.resumeExplore();
-			}
-		});
-		
-		btnSubmitBarcodes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int nr = Integer.parseInt(teamTextArea.getText());
-				if (nr < 4){
-					if(robot!=null){
-						robot.setObjectNr(nr);
-						System.out.println("OK, nr = "+nr);
-					}
-				}
-//				if (teamMateTextArea.getText().length() == 6){
-//				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
-//					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
-//				}
-//				Barcode teamBarcode = new Barcode(code);
-//				robot.setTeamMateBarcode(teamBarcode);
-//				}
-//				if (otherTeamTextArea1.getText().length() == 6){
-//				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
-//					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
-//				}
-//				Barcode otherTeamBarcode = new Barcode(code);
-//				robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
-//				if (otherTeamTextArea2.getText().length() == 6){
-//					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
-//						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
-//					}
-//					Barcode otherTeamBarcode = new Barcode(code);
-//					robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
 			}
 		});
 		
