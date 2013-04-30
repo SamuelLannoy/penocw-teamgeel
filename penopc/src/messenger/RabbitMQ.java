@@ -7,6 +7,16 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitMQ {
+	private static String hostName = Config.HOST_NAME_LOCAL;
+	
+	public static void setConnectionType(String type) {
+		if (type.equals("local")) {
+			hostName = Config.HOST_NAME_LOCAL;
+		} else if (type.equals("kul")) {
+			hostName = Config.HOST_NAME_KUL;
+		}
+	}
+	
 	/**
 	 * Create a connection to a AMQP server using the configuration in the
 	 * Config class
@@ -17,7 +27,7 @@ public class RabbitMQ {
 	public static Connection createConnection() throws IOException {
 		
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(Config.HOST_NAME);
+		factory.setHost(hostName);
 		factory.setPort(Config.PORT);
 		factory.setUsername(Config.USER_NAME);
 		factory.setPassword(Config.PASSWORD);

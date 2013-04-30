@@ -40,7 +40,6 @@ import peno.htttp.*;
 import peno.htttp.impl.PlayerHandlerImplementation;
 import peno.htttp.impl.SpectatorHandlerImplementation;
 
-import messenger.Messenger;
 import messenger.RabbitMQ;
 
 import robot.DebugBuffer;
@@ -63,9 +62,6 @@ import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-
-	private final static String BROADCAST_ID = "teamgeellobby";
-	private final static String LOBBY_ID = "Exchange";
 	
 	private Robot robot;
 	private RobotPool robotPool;
@@ -525,12 +521,16 @@ public class Main extends JFrame {
 				rdbtnLocal.setEnabled(false);
 				rdbtnKuleuven.setEnabled(false);
 				btnStartGame.setEnabled(false);
-				// TODO connect to lobby
 				if (rdbtnLocal.isSelected()){
-					
+					RabbitMQ.setConnectionType("local");
 				}
 				if (rdbtnKuleuven.isSelected()){
-					
+					RabbitMQ.setConnectionType("kul");
+				}
+				try {
+					init();
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -546,10 +546,8 @@ public class Main extends JFrame {
 				rdbtnLocal.setSelected(false);
 				// TODO disconnect from lobby
 				if (rdbtnLocal.isSelected()){
-					
 				}
 				if (rdbtnKuleuven.isSelected()){
-					
 				}
 			}
 		});
@@ -644,8 +642,8 @@ public class Main extends JFrame {
 		
 	}
 	
-	/**public void init() throws IOException {
-		String playerID = teamMateTextArea.getText();
+	public void init() throws IOException {
+		String playerID = textFieldPlayerName.getText();
 		
 		
 		robotPool = new RobotPool(robot);
@@ -655,26 +653,18 @@ public class Main extends JFrame {
 		if (robot.isSim()) {
 			robot.setSimField(world);
 		}
-		double x = 0;
-		double y = 0;
-		try {
-			x = Integer.parseInt(otherTeamTextArea1.getText());
-			y = Integer.parseInt(otherTeamTextArea2.getText());
-		} catch( Exception e ) {
-			
-		}
 		
 		if (robot.isSim()) {
-			robot.setSimLoc(x, y, 0);
+			robot.setSimLoc(0, 0, 0);
 		}
 		canvas.setRobotPool(robotPool);
 		
-		world.connectToGame(BROADCAST_ID, playerID);
+		world.connectToGame(textFieldLobbyName.getText(), playerID);
 		
-		robot.connectToGame(playerID, BROADCAST_ID);
+		robot.connectToGame(playerID, textFieldLobbyName.getText());
 
 
-	}**/
+	}
 	
 	public void resetCanvas() {
 		canvas.setRobotPool(robotPool);
