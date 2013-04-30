@@ -148,7 +148,6 @@ public class Robot {
 			Motor.A.rotate(200);
 			double right = UltrasonicSensor.getInstance().readValue()-4;
 			Button.waitForAnyPress(100);
-			Motor.A.rotate(-100);
 			if(left<=20 || right<=20){
 				if(left<right){
 					rotateLeft(20, false);
@@ -158,7 +157,7 @@ public class Robot {
 					if(hasBall)
 						travel(-100,false);
 					else
-					Robot.getInstance().travel(-130, false);
+					Robot.getInstance().travel(-120, false);
 					rotateRight(90, false);
 				}
 				else{
@@ -169,10 +168,11 @@ public class Robot {
 					if(hasBall)
 						travel(-100,false);
 					else
-					Robot.getInstance().travel(-130, false);
+					Robot.getInstance().travel(-120, false);
 					rotateLeft(90, false);
 				}
 			}
+			Motor.A.rotate(-100);
 		}
 		
 		public void orientOnWhiteLine(boolean scan) {
@@ -407,7 +407,7 @@ public class Robot {
 				if(hasBall)
 					travel(-100,false);
 				else
-				Robot.getInstance().travel(-130, false);
+				Robot.getInstance().travel(-120, false);
 				Robot.getInstance().rotateLeft(90, false);
 			} else if (right > left){
 				Buffer.addDebug("left wall");
@@ -418,7 +418,7 @@ public class Robot {
 				if(hasBall)
 					travel(-100,false);
 				else
-				Robot.getInstance().travel(-130, false);
+				Robot.getInstance().travel(-120, false);
 				Robot.getInstance().rotateRight(90, false);
 			} else {
 				/*Buffer.addDebug("no walls");
