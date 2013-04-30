@@ -307,10 +307,4 @@ public class SimulatedPhysicalRobot implements ISimulator {
 		
 	}
 
-	@Override
-	public void ultimateCenter(boolean bool) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

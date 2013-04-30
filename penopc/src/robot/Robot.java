@@ -206,9 +206,6 @@ public class Robot extends RobotModel{
 		robotConn.orientOnWhiteLine(b);
 	}
 	
-	public void ultimateCenter(boolean bool){
-		robotConn.ultimateCenter(bool);
-	}
 	public void scanSonar(){
 		robotConn.scanSonar();
 	}
@@ -379,6 +376,10 @@ public class Robot extends RobotModel{
 		}
 		moveNext();
 		//DebugBuffer.addInfo("traveling from "+ start.getPosition() + " to " + finish.getPosition());
+	}
+	
+	public void ultimateCenter(boolean b){
+		CommandEncoder.getInstance().ultimateCenter(b);
 	}
 	
 	private int incr = 0;
