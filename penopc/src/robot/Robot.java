@@ -177,7 +177,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnLeft(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
+		if (!isSim() && getCurrTile().hasBarcode() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnLeft(angle);
@@ -185,7 +185,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnRight(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
+		if (!isSim() && getCurrTile().hasBarcode() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnRight(angle);
@@ -934,7 +934,7 @@ public class Robot extends RobotModel{
 
 				if (getField().pathRunsThroughSeesaw(getAStarTileList()) &&
 						getField().isExplored(getCurrTile().getPosition()) &&
-						(getCurrTile().hasBarcocde() &&
+						(getCurrTile().hasBarcode() &&
 								getCurrTile().getBarcode().isSeesaw())) {
 					// travel across seesaw if necessary
 					// boolean for A*
@@ -952,7 +952,7 @@ public class Robot extends RobotModel{
 
 				if (getField().isExplored(getCurrTile().getPosition())){
 					// is the tile I moved on a seesaw barcode tile?
-					if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+					if (getCurrTile().hasBarcode() && getCurrTile().getBarcode().isSeesaw()) {
 						// boolean for A*
 						boolean ignore = seesawAction();
 						// don't cross seesaw in A* if we couldn't cross it
@@ -980,6 +980,31 @@ public class Robot extends RobotModel{
 		//return getFieldSimulation().checkIfSafe();
 	}
 	
+	public void randomWalkUntilChoosingPointPassed() {
+		boolean choosingPointPassed = false;
+		
+		while(!choosingPointPassed) {
+			List<Direction> possibleDirs = new ArrayList<Direction>();
+			if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder) &&
+				fieldSimulation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().opposite());
+			} else if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder) &&
+				fieldSimulation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().left());
+			} else if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder) &&
+				fieldSimulation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().right());
+			}
+			
+			if(possibleDirs.size() > 1) {
+				choosingPointPassed = true;
+			}
+			
+			Direction chosenDir = possibleDirs.get((int)(Math.random() * possibleDirs.size() - 1));
+			goToTile(chosenDir.getPositionInDirection(getCurrTile().getPosition()));
+		}
+	}
+
 	/**
 	 * 
 	 * @return returns tilepositions that need to be explored
