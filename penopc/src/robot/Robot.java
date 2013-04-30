@@ -345,6 +345,7 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
+		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
@@ -374,7 +375,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public int incr = 0;
-	public boolean turned = false;
+	public static boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
