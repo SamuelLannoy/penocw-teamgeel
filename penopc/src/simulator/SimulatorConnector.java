@@ -305,4 +305,10 @@ public class SimulatorConnector implements ISimulator {
 		
 	}
 
+	@Override
+	public void ultimateCenter(boolean bool) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

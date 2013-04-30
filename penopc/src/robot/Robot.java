@@ -978,18 +978,18 @@ public class Robot extends RobotModel{
 		} catch (IllegalArgumentException e) {
 			// no we can't
 			e.printStackTrace();
+			randomWalkUntilChoosingPointPassed();
 		}
 		return false;
 	}
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return true;
-		//return getFieldSimulation().checkIfSafe();
+		return getFieldSimulation().checkIfSafe();
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
-		boolean choosingPointPassed = false;
+		/*boolean choosingPointPassed = false;
 		
 		while(!choosingPointPassed) {
 			List<Direction> possibleDirs = new ArrayList<Direction>();
@@ -1010,7 +1010,7 @@ public class Robot extends RobotModel{
 			
 			Direction chosenDir = possibleDirs.get((int)(Math.random() * possibleDirs.size() - 1));
 			goToTile(chosenDir.getPositionInDirection(getCurrTile().getPosition()));
-		}
+		}*/
 	}
 
 	/**

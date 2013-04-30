@@ -644,4 +644,10 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	public void resumeLightSensor() {
 		pausedLightSensor = false;
 	}
+
+	@Override
+	public void ultimateCenter(boolean bool) {
+		// TODO Auto-generated method stub
+		
+	}
 }
