@@ -401,7 +401,7 @@ public class FieldRepresentation extends Field {
 					addTile(tile);
 					System.out.println("adding " + tile.getPosition());
 				} else {
-					if (!getTileAt(tile.getPosition()).hasBarcocde() && tile.hasBarcocde()) {
+					if (!getTileAt(tile.getPosition()).hasBarcode() && tile.hasBarcode()) {
 						tile.setBarcode(tile.getBarcode());
 					}
 				}

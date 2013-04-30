@@ -142,9 +142,11 @@ public class Robot {
 		}
 		
 		public void ultimateCentering(boolean bool){
-			if(bool)
+			if(bool){
 				Motor.A.rotate(100);
-			else
+				PilotController.stopStream();
+			}
+			else{
 //			double left = UltrasonicSensor.getInstance().readValue()+4;
 //			Button.waitForAnyPress(100);
 //			Motor.A.rotate(200);
@@ -175,6 +177,8 @@ public class Robot {
 //				}
 //			}
 				Motor.A.rotate(-100);
+				PilotController.startStream();
+			}
 		}
 		
 		public void orientOnWhiteLine(boolean scan) {
