@@ -18,6 +18,7 @@ import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
+import simulator.lightsensor.LightSensor;
 import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
 
@@ -200,6 +201,7 @@ public class Robot extends RobotModel{
 
 	
 	public void orientOnWhiteLine(boolean b) {
+		System.out.println("orientonwhitelinecommand");
 		robotConn.orientOnWhiteLine(b);
 	}
 	
@@ -345,6 +347,7 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
+		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
@@ -374,23 +377,29 @@ public class Robot extends RobotModel{
 	}
 	
 	public int incr = 0;
-	public int turns = 0;
+	public static boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(incr%3 == 0){
+			if(turned){
 				orientOnWhiteLine(false);
 				moveForward(230);
+			}
+			else if(incr%3 == 0){
+				orientOnWhiteLine(false);
+				moveForward(230);
+				incr++;
 			} 
 //			else if(get){
 //				
 //			}
 			else{
 				moveForward(400);
+				incr++;
 			}
-			incr++;
+			
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;
@@ -729,6 +738,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void pauseLightSensor() {
+		System.out.println("pause lightsensor");
 		robotConn.pauseLightSensor();
 	}
 	
@@ -757,7 +767,7 @@ public class Robot extends RobotModel{
 			moveForward(800);
 			waitTillStandby(2500);
 			moveForward(400);
-			waitTillStandby(400);
+			waitTillStandby(380);
 			//this.orientOnWhiteLine(false);
 			
 			// flush barcode values before moving
@@ -769,10 +779,14 @@ public class Robot extends RobotModel{
 			waitTillStandby(400);
 			setCurrentAction("centering on tile after seesaw");
 			CommandEncoder.getInstance().setOnCenterTileAfterSeesaw(getLeftFlag());
-			waitTillStandby(400);
-			while(Status.isCentering());
-			
+			waitTillStandby(4000);
+			while(Status.isCentering()){
+				System.out.println("is centering");
+			}
+			System.out.println("is no longer centering");
 			resumeLightSensor();
+			waitTillStandby(4000);
+			System.out.println("lightsensor resumed");
 		} else {
 			moveForward(1200);
 			waitTillStandby(400);
