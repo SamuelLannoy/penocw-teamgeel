@@ -562,14 +562,14 @@ public class Robot extends RobotModel{
 				boolean interference = false;
 				if (i == 1) { // left
 					dir = dir.left();
-//					interference = fieldSimulation.isRobotLeft();
+					interference = fieldSimulation.isRobotLeft();
 				} else if (i == 2) { // back
 					dir = dir.opposite();
 				} else if (i == 3) { // right
 					dir = dir.right();
-//					interference = fieldSimulation.isRobotRight();
+					interference = fieldSimulation.isRobotRight();
 				} else { // front
-//					interference = fieldSimulation.isRobotInFront();
+					interference = fieldSimulation.isRobotInFront();
 				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
