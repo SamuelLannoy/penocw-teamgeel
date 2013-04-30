@@ -10,9 +10,6 @@ import java.util.Map;
 
 import javax.swing.border.Border;
 
-import com.sun.java.util.jar.pack.Package.Class.Field;
-
-
 import communication.CommandEncoder;
 import communication.SeesawStatus;
 import communication.Status;
@@ -341,40 +338,6 @@ public class Robot extends RobotModel{
 	}
 	
 	public void travelFromTileToTile(Tile start, Tile finish, Tile prev) {
-		if(incr%3==1){
-			Direction cur = getDirection();
-			Direction left;
-			Direction right;
-			if (cur==Direction.BOTTOM){
-				left = Direction.RIGHT;
-				right = Direction.LEFT;
-			} else if (cur==Direction.LEFT){
-				left = Direction.BOTTOM;
-				right = Direction.TOP;
-			} if (cur==Direction.RIGHT){
-				left = Direction.TOP;
-				right = Direction.BOTTOM;
-			} if (cur==Direction.TOP){
-				left = Direction.LEFT;
-				right = Direction.RIGHT;
-			} 
-			field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
-			field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
-			ultimateCenter(true);
-			if(leftB instanceof SolidBorder){
-				turnLeft(90);
-				moveForward(300);
-				moveBackward(120);
-				turnRight(90);
-			} else if(rightB instanceof SolidBorder){
-				turnRight(90);
-				moveForward(300);
-				moveBackward(120);
-				turnLeft(90);
-			}
-			ultimatecenter(false);
-			
-		}
 		
 		int diffx = finish.getPosition().getX() - start.getPosition().getX();
 		int diffy = finish.getPosition().getY() - start.getPosition().getY();
@@ -425,15 +388,60 @@ public class Robot extends RobotModel{
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(incr%3 == 0){
-				orientOnWhiteLine(false);
-				moveForward(230);
-				ultimateCenter();
-				incr++;
+		System.out.println("incr "+incr);
+		if(incr%3==0){
+			Direction cur = getDirection();
+			Direction left = null;
+			Direction right = null;
+			if (cur==Direction.BOTTOM){
+				left = Direction.RIGHT;
+				right = Direction.LEFT;
+			} else if (cur==Direction.LEFT){
+				left = Direction.BOTTOM;
+				right = Direction.TOP;
+			} else if (cur==Direction.RIGHT){
+				left = Direction.TOP;
+				right = Direction.BOTTOM;
+			} else if (cur==Direction.TOP){
+				left = Direction.LEFT;
+				right = Direction.RIGHT;
 			} 
-//			else if(get){
-//				
-//			}
+			field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
+			field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
+			System.out.println("BorderL "+leftB);
+			System.out.println("BorderR "+rightB);
+			ultimateCenter(true);
+			if(leftB instanceof SolidBorder){
+				turnLeft(20);
+				moveBackward(20);
+				turnLeft(70);
+				moveForward(300);
+				moveBackward(85);
+//				if(!hasBall())
+//					moveBackward(120);
+//				else
+//					moveBackward(85);
+				turnRight(90);
+			} else if(rightB instanceof SolidBorder){
+				turnRight(20);
+				moveBackward(20);
+				turnRight(70);
+				moveForward(300);
+				moveBackward(85);
+//				if(!hasBall())
+//					moveBackward(120);
+//				else
+//					moveBackward(85);
+				turnLeft(90);
+			}
+			ultimateCenter(false);
+			waitTillStandby(2500);
+			
+			orientOnWhiteLine(false);
+			moveForward(200);
+			incr++;
+			
+		}
 			else{
 				moveForward(400);
 				incr++;
