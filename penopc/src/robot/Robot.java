@@ -996,18 +996,19 @@ public class Robot extends RobotModel{
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
-		/*boolean choosingPointPassed = false;
+		System.out.println("RANDOM WALK TRALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
+		boolean choosingPointPassed = false;
 		
 		while(!choosingPointPassed) {
 			List<Direction> possibleDirs = new ArrayList<Direction>();
 			if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder) &&
-				fieldSimulation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				!fieldSimulation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
 				possibleDirs.add(getDirection().opposite());
 			} else if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder) &&
-				fieldSimulation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				!fieldSimulation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
 				possibleDirs.add(getDirection().left());
 			} else if(!(fieldSimulation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder) &&
-				fieldSimulation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				!fieldSimulation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
 				possibleDirs.add(getDirection().right());
 			}
 			
@@ -1017,7 +1018,7 @@ public class Robot extends RobotModel{
 			
 			Direction chosenDir = possibleDirs.get((int)(Math.random() * possibleDirs.size() - 1));
 			goToTile(chosenDir.getPositionInDirection(getCurrTile().getPosition()));
-		}*/
+		}
 	}
 
 	/**
