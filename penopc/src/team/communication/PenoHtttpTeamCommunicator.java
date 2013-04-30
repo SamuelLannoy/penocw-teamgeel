@@ -66,7 +66,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobb
 				public void onSuccess(Void result) {
 					connectedToGame = true;
 					DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
-					setReady(true);
+					//setReady(true);
 				}
 				
 				@Override

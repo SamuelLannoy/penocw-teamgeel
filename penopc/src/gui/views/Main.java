@@ -406,19 +406,19 @@ public class Main extends JFrame {
 		lobbyPanel.setLayout(null);
 		
 		btnJoinLobby = new JButton("Join lobby");
-		btnJoinLobby.setBounds(10, 16, 109, 30);
+		btnJoinLobby.setBounds(10, 75, 109, 30);
 		lobbyPanel.add(btnJoinLobby);
 		
 		btnLeaveLobby = new JButton("Leave lobby");
-		btnLeaveLobby.setBounds(10, 57, 109, 30);
+		btnLeaveLobby.setBounds(10, 115, 109, 30);
 		lobbyPanel.add(btnLeaveLobby);
 		
 		rdbtnLocal = new JRadioButton("local");
-		rdbtnLocal.setBounds(10, 94, 109, 23);
+		rdbtnLocal.setBounds(10, 16, 109, 23);
 		lobbyPanel.add(rdbtnLocal);
 		
 		rdbtnKuleuven = new JRadioButton("kuleuven");
-		rdbtnKuleuven.setBounds(10, 120, 109, 23);
+		rdbtnKuleuven.setBounds(10, 40, 109, 23);
 		lobbyPanel.add(rdbtnKuleuven);
 		
 		JLabel lblLobbyName = new JLabel("Lobby name");
@@ -439,9 +439,10 @@ public class Main extends JFrame {
 		lobbyPanel.add(textFieldPlayerName);
 		textFieldPlayerName.setColumns(10);
 		
-		/**btnReady = new JButton();
+		btnReady = new JButton();
 		btnReady.setBounds(129,126,109,30);
-		lobbyPanel.add(btnReady);*/
+		btnReady.setText("Ready");
+		lobbyPanel.add(btnReady);
 		
 		canvas = new DrawCanvas(robotPool,"Player's view");
 		canvas.setBackground(new Color(139, 69, 19));
@@ -672,7 +673,18 @@ public class Main extends JFrame {
 
 			}
 		});
+
 		
+		// ready
+		btnReady.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					robot.setReady();
+				} catch (Exception a) {
+					a.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	public void init() throws IOException {

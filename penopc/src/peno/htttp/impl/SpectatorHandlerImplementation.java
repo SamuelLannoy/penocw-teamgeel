@@ -82,8 +82,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 		//DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);
 		int[] newpos = convertRelativeToAbsolutePosition((int)x, (int)y, field, playerNumber);
 		robotPool.updateRobot(getPoolID(playerID.getPlayerID()),
-				newpos[0] + field.getStartPos(playerNumber).getX(),
-				newpos[1] + field.getStartPos(playerNumber).getY(),
+				newpos[0],
+				newpos[1],
 				angle + field.getStartDir(playerNumber).toAngle());
 	}
 	
@@ -105,6 +105,8 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 				break;
 			
 		}
+		newpos[0] += field.getStartPos(playerNumber).getX();
+		newpos[1] += field.getStartPos(playerNumber).getY();
 		return newpos;
 	}
 	
