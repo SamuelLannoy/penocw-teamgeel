@@ -20,6 +20,7 @@ import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
 import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
+import team.communication.ILobbyViewer;
 
 import exception.CommunicationException;
 import field.Barcode;
@@ -60,8 +61,16 @@ public class Robot extends RobotModel{
 		}
 	}
 	
+	public boolean isConnectedToGame() {
+		return comm.isConnectedToGame();
+	}
+	
 	public void setReady() {
 		comm.setReady(true);
+	}
+	
+	public ILobbyViewer getLobbyViewer() {
+		return comm.getLobbyViewer();
 	}
 	
 	/*public void setClient(PlayerClient client) {

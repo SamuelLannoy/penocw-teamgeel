@@ -73,10 +73,10 @@ public class Map extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		canvas = new DrawCanvas(robotPool);
+		/*canvas = new DrawCanvas(robotPool);
 		canvas.setBackground(new Color(160, 82, 45));
 		canvas.setBounds(1062, 290, 265, 241);
-		contentPane.add(canvas);
+		contentPane.add(canvas);*/
 	}
 	
 	private void createEvents(){

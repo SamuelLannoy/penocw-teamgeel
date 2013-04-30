@@ -65,7 +65,6 @@ public class Main extends JFrame {
 	
 	private Robot robot;
 	private RobotPool robotPool;
-	private RobotPool worldPool = null;
 	private Timer simulatorTimer;
 	private Timer robotGuiTimer;
 	private Timer robotReceiveTimer;
@@ -76,12 +75,13 @@ public class Main extends JFrame {
 	private JFrame frame2;
 	private JPanel contentPane2;
 	private FieldSimulation world;
-	private List<Integer> plotList;
+	private List<Integer> plotList = new ArrayList<Integer>();
 	private DrawCanvas canvas;
 	private DrawCanvas canvas2;
 	private boolean sensorDispActive;
-	private Object[][] lobbyData = new Object[6][4];
+	private Object[][] lobbyData = new Object[5][6];
 	private MyTableModel lobbyTable;
+	private JPanel lobbyPanel;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -113,7 +113,7 @@ public class Main extends JFrame {
 		public void run() {
 			robotReceiveTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+			    	if (canShowData()) {
 			    		try {
 			    			Bluetooth.getInstance().receive();
 			    		} catch (Exception e){
@@ -131,12 +131,12 @@ public class Main extends JFrame {
 		public void run() {
 			mapTimer = new Timer(200, new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+			    	if (canShowData()) {
 						try {
 							canvas.update(canvas.getGraphics());
 							if (robot.receivedTeamTiles()){
 								if(canvas2.getTitle().equals("World view")){
-									canvas2.setRobotPool(new RobotPool(robot.getTeamMate()));
+									canvas2.setRobotPool(new RobotPool(robot.getTeamMate(), ""));
 									canvas2.setTitle("Teammate's view");
 								} else{
 									canvas2.update(canvas2.getGraphics());
@@ -161,7 +161,7 @@ public class Main extends JFrame {
 		public void run() {
 			sensorTimer = new Timer(100, new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+			    	if (canShowData()) {
 						// update light sensor data.
 			    		synchronized(SensorBuffer.getLightValues()) {
 							for(int val: SensorBuffer.getLightValues()) {
@@ -202,13 +202,38 @@ public class Main extends JFrame {
 		}
 	});
 	
+	private boolean createdLobbyTable = false;
+	
 	// TODO update lobby data
 	private Thread lobbythread = new Thread(new Runnable() {
 		public void run() {
 			lobbyTimer = new Timer(100, new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-			    		for(int pl = 0; pl < robotPool.getRobotPoolSize(); pl++){
+					if (canShowData()) {
+						int pl = 0;
+						for (String playerId : robot.getLobbyViewer().getPlayerData()) {
+			    			lobbyData[pl][0] = playerId;
+			    			lobbyData[pl][1] = "";
+			    			lobbyData[pl][2] = "";
+			    			lobbyData[pl][3] = "";
+			    			lobbyData[pl][4] = robotPool.getRobot(playerId).isReady();
+			    			lobbyData[pl][5] = robotPool.getRobot(playerId).hasBall();
+			    			pl++;
+			    		}
+						if (!createdLobbyTable && pl > 0) {
+							String[] columns = {"player name","team","objectNR","playerNR","ready","object found"};
+							lobbyTable = new MyTableModel(columns,lobbyData);
+							tableLobby = new JTable(lobbyTable);
+							tableLobby.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+							tableLobby.setBackground(Color.WHITE);
+							tableLobby.setForeground(Color.BLACK);
+							tableLobby.setBounds(0,0, 396, 153);
+							lobbyScroll = new JScrollPane(tableLobby);
+							lobbyScroll.setBounds(249, 16, 396, 153);
+							lobbyPanel.add(lobbyScroll);
+							createdLobbyTable = true;
+						}
+			    		/*for(int pl = 0; pl < robotPool.getRobotPoolSize(); pl++){
 			    			Robot currentRobot = robotPool.getRobots().get(pl);
 			    			lobbyData[0][pl] = currentRobot.getID();
 			    			lobbyData[1][pl] = currentRobot.getTeamNr();
@@ -216,17 +241,18 @@ public class Main extends JFrame {
 			    			lobbyData[3][pl] = currentRobot.getPlayerNr();
 			    			lobbyData[4][pl] = currentRobot.getReady();
 			    			lobbyData[5][pl] = currentRobot.getObjectFound();
-			    		}
-			    		for(int o = robotPool.getRobotPoolSize(); o < 4;o++){
+			    		}*/
+			    		for(int o = robot.getLobbyViewer().getPlayerData().size(); o < 4;o++){
 			    			for(int p = 0; p < lobbyData.length; p++){
-			    				lobbyData[p][o] = null;
+			    				lobbyData[o][p] = null;
 			    			}
 			    		}
 			    		for(int i = 0; i < lobbyData.length; i++){
 			    			for(int j = 0; j < lobbyData[0].length; j++){
-			    				lobbyTable.setValueAt(lobbyData[j][i],j,i);
+			    				lobbyTable.setValueAt(lobbyData[i][j],i,j);
 			    			}
 			    		}
+			    		tableLobby.revalidate();
 			    	}
 			    }    
 			});
@@ -261,6 +287,7 @@ public class Main extends JFrame {
 	private JButton btnLeaveLobby;
 	private JRadioButton rdbtnKuleuven;
 	private JRadioButton rdbtnLocal;
+	private JScrollPane lobbyScroll;
 
 	/**
 	 * Launch the application.
@@ -269,7 +296,7 @@ public class Main extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainNew frame = new MainNew();
+					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -281,17 +308,17 @@ public class Main extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MainNew() {
+	public Main() {
 		initComponents();
 		createEvents();
 		mapthread.start();
 		sensorthread.start();
-		//lobbythread.start();
+		lobbythread.start();
 	}
 
 	private void initComponents(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1010, 720);
+		setBounds(100, 10, 1010, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -362,7 +389,7 @@ public class Main extends JFrame {
 		btnPause.setBounds(208, 98, 89, 30);
 		controlPanel.add(btnPause);
 		
-		JPanel lobbyPanel = new JPanel();
+		lobbyPanel = new JPanel();
 		lobbyPanel.setBorder(new TitledBorder(null, "Lobby", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		lobbyPanel.setBounds(329, 10, 655, 180);
 		contentPane.add(lobbyPanel);
@@ -402,22 +429,12 @@ public class Main extends JFrame {
 		lobbyPanel.add(textFieldPlayerName);
 		textFieldPlayerName.setColumns(10);
 		
-		String[] columns = {"player name","team","objectNR","playerNR","ready","object found"};
-		//TODO fix init, possibly after joining lobby
-		/**lobbyTable = new MyTableModel(columns,lobbyData);
-		tableLobby = new JTable(lobbyTable);
-		tableLobby.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		tableLobby.setBackground(Color.WHITE);
-		tableLobby.setForeground(Color.BLACK);
-		tableLobby.setBounds(249, 16, 396, 153);
-		lobbyPanel.add(tableLobby);**/
-		
 		canvas = new DrawCanvas(robotPool,"Player's view");
 		canvas.setBackground(new Color(139, 69, 19));
 		canvas.setBounds(10, 196, 480, 480);
 		contentPane.add(canvas);
 		
-		canvas2 = new DrawCanvas(worldPool,"World view");
+		canvas2 = new DrawCanvas(robotPool,"World view");
 		canvas2.setBackground(new Color(139, 69, 19));
 		canvas2.setBounds(500, 196, 480, 480);
 		contentPane.add(canvas2);
@@ -451,7 +468,7 @@ public class Main extends JFrame {
 					rdbtnLocal.setEnabled(true);
 					rdbtnKuleuven.setEnabled(true);
 					robot = new Robot(1);
-					init();
+					//init();
 					simulatorthread.start();
 				} catch (Exception a) {
 					a.printStackTrace();
@@ -470,11 +487,11 @@ public class Main extends JFrame {
 					rdbtnLocal.setEnabled(true);
 					rdbtnKuleuven.setEnabled(true);
 					robot = new Robot(2);
-					try {
+					/*try {
 						init();
 					} catch (IOException e1) {
 						e1.printStackTrace();
-					}
+					}*/
 					robotguithread.start();
 					robotreceivethread.start();
 					
@@ -571,7 +588,7 @@ public class Main extends JFrame {
 		// Open advanced view
 		advanced.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (robot != null){
+				if (canShowData()){
 					Advanced advanced = new Advanced(robotPool, Main.this);
 				}
 			}
@@ -580,7 +597,7 @@ public class Main extends JFrame {
 		// Open sensor view
 		sensorDisp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (robot != null){
+				if (canShowData()){
 					SensorDisplay sensorDisplay = new SensorDisplay(robot, Main.this);
 					sensorDispActive = true;
 				}
@@ -590,7 +607,7 @@ public class Main extends JFrame {
 		// Open debug view
 		debugDisp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (robot != null){
+				if (canShowData()){
 					DebugDisplay debugDisplay = new DebugDisplay(robot, Main.this);
 				}
 			}
@@ -599,7 +616,7 @@ public class Main extends JFrame {
 		// Open position view
 		positionDisp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (robot != null){
+				if (canShowData()){
 					PositionDisplay positionDisplay = new PositionDisplay(robot, Main.this);
 				}
 			}
@@ -643,11 +660,12 @@ public class Main extends JFrame {
 	}
 	
 	public void init() throws IOException {
-		String playerID = textFieldPlayerName.getText();
+		String playerId = textFieldPlayerName.getText();
 		
 		
-		robotPool = new RobotPool(robot);
+		robotPool = new RobotPool(robot, playerId);
 		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
+		canvas.setField(world);
 //		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		robot.initialize();
 		if (robot.isSim()) {
@@ -659,11 +677,15 @@ public class Main extends JFrame {
 		}
 		canvas.setRobotPool(robotPool);
 		
-		world.connectToGame(textFieldLobbyName.getText(), playerID);
+		world.connectToGame(textFieldLobbyName.getText(), playerId);
 		
-		robot.connectToGame(playerID, textFieldLobbyName.getText());
+		robot.connectToGame(playerId, textFieldLobbyName.getText());
 
 
+	}
+	
+	public boolean canShowData() {
+		return robot != null && robot.isConnectedToGame();
 	}
 	
 	public void resetCanvas() {

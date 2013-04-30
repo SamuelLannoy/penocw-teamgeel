@@ -28,7 +28,7 @@ import robot.DebugBuffer;
 import robot.Robot;
 
 
-public class PenoHtttpTeamCommunicator extends TeamCommunicator {
+public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobbyViewer{
 	
 	public PenoHtttpTeamCommunicator() {
 		
@@ -48,6 +48,14 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 		connectionSuccesful();
 	}
 
+	private boolean connectedToGame = false;
+	
+
+	@Override
+	public boolean isConnectedToGame() {
+		return connectedToGame;
+	}
+	
 	@Override
 	public void joinGame() {
 		checkConnected();
@@ -56,6 +64,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 				
 				@Override
 				public void onSuccess(Void result) {
+					connectedToGame = true;
 					DebugBuffer.addInfo("joined lobby with " + client.getNbPlayers() + " player(s)");
 					setReady(true);
 				}
@@ -251,5 +260,14 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 					tile.getPosition().getY(),
 					"unknown");
 		}
+	}
+
+	@Override
+	public Collection<String> getPlayerData() {
+		return client.getPlayers();
+	}
+	
+	public ILobbyViewer getLobbyViewer() {
+		return this;
 	}
 }

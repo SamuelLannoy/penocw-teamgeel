@@ -55,11 +55,13 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void playerDisconnected(String playerID, DisconnectReason reason) {
-
+		
 	}
 
 	@Override
 	public void playerReady(String playerID, boolean isReady) {
+		robotPool.getRobot(getPoolID(playerID)).setReady(isReady);
+		DebugBuffer.addInfo("player " + playerID + " found object");
 	}
 
 	@Override

@@ -114,4 +114,14 @@ public class RobotModel {
 	public void setPlayerNr(int playerNr) {
 		this.playerNr = playerNr;
 	}
+	
+	private boolean isReady;
+
+	public boolean isReady() {
+		return isReady;
+	}
+
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
+	}
 }
