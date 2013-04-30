@@ -52,7 +52,7 @@ import gui.tools.PlotCanvas;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	
-	private final static String BROADCAST_ID = "teamgeellobby42";
+	private final static String BROADCAST_ID = "teamgeellob";
 	
 	private JPanel contentPane;
 	private JTextArea debugwindow;

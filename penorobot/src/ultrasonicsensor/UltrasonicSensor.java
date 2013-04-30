@@ -6,6 +6,7 @@ import communication.Buffer;
 import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
+import lightsensor.LightSensorVigilante;
 
 public class UltrasonicSensor {
 	private static lejos.nxt.UltrasonicSensor sensor;
@@ -169,6 +170,7 @@ public class UltrasonicSensor {
 	}
 
 	public double[] newTileScan() {
+		LightSensorVigilante.resume();
 		double[] distances = new double[4];
 		for(int i=0; i<4; i++){
 			if (i != 2){
