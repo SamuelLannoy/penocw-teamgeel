@@ -62,7 +62,7 @@ import gui.tools.MyTableModel;
 import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
-public class MainNew extends JFrame {
+public class Main extends JFrame {
 
 	private final static String BROADCAST_ID = "teamgeellobby";
 	private final static String LOBBY_ID = "Exchange";
