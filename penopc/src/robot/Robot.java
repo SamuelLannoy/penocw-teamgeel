@@ -390,52 +390,54 @@ public class Robot extends RobotModel{
 //			moveForward(230);
 		System.out.println("incr "+incr);
 		if(incr%3==0){
-			Direction cur = getDirection();
-			Direction left = null;
-			Direction right = null;
-			if (cur==Direction.BOTTOM){
-				left = Direction.RIGHT;
-				right = Direction.LEFT;
-			} else if (cur==Direction.LEFT){
-				left = Direction.BOTTOM;
-				right = Direction.TOP;
-			} else if (cur==Direction.RIGHT){
-				left = Direction.TOP;
-				right = Direction.BOTTOM;
-			} else if (cur==Direction.TOP){
-				left = Direction.LEFT;
-				right = Direction.RIGHT;
-			} 
-			field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
-			field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
-			System.out.println("BorderL "+leftB);
-			System.out.println("BorderR "+rightB);
-			ultimateCenter(true);
-			if(leftB instanceof SolidBorder){
-				turnLeft(20);
-				moveBackward(20);
-				turnLeft(70);
-				moveForward(300);
-				moveBackward(85);
-//				if(!hasBall())
-//					moveBackward(120);
-//				else
+			if(!isSim()){
+				Direction cur = getDirection();
+				Direction left = null;
+				Direction right = null;
+				if (cur==Direction.BOTTOM){
+					left = Direction.RIGHT;
+					right = Direction.LEFT;
+				} else if (cur==Direction.LEFT){
+					left = Direction.BOTTOM;
+					right = Direction.TOP;
+				} else if (cur==Direction.RIGHT){
+					left = Direction.TOP;
+					right = Direction.BOTTOM;
+				} else if (cur==Direction.TOP){
+					left = Direction.LEFT;
+					right = Direction.RIGHT;
+				} 
+				field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
+				field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
+				System.out.println("BorderL "+leftB);
+				System.out.println("BorderR "+rightB);
+				ultimateCenter(true);
+				if(leftB instanceof SolidBorder){
+					turnLeft(20);
+					moveBackward(20);
+					turnLeft(70);
+					moveForward(300);
 //					moveBackward(85);
-				turnRight(90);
-			} else if(rightB instanceof SolidBorder){
-				turnRight(20);
-				moveBackward(20);
-				turnRight(70);
-				moveForward(300);
-				moveBackward(85);
-//				if(!hasBall())
-//					moveBackward(120);
-//				else
+					if(!hasBall())
+						moveBackward(120);
+					else
+						moveBackward(85);
+					turnRight(90);
+				} else if(rightB instanceof SolidBorder){
+					turnRight(20);
+					moveBackward(20);
+					turnRight(70);
+					moveForward(300);
 //					moveBackward(85);
-				turnLeft(90);
+					if(!hasBall())
+						moveBackward(120); //TODO check waarde!
+					else
+						moveBackward(85);
+					turnLeft(90);
+				}
+				ultimateCenter(false);
+				waitTillStandby(2500);
 			}
-			ultimateCenter(false);
-			waitTillStandby(2500);
 			
 			orientOnWhiteLine(false);
 			moveForward(200);
