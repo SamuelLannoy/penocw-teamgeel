@@ -383,13 +383,10 @@ public class Robot extends RobotModel{
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(turned){
+			if(incr%3 == 0){
 				orientOnWhiteLine(false);
 				moveForward(230);
-			}
-			else if(incr%3 == 0){
-				orientOnWhiteLine(false);
-				moveForward(230);
+				
 				incr++;
 			} 
 //			else if(get){
@@ -937,12 +934,9 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		if(getTeamMate() != null && getTeamMate().getCurrTile() != null && fieldRepresentation.isMerged()) {
-			TilePosition teamMatePos = getTeamMate().getCurrTile().getPosition();
-			return getFieldSimulation().checkIfSafe(teamMatePos.getX(), teamMatePos.getY(), getPlayerNr());
-		} else
-			return getFieldSimulation().checkIfSafe();
-	} 
+		return true;
+		//return getFieldSimulation().checkIfSafe();
+	}
 	
 	/**
 	 * 
@@ -1260,12 +1254,7 @@ public class Robot extends RobotModel{
 
 		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles
-		Explorer.explore(this, new EndingCondition() {
-			@Override
-			public boolean isLastTile(Robot robot) {
-				return receivedTeamTiles();
-			}
-		});
+		while (!receivedTeamTiles()) { }
 		setCurrentAction("Merging tiles");
 
 		try {
@@ -1362,5 +1351,4 @@ public class Robot extends RobotModel{
 	public void setFieldSimulation(FieldSimulation fieldSimulation) {
 		this.fieldSimulation = fieldSimulation;
 	}
-	
 }
