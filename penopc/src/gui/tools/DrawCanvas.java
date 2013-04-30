@@ -3,7 +3,6 @@ package gui.tools;
 import robot.*;
 import robot.brain.Explorer;
 import field.*;
-import field.simulation.FieldSimulation;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -28,7 +27,7 @@ public class DrawCanvas extends Canvas{
 	 */
 	private static final long serialVersionUID = 1L;
 	private RobotPool robotPool;
-	private FieldSimulation field;
+	//private Field field;
 	private int tileSize;
 	private int borderWidth;
 	private int halfTileSize;
@@ -42,9 +41,11 @@ public class DrawCanvas extends Canvas{
 	private int startY;
 	private int barStart;
 	private int barEnd;
+	private String title;
 	
-	public DrawCanvas(RobotPool robotPool){
+	public DrawCanvas(RobotPool robotPool, String title){
 		setRobotPool(robotPool);
+		this.title = title;
 		this.setVisible(true);
 	}
 	
@@ -54,16 +55,17 @@ public class DrawCanvas extends Canvas{
 			//setField(robotPool.getMainRobot().getField());
 		}
 	}
-	
-	public void setField(FieldSimulation field) {
+
+	/*protected void setField(Field field) {
 		this.field = field;
-	}
+	}*/
 	
 	// Tekent de map van het doolhof zoals ze op dit moment bekend is.
 	public void paint(Graphics g){ 
 		createBufferStrategy(2);
 		if (robotPool != null) {
 			//if (robotPool.getMainRobot().getClient().isPlaying()) {
+			paintTitle(g);
 			rescale();
 			paintTiles(g);
 			paintBorders(g);
@@ -93,6 +95,18 @@ public class DrawCanvas extends Canvas{
 		}
 	}*/
 	
+	public void setTitle(String title){
+		this.title = title;
+	}
+	
+	public String getTitle(){
+		return title;
+	}
+	
+	private void paintTitle(Graphics g) {
+		g.drawString(title, 20, 20);	
+	}
+
 	// zoekt de uiterste afmetingen van het doolhof en herschaald de map hieraan.
 	private void rescale(){
 		int maxX = 0;
@@ -144,59 +158,18 @@ public class DrawCanvas extends Canvas{
 		int y = (int)( currentRobot.getPosition().getPosY()
 				+ currentRobot.getCurrTile().getPosition().getY() * 40);
 		double r = currentRobot.getPosition().getRotationRadian() + (Math.PI/2);
-		int[] drawXs;
-		int[] drawYs;
 		if (currentRobot != robotPool.getMainRobot()){
-			/*x -= robotPool.getMainRobot().getStartPos().getPosX();
-			y -= robotPool.getMainRobot().getStartPos().getPosY();*/
-			
-			TilePosition start = field.getStartPos(robotPool.getMainRobot().getPlayerNr());
-			
-			TilePosition other = new TilePosition(
-						currentRobot.getCurrTile().getPosition().getX() - start.getX(),
-						currentRobot.getCurrTile().getPosition().getY() - start.getY()
-					);
-			
-			double rr = field.getStartDir(robotPool.getMainRobot().getPlayerNr()).toAngle();
-			r -= rr * Math.PI / 180;
-			int[] newpos = new int[] {(int)other.getX(),(int)other.getY()};
-			//DebugBuffer.addInfo("pos: " + (r * 180 / Math.PI) + " " + rr);
-			switch(field.getStartDir(robotPool.getMainRobot().getPlayerNr())) {
-				case BOTTOM:
-					newpos = new int[] {-(int)other.getX(),-(int)other.getY()};
-					break;
-				case LEFT:
-					newpos = new int[] {(int)other.getY(),-(int)other.getX()};
-					break;
-				case RIGHT:
-					newpos = new int[] {-(int)other.getY(),(int)other.getX()};
-					break;
-				case TOP:
-					break;
-				default:
-					break;
-				
-			}
-			x = newpos[0] * 40;
-			y = newpos[1] * 40;
-			//DebugBuffer.addInfo("pos: " + x + " " + y);
-			double[] xs = currentRobot.getCornersX(field.getStartDir(robotPool.getMainRobot().getPlayerNr()).toAngle());
-			double[] ys = currentRobot.getCornersY(field.getStartDir(robotPool.getMainRobot().getPlayerNr()).toAngle());
-			drawXs = new int[4];
-			drawYs = new int[4];
-			for (int i = 0; i < 4; i++){
-				drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
-				drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
-			}
-		} else {
-			double[] xs = currentRobot.getCornersX();
-			double[] ys = currentRobot.getCornersY();
-			drawXs = new int[4];
-			drawYs = new int[4];
-			for (int i = 0; i < 4; i++){
-				drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
-				drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
-			}
+			x -= robotPool.getMainRobot().getStartPos().getPosX();
+			y -= robotPool.getMainRobot().getStartPos().getPosY();
+			r -= robotPool.getMainRobot().getStartPos().getRotationRadian();
+		}
+		double[] xs = currentRobot.getCornersX();
+		double[] ys = currentRobot.getCornersY();
+		int[] drawXs = new int[4];
+		int[] drawYs = new int[4];
+		for (int i = 0; i < 4; i++){
+			drawXs[i] = (int)((startX + (xs[i] * scale) + (x * scale)));
+			drawYs[i] = (int)((startY - (ys[i] * scale) - (y * scale)));
 		}
 		/*System.out.println("paintpos " + x + ", " + y);
 		System.out.println("startpos " + startX + ", " + startY);
@@ -410,8 +383,7 @@ public class DrawCanvas extends Canvas{
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  
                // RenderingHints.VALUE_ANTIALIAS_ON); 
 		g.setColor(Color.WHITE);
-		ObjectMap<BorderPosition, Border> borderMap = new ObjectMap<BorderPosition, Border>(robotPool.getMainRobot().getField().getBorderMap());
-		for (Border currentBorder : borderMap){
+		for (Border currentBorder : robotPool.getMainRobot().getField().getBorderMap()){
 			int x1 = currentBorder.getBorderPos().getPosition1().getX();
 			int y1 = currentBorder.getBorderPos().getPosition1().getY();
 			int x2 = currentBorder.getBorderPos().getPosition2().getX();
