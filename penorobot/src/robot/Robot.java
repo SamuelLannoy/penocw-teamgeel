@@ -141,38 +141,40 @@ public class Robot {
 			return isCentering;
 		}
 		
-		public void ultimateCentering(){
-			Motor.A.rotate(-100);
-			double left = UltrasonicSensor.getInstance().readValue()+4;
-			Button.waitForAnyPress(100);
-			Motor.A.rotate(200);
-			double right = UltrasonicSensor.getInstance().readValue()-4;
-			Button.waitForAnyPress(100);
-			if(left<=20 || right<=20){
-				if(left<right){
-					rotateLeft(20, false);
-					travel(-20, false);
-					rotateLeft(70,false);
-					travel(300,false);
-					if(hasBall)
-						travel(-100,false);
-					else
-					Robot.getInstance().travel(-120, false);
-					rotateRight(90, false);
-				}
-				else{
-					rotateRight(20, false);
-					travel(-20, false);
-					rotateRight(70,false);
-					travel(300,false);
-					if(hasBall)
-						travel(-100,false);
-					else
-					Robot.getInstance().travel(-120, false);
-					rotateLeft(90, false);
-				}
-			}
-			Motor.A.rotate(-100);
+		public void ultimateCentering(boolean bool){
+			if(bool)
+				Motor.A.rotate(100);
+			else
+//			double left = UltrasonicSensor.getInstance().readValue()+4;
+//			Button.waitForAnyPress(100);
+//			Motor.A.rotate(200);
+//			double right = UltrasonicSensor.getInstance().readValue()-4;
+//			Button.waitForAnyPress(100);
+//			if(left<=20 || right<=20){
+//				if(left<right){
+//					rotateLeft(20, false);
+//					travel(-20, false);
+//					rotateLeft(70,false);
+//					travel(300,false);
+//					if(hasBall)
+//						travel(-100,false);
+//					else
+//					Robot.getInstance().travel(-120, false);
+//					rotateRight(90, false);
+//				}
+//				else{
+//					rotateRight(20, false);
+//					travel(-20, false);
+//					rotateRight(70,false);
+//					travel(300,false);
+//					if(hasBall)
+//						travel(-100,false);
+//					else
+//					Robot.getInstance().travel(-120, false);
+//					rotateLeft(90, false);
+//				}
+//			}
+				Motor.A.rotate(-100);
 		}
 		
 		public void orientOnWhiteLine(boolean scan) {

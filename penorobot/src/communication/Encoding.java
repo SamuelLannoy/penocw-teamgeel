@@ -149,7 +149,7 @@ public enum Encoding {
 	ULTIMATECENTER{
 		public void execute(double param1, double param2,
 				boolean immediateReturn) {
-			Robot.getInstance().ultimateCentering();
+			Robot.getInstance().ultimateCentering(immediateReturn);
 		}
 	},
 	SETONCENTERTILEAFTERSEESAW{
