@@ -987,7 +987,11 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return getFieldSimulation().checkIfSafe();
+		if(getTeamMate() != null && getTeamMate().getCurrTile() != null && fieldRepresentation.isMerged()) {
+			TilePosition teamMatePos = getTeamMate().getCurrTile().getPosition();
+			return getFieldSimulation().checkIfSafe(teamMatePos.getX(), teamMatePos.getY(), getPlayerNr());
+		} else
+			return getFieldSimulation().checkIfSafe();
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
@@ -1331,7 +1335,12 @@ public class Robot extends RobotModel{
 
 		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles
-		while (!receivedTeamTiles()) { }
+		Explorer.explore(this, new EndingCondition() {
+			@Override
+			public boolean isLastTile(Robot robot) {
+				return receivedTeamTiles();
+			}
+		});
 		setCurrentAction("Merging tiles");
 
 		try {
