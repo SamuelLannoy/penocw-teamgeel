@@ -347,6 +347,7 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
+		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
@@ -376,23 +377,29 @@ public class Robot extends RobotModel{
 	}
 	
 	public int incr = 0;
-	public int turns = 0;
+	public static boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(incr%3 == 0){
+			if(turned){
 				orientOnWhiteLine(false);
 				moveForward(230);
+			}
+			else if(incr%3 == 0){
+				orientOnWhiteLine(false);
+				moveForward(230);
+				incr++;
 			} 
 //			else if(get){
 //				
 //			}
 			else{
 				moveForward(400);
+				incr++;
 			}
-			incr++;
+			
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;
@@ -558,14 +565,14 @@ public class Robot extends RobotModel{
 				boolean interference = false;
 				if (i == 1) { // left
 					dir = dir.left();
-//					interference = fieldSimulation.isRobotLeft();
+					interference = fieldSimulation.isRobotLeft();
 				} else if (i == 2) { // back
 					dir = dir.opposite();
 				} else if (i == 3) { // right
 					dir = dir.right();
-//					interference = fieldSimulation.isRobotRight();
+					interference = fieldSimulation.isRobotRight();
 				} else { // front
-//					interference = fieldSimulation.isRobotInFront();
+					interference = fieldSimulation.isRobotInFront();
 				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
