@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.border.Border;
+
 import com.sun.java.util.jar.pack.Package.Class.Field;
 
 
@@ -28,6 +30,7 @@ import exception.CommunicationException;
 import field.Barcode;
 import field.Direction;
 import field.PanelBorder;
+import field.SolidBorder;
 import field.Tile;
 import field.TilePosition;
 import field.UnsureBorder;
@@ -338,6 +341,41 @@ public class Robot extends RobotModel{
 	}
 	
 	public void travelFromTileToTile(Tile start, Tile finish, Tile prev) {
+		if(incr%3==1){
+			Direction cur = getDirection();
+			Direction left;
+			Direction right;
+			if (cur==Direction.BOTTOM){
+				left = Direction.RIGHT;
+				right = Direction.LEFT;
+			} else if (cur==Direction.LEFT){
+				left = Direction.BOTTOM;
+				right = Direction.TOP;
+			} if (cur==Direction.RIGHT){
+				left = Direction.TOP;
+				right = Direction.BOTTOM;
+			} if (cur==Direction.TOP){
+				left = Direction.LEFT;
+				right = Direction.RIGHT;
+			} 
+			field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
+			field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
+			ultimateCenter(true);
+			if(leftB instanceof SolidBorder){
+				turnLeft(90);
+				moveForward(300);
+				moveBackward(120);
+				turnRight(90);
+			} else if(rightB instanceof SolidBorder){
+				turnRight(90);
+				moveForward(300);
+				moveBackward(120);
+				turnLeft(90);
+			}
+			ultimatecenter(false);
+			
+		}
+		
 		int diffx = finish.getPosition().getX() - start.getPosition().getX();
 		int diffy = finish.getPosition().getY() - start.getPosition().getY();
 		int diffxprev = start.getPosition().getX() - prev.getPosition().getX();
