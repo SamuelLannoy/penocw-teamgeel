@@ -58,6 +58,8 @@ import gui.tools.BarCodeCanvas;
 import gui.tools.DrawCanvas;
 import gui.tools.PlotCanvas;
 import gui.tools.MyTableModel;
+import gui.tools.WorldCanvas;
+
 import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
@@ -77,7 +79,7 @@ public class Main extends JFrame {
 	private FieldSimulation world;
 	private List<Integer> plotList = new ArrayList<Integer>();
 	private DrawCanvas canvas;
-	private DrawCanvas canvas2;
+	private WorldCanvas canvas2;
 	private boolean sensorDispActive;
 	private Object[][] lobbyData = new Object[5][6];
 	private MyTableModel lobbyTable;
@@ -127,6 +129,9 @@ public class Main extends JFrame {
 		}
 	});
 	
+	int counter = 0;
+	int updatecount = 2;
+	
 	private Thread mapthread = new Thread(new Runnable() {
 		public void run() {
 			mapTimer = new Timer(200, new ActionListener() {
@@ -134,14 +139,18 @@ public class Main extends JFrame {
 			    	if (canShowData()) {
 						try {
 							canvas.update(canvas.getGraphics());
-							if (robot.receivedTeamTiles()){
+							if (counter == 0) {
+								canvas2.update(canvas2.getGraphics());
+							}
+							counter = (counter + 1)%updatecount;
+							/*if (robot.receivedTeamTiles()){
 								if(canvas2.getTitle().equals("World view")){
 									canvas2.setRobotPool(new RobotPool(robot.getTeamMate(), ""));
 									canvas2.setTitle("Teammate's view");
 								} else{
 									canvas2.update(canvas2.getGraphics());
 								}
-							}
+							}*/
 							/**
 							 else { //back to world view after map merge
 							 	canvas2.setRobotPool(worldPool);
@@ -285,6 +294,7 @@ public class Main extends JFrame {
 	private JButton btnResume;
 	private JButton btnJoinLobby;
 	private JButton btnLeaveLobby;
+	private JButton btnReady;
 	private JRadioButton rdbtnKuleuven;
 	private JRadioButton rdbtnLocal;
 	private JScrollPane lobbyScroll;
@@ -429,12 +439,16 @@ public class Main extends JFrame {
 		lobbyPanel.add(textFieldPlayerName);
 		textFieldPlayerName.setColumns(10);
 		
+		/**btnReady = new JButton();
+		btnReady.setBounds(129,126,109,30);
+		lobbyPanel.add(btnReady);*/
+		
 		canvas = new DrawCanvas(robotPool,"Player's view");
 		canvas.setBackground(new Color(139, 69, 19));
 		canvas.setBounds(10, 196, 480, 480);
 		contentPane.add(canvas);
 		
-		canvas2 = new DrawCanvas(robotPool,"World view");
+		canvas2 = new WorldCanvas();
 		canvas2.setBackground(new Color(139, 69, 19));
 		canvas2.setBounds(500, 196, 480, 480);
 		contentPane.add(canvas2);
@@ -643,6 +657,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				btnPause.setEnabled(false);
 				btnResume.setEnabled(true);
+				btnTerminate.setEnabled(true);
 				robot.pauseExplore();
 			}
 		});
@@ -652,6 +667,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				btnPause.setEnabled(true);
 				btnResume.setEnabled(false);
+				btnTerminate.setEnabled(false);
 				robot.resumeExplore();
 
 			}
@@ -666,6 +682,8 @@ public class Main extends JFrame {
 		robotPool = new RobotPool(robot, playerId);
 		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
 		canvas.setField(world);
+		canvas2.setWorld(world);
+		canvas2.setRobotPool(robotPool);
 //		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		robot.initialize();
 		if (robot.isSim()) {
