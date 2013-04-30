@@ -92,7 +92,8 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator {
 	public void sendNewTiles(FieldRepresentation fieldRepresentation, TilePosition... tilePositions) {
 		checkConnected();
 		for (TilePosition tilePosition :  tilePositions) {
-			sendTiles(convertToTileMessage(fieldRepresentation, tilePosition));
+			Tile msg = convertToTileMessage(fieldRepresentation, tilePosition);
+			if(msg != null) sendTiles(msg);
 		}
 	}
 	
