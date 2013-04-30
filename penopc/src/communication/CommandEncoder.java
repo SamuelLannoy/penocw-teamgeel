@@ -132,8 +132,8 @@ public class CommandEncoder implements AbstractRobotConnector {
 		Bluetooth.getInstance().send(Encoding.SCANFORWALLS.ordinal(), 0, 0, false);
 	}
 	
-	public void ultimateCenter(){
-		Bluetooth.getInstance().send(Encoding.ULTIMATECENTER.ordinal(), 0.0, 0.0, false);
+	public void ultimateCenter(boolean bool){
+		Bluetooth.getInstance().send(Encoding.ULTIMATECENTER.ordinal(), 0.0, 0.0, bool);
 	}
 	
 	@Override

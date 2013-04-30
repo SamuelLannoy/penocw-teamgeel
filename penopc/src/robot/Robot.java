@@ -209,8 +209,8 @@ public class Robot extends RobotModel{
 		robotConn.orientOnWhiteLine(b);
 	}
 	
-	public void ultimateCenter(){
-		robotConn.ultimateCenter();
+	public void ultimateCenter(boolean bool){
+		robotConn.ultimateCenter(bool);
 	}
 	public void scanSonar(){
 		robotConn.scanSonar();
