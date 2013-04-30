@@ -374,23 +374,29 @@ public class Robot extends RobotModel{
 	}
 	
 	public int incr = 0;
-	public int turns = 0;
+	public boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(incr%3 == 0){
+			if(turned){
 				orientOnWhiteLine(false);
 				moveForward(230);
+			}
+			else if(incr%3 == 0){
+				orientOnWhiteLine(false);
+				moveForward(230);
+				incr++;
 			} 
 //			else if(get){
 //				
 //			}
 			else{
 				moveForward(400);
+				incr++;
 			}
-			incr++;
+			
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;
