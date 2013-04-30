@@ -219,7 +219,9 @@ public class PilotController {
 			// Write data about the light updates
 			ArrayList<Integer> lightUpdates = new ArrayList<Integer>();
 			synchronized(Buffer.getLightUpdates()) {
-				lightUpdates.addAll(Buffer.getLightUpdates());
+				if (!stopWhiteLineStream) {
+					lightUpdates.addAll(Buffer.getLightUpdates());
+				}
 				Buffer.getLightUpdates().clear();
 			}
 			
@@ -327,6 +329,12 @@ public class PilotController {
 	
 	public static void startStream() {
 		stopStream = false;
+	}
+	
+	private static boolean stopWhiteLineStream = false;
+	
+	public static void setStopWhiteLineStream(boolean set) {
+		stopWhiteLineStream = set;
 	}
 	
 	public void stopLightSensorVigilante() {

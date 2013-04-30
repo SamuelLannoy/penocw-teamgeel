@@ -145,6 +145,13 @@ public enum Encoding {
 			Robot.getInstance().turnBarcode();
 		}
 		
+	},
+	SETONCENTERTILEAFTERSEESAW{
+		@Override
+		public void execute(double param1, double param2,
+				boolean immediateReturn) {
+			Robot.getInstance().setOnCenterTileAfterSeesaw(immediateReturn);
+		}
 	};
 	
 	public abstract void execute(double param1, double param2, boolean immediateReturn);

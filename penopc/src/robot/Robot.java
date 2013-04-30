@@ -11,6 +11,7 @@ import java.util.Map;
 
 import communication.CommandEncoder;
 import communication.SeesawStatus;
+import communication.Status;
 
 import robot.brain.EndingCondition;
 import robot.brain.Explorer;
@@ -218,8 +219,17 @@ public class Robot extends RobotModel{
 	public void checkScan() {
 		robotConn.checkScan();
 	}
+
+
 	
 	public void explore() {
+		/*pauseLightSensor();
+		setCurrentAction("centering after seesaw");
+		CommandEncoder.getInstance().setOnCenterTileAfterSeesaw(getLeftFlag());
+		waitTillStandby(1000);
+		while(Status.isCentering());
+		setCurrentAction("done!");
+		resumeLightSensor();*/
 		Thread r = new Thread(new Runnable() {
 			
 			@Override
@@ -557,10 +567,10 @@ public class Robot extends RobotModel{
 				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
-					if (distance < 25 && !interference){
+					if (distance < 21 && !interference){
 						getField().registerBorder(getCurrTile().getPosition(),
 								dir, PanelBorder.class);
-					} else if (distance >= 25 && distance < 45 && !interference){
+					} else if (distance >= 21 && distance < 45 && !interference){
 						getField().registerBorder(getCurrTile().getPosition(),
 								dir, UnsureBorder.class);
 					} else {
@@ -726,6 +736,21 @@ public class Robot extends RobotModel{
 		robotConn.resumeLightSensor();
 	}
 	
+	private boolean getLeftFlag() {
+		switch (getDirection()) {
+			case TOP:
+				return getPosition().getPosX() < 0;
+			case BOTTOM:
+				return getPosition().getPosX() > 0;
+			case LEFT:
+				return getPosition().getPosY() < 0;
+			case RIGHT:
+				return getPosition().getPosY() > 0;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+	
 	public void moveAcrossSeesawPhysical() {
 		if (!isSim()) {
 			pauseLightSensor();
@@ -733,15 +758,20 @@ public class Robot extends RobotModel{
 			waitTillStandby(2500);
 			moveForward(400);
 			waitTillStandby(400);
-			this.orientOnWhiteLine(false);
+			//this.orientOnWhiteLine(false);
 			
 			// flush barcode values before moving
 			hasCorrectBarcode();
 			hasWrongBarcode();
 			
+			//waitTillStandby(400);
+			//moveForward(190);
 			waitTillStandby(400);
-			moveForward(190);
+			setCurrentAction("centering on tile after seesaw");
+			CommandEncoder.getInstance().setOnCenterTileAfterSeesaw(getLeftFlag());
 			waitTillStandby(400);
+			while(Status.isCentering());
+			
 			resumeLightSensor();
 		} else {
 			moveForward(1200);
@@ -893,8 +923,8 @@ public class Robot extends RobotModel{
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		//return true;
-		return getFieldSimulation().checkIfSafe();
+		return true;
+		//return getFieldSimulation().checkIfSafe();
 	}
 	
 	/**

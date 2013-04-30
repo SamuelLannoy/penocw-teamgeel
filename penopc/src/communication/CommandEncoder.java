@@ -197,6 +197,10 @@ public class CommandEncoder implements AbstractRobotConnector {
 		Bluetooth.getInstance().send(Encoding.PAUSELIGHTSENSOR.ordinal(),0,0,false);
 	}
 	
+	public void setOnCenterTileAfterSeesaw(boolean leftFlag) {
+		Bluetooth.getInstance().send(Encoding.SETONCENTERTILEAFTERSEESAW.ordinal(),0,0,leftFlag);
+	}
+	
 	public void turnOnBarcode(){
 		Bluetooth.getInstance().send(Encoding.TURNBARCODE.ordinal(), 0, 0, false);
 	}
