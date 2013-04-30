@@ -252,7 +252,7 @@ public class Robot {
 			PILOT.stop();
 			double arc2 = PILOT.getAngleIncrement();
 			PILOT.reset();
-			PILOT.rotate(-((arc2+8.5)/ 2));
+			PILOT.rotate(-((arc2+10)/ 2));
 			
 			Robot.getInstance().backward();
 			buffer = 0;
@@ -334,6 +334,83 @@ public class Robot {
 		
 		public void arc(double radius, double angle, boolean immediateReturn){
 			PILOT.arc(radius, angle, immediateReturn);
+		}
+		/**
+		 * result[0] = ahead
+		 * result[1] = left
+		 * result[2]= behind
+		 * result[3]= right
+		 */
+		public void setOnCenterTileAfterSeesaw(boolean leftFlag) {
+			PilotController.setStopWhiteLineStream(true);
+			PilotController.stopStream();
+			LightSensorVigilante.pause();
+			PILOT.reset();
+			Button.waitForAnyPress(100);
+			Motor.A.rotate(-100);
+			double left = UltrasonicSensor.getInstance().readValue();
+			Button.waitForAnyPress(100);
+			/*Motor.A.rotate(100);
+			double front = UltrasonicSensor.getInstance().readValue();
+			Button.waitForAnyPress(100);*/
+			Motor.A.rotate(200);
+			double right = UltrasonicSensor.getInstance().readValue();
+			Button.waitForAnyPress(100);
+			Buffer.addDebug("values l: " + left + " r: " + right);
+
+			Robot.getInstance().setCentering(true);
+			if (left >= right){
+				Buffer.addDebug("right wall");
+				Robot.getInstance().rotateRight(30, false);
+				Robot.getInstance().travel(-30, false);
+				Robot.getInstance().rotateRight(60, false);
+				Robot.getInstance().travel(400, false);
+				Robot.getInstance().travel(-130, false);
+				Robot.getInstance().rotateLeft(90, false);
+			} else if (right > left){
+				Buffer.addDebug("left wall");
+				Robot.getInstance().rotateLeft(30, false);
+				Robot.getInstance().travel(-30, false);
+				Robot.getInstance().rotateLeft(60, false);
+				Robot.getInstance().travel(400, false);
+				Robot.getInstance().travel(-130, false);
+				Robot.getInstance().rotateRight(90, false);
+			} else {
+				/*Buffer.addDebug("no walls");
+				if (front < 20) {
+					Buffer.addDebug("front wall");
+					Robot.getInstance().travel(500, false);
+					Robot.getInstance().travel(-130, false);
+					Robot.getInstance().rotateLeft(90, false);
+				} else {
+					Buffer.addDebug("no front wall");
+					if (leftFlag)
+						Robot.getInstance().rotateLeft(90, false);
+					else
+						Robot.getInstance().rotateRight(90, false);
+				}
+				Robot.getInstance().orientOnWhiteLine(false);
+				PilotController.stopStream();
+				Robot.getInstance().travel(-200, false);
+				if (front < 20) {
+					Robot.getInstance().rotateRight(90, false);
+				} else {
+					if (leftFlag) 
+						Robot.getInstance().rotateRight(90, false);
+					else
+						Robot.getInstance().rotateLeft(90, false);
+				}*/
+			}
+			Motor.A.rotate(-100);
+			isCentering = false;
+			Robot.getInstance().setCentering(false);
+			Robot.getInstance().orientOnWhiteLine(false);
+			PilotController.stopStream();
+			Robot.getInstance().travel(200, false);
+			PILOT.reset();
+			PilotController.startStream();
+			PilotController.setStopWhiteLineStream(false);
+			LightSensorVigilante.resume();
 		}
 		
 		public void setOnCenterTile(){

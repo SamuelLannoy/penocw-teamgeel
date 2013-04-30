@@ -14,6 +14,10 @@ public class LightSensorVigilante extends Thread {
 	private static boolean onlyLines = false;
 	private static boolean turnBarcode = false;
 	
+	public static boolean getPaused() {
+		return pause;
+	}
+	
 	/**
 	 * Pause the lightsensor
 	 * The lightsensor is set inactive when the current scan has finished.
