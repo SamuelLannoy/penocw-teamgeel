@@ -201,10 +201,12 @@ public class Robot extends RobotModel{
 
 	
 	public void orientOnWhiteLine(boolean b) {
-		System.out.println("orientonwhitelinecommand");
 		robotConn.orientOnWhiteLine(b);
 	}
 	
+	public void ultimateCenter(){
+		robotConn.ultimateCenter();
+	}
 	public void scanSonar(){
 		robotConn.scanSonar();
 	}
@@ -386,7 +388,7 @@ public class Robot extends RobotModel{
 			if(incr%3 == 0){
 				orientOnWhiteLine(false);
 				moveForward(230);
-				
+				ultimateCenter();
 				incr++;
 			} 
 //			else if(get){

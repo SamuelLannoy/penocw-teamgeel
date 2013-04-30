@@ -146,6 +146,12 @@ public enum Encoding {
 		}
 		
 	},
+	ULTIMATECENTER{
+		public void execute(double param1, double param2,
+				boolean immediateReturn) {
+			Robot.getInstance().ultimateCentering();
+		}
+	},
 	SETONCENTERTILEAFTERSEESAW{
 		@Override
 		public void execute(double param1, double param2,
