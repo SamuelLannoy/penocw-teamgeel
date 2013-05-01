@@ -1006,28 +1006,75 @@ public class Robot extends RobotModel{
 	
 	public void randomWalkUntilChoosingPointPassed() {
 		System.out.println("RANDOM WALK TRALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
+		
+		int randomWait1 = (int)((Math.random() * 10) + 5) * 1000;
+		try {
+			Thread.sleep(randomWait1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		boolean choosingPointPassed = false;
+		TilePosition lastPos = null;
 		
 		while(!choosingPointPassed) {
+			System.out.println("NIEUWE WHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIILE");
 			List<Direction> possibleDirs = new ArrayList<Direction>();
-			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder) &&
-				!fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
-				possibleDirs.add(getDirection().opposite());
-			} else if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder) &&
-				!fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
-				possibleDirs.add(getDirection().left());
-			} else if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder) &&
-				!fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
-				possibleDirs.add(getDirection().right());
+			
+			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection()) instanceof PanelBorder)) {
+				if(fieldRepresentation.isExplored(getDirection().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+					if(fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
+						if(!fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
+							possibleDirs.add(getDirection());
+					} else possibleDirs.add(getDirection());
+				}
+			}
+			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder)) {
+				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+					if(fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
+						if(!fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
+							possibleDirs.add(getDirection().opposite());
+					} else possibleDirs.add(getDirection().opposite());
+				}
+			}
+			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder)) {
+				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+					if(fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
+						if(!fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
+							possibleDirs.add(getDirection().left());
+					} else possibleDirs.add(getDirection().left());
+				}
+			} 
+			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder)) {
+				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+					if(fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
+						if(!fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
+							possibleDirs.add(getDirection().right());
+					} else possibleDirs.add(getDirection().right());
+				}
 			}
 			
-			if(possibleDirs.size() > 1) {
+			if(possibleDirs.size() > 2) {
 				choosingPointPassed = true;
 			}
 			
-			Direction chosenDir = possibleDirs.get((int)(Math.random() * possibleDirs.size() - 1));
-			goToTile(chosenDir.getPositionInDirection(getCurrTile().getPosition())); //TODO
+			Direction chosenDir = possibleDirs.get((int)(Math.random() * (possibleDirs.size() - 1)));
+			lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
+			goToTile(lastPos);
 		}
+		
+		int randomWait2 = (int)((Math.random() * 10) + 5) * 1000;
+		try {
+			Thread.sleep(randomWait2);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("END THIS WALK IN THE PARK");
 	}
 
 	/**
