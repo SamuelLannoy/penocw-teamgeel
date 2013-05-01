@@ -513,7 +513,7 @@ public class FieldSimulation extends Field {
 		boolean leftSafe = true;
 		
 		Tile tile = getCurrentTile();
-		Direction dir = Direction.fromAngle(localSimulator.getTRotation()+90);
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation()+offset);
 		
 		for (RobotModel model : robotPool.getOtherRobots()) {
 			TilePosition modelTilePos = model.getCurrTile().getPosition();
