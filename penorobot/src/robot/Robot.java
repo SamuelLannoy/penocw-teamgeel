@@ -210,7 +210,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white");
-			while (buffer<5) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
@@ -227,7 +227,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<5) {
+			while (buffer<20) {
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
 				Button.waitForAnyPress(5);
@@ -239,7 +239,7 @@ public class Robot {
 			}
 
 			Robot.getInstance().stop();
-			Robot.getInstance().travel(-30, false);
+			Robot.getInstance().travel(-35, false);
 			buffer = 0;
 			PilotController.stopStream();
 			
@@ -247,7 +247,7 @@ public class Robot {
 			PILOT.rotateRight();
 			buffer = 0;
 			//Buffer.addDebug("Begin white 2");
-			while (buffer<5) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
@@ -265,7 +265,7 @@ public class Robot {
 			PILOT.rotateLeft();
 			
 			//Buffer.addDebug("Begin brown 2");
-			while (buffer<5) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
@@ -278,7 +278,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 3");
-			while (buffer<5) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
@@ -298,7 +298,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 4");
-			while (buffer<5) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
