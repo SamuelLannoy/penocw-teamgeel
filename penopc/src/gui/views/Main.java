@@ -225,8 +225,8 @@ public class Main extends JFrame {
 			    			if (robotPool.isMainRobot(playerId)) {
 				    			lobbyData[pl][1] = robotPool.getMainRobot().getTeamMateID() == null?
 				    					"" : robotPool.getMainRobot().getTeamMateID();
-				    			lobbyData[pl][2] = robotPool.getMainRobot().getPlayerNr();
-				    			lobbyData[pl][3] = robotPool.getMainRobot().getObjectNr();
+				    			lobbyData[pl][2] = robotPool.getMainRobot().getObjectNr();
+				    			lobbyData[pl][3] = robotPool.getMainRobot().getPlayerNr();
 			    			} else {
 				    			lobbyData[pl][1] = "";
 				    			lobbyData[pl][2] = "";
@@ -237,7 +237,7 @@ public class Main extends JFrame {
 			    			pl++;
 			    		}
 						if (!createdLobbyTable && pl > 0) {
-							String[] columns = {"player","team","objectNR","playerNR","ready","object found"};
+							String[] columns = {"player","team","objectNr","playerNr","ready","object found"};
 							lobbyTable = new MyTableModel(columns,lobbyData);
 							tableLobby = new JTable(lobbyTable);
 							tableLobby.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));

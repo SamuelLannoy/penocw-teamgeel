@@ -49,7 +49,8 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void gameRolled(int playerNumber, int objectNr) {
-		robot.setObjectNr(objectNr);
+		//robot.setObjectNr(objectNr);
+		robot.setObjectNr(3);
 		//playerNumber += 1;
 		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
 		robot.setPlayerNr(playerNumber);

@@ -154,7 +154,7 @@ public class Barcode {
 	public int getObjectNr() {
 		if (!isObject())
 			throw new IllegalArgumentException();
-		return code[5] * 2 + code[6];
+		return code[4] * 2 + code[5];
 	}
 	
 	public boolean isCheckPoint() {

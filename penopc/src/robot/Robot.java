@@ -422,38 +422,57 @@ public class Robot extends RobotModel{
 				ultimateCenter(true);
 				if(leftB instanceof SolidBorder){
 					turnLeft(20);
+					waitTillStandby(750);
 					moveBackward(20);
+					waitTillStandby(750);
 					turnLeft(70);
+					waitTillStandby(750);
 					moveForward(300);
+					waitTillStandby(750);
 //					moveBackward(85);
-					if(!hasBall())
-						moveBackward(120);
-					else
+					if(!hasBall()){
+						moveBackward(135);
+						waitTillStandby(750);
+					}
+					else{
 						moveBackward(85);
+						waitTillStandby(750);
+					}
 					turnRight(90);
 				} else if(rightB instanceof SolidBorder){
 					turnRight(20);
+					waitTillStandby(750);
 					moveBackward(20);
+					waitTillStandby(750);
 					turnRight(70);
+					waitTillStandby(750);
 					moveForward(300);
+					waitTillStandby(750);
 //					moveBackward(85);
-					if(!hasBall())
-						moveBackward(120); //TODO check waarde!
-					else
+					if(!hasBall()){
+						moveBackward(135); //TODO check waarde!
+						waitTillStandby(750);
+					}
+					else{
 						moveBackward(85);
+						waitTillStandby(750);
+					}
 					turnLeft(90);
+					waitTillStandby(750);
 				}
 				ultimateCenter(false);
-				waitTillStandby(3000);
+				waitTillStandby(2500);
 			}
 			
 			orientOnWhiteLine(false);
 			moveForward(200);
+			waitTillStandby(750);
 			incr++;
 			
 		}
 			else{
 				moveForward(400);
+				waitTillStandby(750);
 				incr++;
 			}
 			
@@ -937,8 +956,9 @@ public class Robot extends RobotModel{
 			List<Tile> tileList = Pathfinder.findShortestPath(this, getField().getTileAt(tilePos), ignoredSeesaws, getRobotSpottedTiles());
 			// update path list for gui
 			setAStartTileList(tileList);
-			
+
 			if (tileList.size() == 1) { // this means we arrived
+				System.out.println("REACHED DESTINATION");
 				return true;
 			}
 			
@@ -967,8 +987,12 @@ public class Robot extends RobotModel{
 				} else {
 					// travel to second tile, because first one is always our own tile
 					//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
+					System.out.println("start travel");
 					travelToNextTile(tileList.get(1));
 					waitTillStandby(750);
+					waitTillStandby(500);
+					waitTillStandby(250);
+					System.out.println("end travel");
 				}
 
 				if (getField().isExplored(getCurrTile().getPosition())){
@@ -1088,8 +1112,10 @@ public class Robot extends RobotModel{
 		boolean correct = hasCorrectBarcode();
 		boolean wrong = hasWrongBarcode();
 
+		System.out.println("correct: " + correct + " wrong: " + wrong + " is scanning: " + isScanning());
 		// barcode has been detected
-		if (correct || wrong || isScanning()) {
+		//if (correct || wrong || isScanning()) {
+		if (getCurrTile().hasBarcode()) {
 			getField().registerBarcode(getCurrTile().getPosition(), getDirection());
 			
 			// is not scanning anymore
@@ -1109,59 +1135,56 @@ public class Robot extends RobotModel{
 				correct = hasCorrectBarcode();
 				wrong = hasWrongBarcode();
 			}
-			
-			if (correct) {// correcte barcode
-				//DebugBuffer.addInfo("correct barcode");
-				
-				// get barcode of current tile
-				Barcode code = getCurrTile().getBarcode();
-				
-				//DebugBuffer.addInfo("test: " + code.getType());
-				
-				// do action based on the barcode type
-				switch (code.getType()) {
-					case OBJECT:
-						System.out.println("Teamnr: "+getTeamNr());
-						System.out.println("Gevonden: "+hasFoundOwnBarcode());
-						
-						// keep current tile of robot as reference
-						Tile tile = getCurrTile();
-						getField().registerBall(tile.getPosition(), getDirection());
-						
-						if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
-							pickUpObjectAction();
-						} else {
-							wrongObjectAction();
-						}
-						
-						System.out.println("tile: " + getCurrTile().getPosition());
-						break;
-					case CHECKPOINT:
-						TilePosition afterBarcodePos = getDirection().getPositionInDirection(getCurrTile().getPosition());
-						toExplore.add(afterBarcodePos);
-						break;
-					case ILLEGAL:
-						break;
-					case OTHERPLAYERBARCODE:
-						break;
-					case PICKUP:
-						break;
-					case SEESAW:
-						// keep current tile as reference
-						Tile ctile = getCurrTile();
-						getField().registerSeesaw(ctile.getPosition(), getDirection());
-						
-						//seesawAction();
-						
-						TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
-						toExplore.add(afterWipPos);
-						break;
-					default:
-						break;
-				}
-				
-			} else if (wrong) {
-				throw new IllegalStateException("robot heeft foute barcode gelezen");
+
+			//DebugBuffer.addInfo("correct barcode");
+
+			// get barcode of current tile
+			Barcode code = getCurrTile().getBarcode();
+
+			//DebugBuffer.addInfo("test: " + code.getType());
+
+			// do action based on the barcode type
+			switch (code.getType()) {
+				case OBJECT:
+					System.out.println("Teamnr: "+getTeamNr());
+					System.out.println("Gevonden: "+hasFoundOwnBarcode());
+	
+					// keep current tile of robot as reference
+					Tile tile = getCurrTile();
+					getField().registerBall(tile.getPosition(), getDirection());
+	
+					//if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
+					System.out.println("bc: " + getCurrTile().getBarcode().getObjectNr() + " mine " + getObjectNr());
+					if (getCurrTile().getBarcode().getObjectNr() == getObjectNr() && !hasFoundOwnBarcode()) {
+						pickUpObjectAction();
+					} else {
+						wrongObjectAction();
+					}
+	
+					System.out.println("tile: " + getCurrTile().getPosition());
+					break;
+				case CHECKPOINT:
+					TilePosition afterBarcodePos = getDirection().getPositionInDirection(getCurrTile().getPosition());
+					toExplore.add(afterBarcodePos);
+					break;
+				case ILLEGAL:
+					break;
+				case OTHERPLAYERBARCODE:
+					break;
+				case PICKUP:
+					break;
+				case SEESAW:
+					// keep current tile as reference
+					Tile ctile = getCurrTile();
+					getField().registerSeesaw(ctile.getPosition(), getDirection());
+	
+					//seesawAction();
+	
+					TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
+					toExplore.add(afterWipPos);
+					break;
+				default:
+					break;
 			}
 		} else {
 			TilePosition current = getCurrTile().getPosition();
@@ -1196,9 +1219,11 @@ public class Robot extends RobotModel{
 					while (fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
 						checkScan();
 						waitTillStandby(900);
-						if (counter == 2 && fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
-							getField().registerNewTile(dir, current);
-							break;
+						if (counter >= 2 && fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
+							moveForward(55);
+							waitTillStandby(1000);
+							checkScan();
+							waitTillStandby(900);
 						}
 						counter++;
 					}
@@ -1241,7 +1266,7 @@ public class Robot extends RobotModel{
 			e.printStackTrace();
 		}
 		// is seesaw open?
-		if(SensorBuffer.getInfrared() < 4 ){
+		if(SensorBuffer.getInfrared() < 10 ){
 			setCurrentAction("Crossing seesaw at " + ctile.getPosition());
 			// yes, this means we have to cross it
 			// register open seesaw position
@@ -1288,6 +1313,7 @@ public class Robot extends RobotModel{
 		// execute pickup
 
 		pauseLightSensor();
+		waitTillStandby(1000);
 		/*robot.turnLeft(90);
 				waitTillRobotStops(robot, 250);
 				robot.startMovingForward();
@@ -1305,7 +1331,7 @@ public class Robot extends RobotModel{
 				robot.turnRight(90);
 				waitTillRobotStops(robot, 250);*/
 		//DebugBuffer.addInfo("pick obj up");
-		startMovingForward();
+		/*startMovingForward();
 		while(!SensorBuffer.getTouched()){
 			System.out.print("");
 		};
@@ -1314,17 +1340,26 @@ public class Robot extends RobotModel{
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		moveForward(800);
+		waitTillStandby(1000);
+		
 		//DebugBuffer.addInfo("picked up");
 		stopMoving();
 		moveBackward(100);
+		waitTillStandby(500);
 		turnLeft(180);
+		pauseLightSensor();
+		waitTillStandby(1500);
 		moveForward(800);
+		waitTillStandby(500);
 		resumeLightSensor();
 		setHasBall(true);
 		// execute pickup
 
-		waitTillStandby(500);
+		waitTillStandby(1000);
+		resumeLightSensor();
+		waitTillStandby(4000);
 
 		DebugBuffer.addInfo("OUT: my team is " + getTeamNr());
 		// send object found + join team via rabbitmq
@@ -1334,6 +1369,7 @@ public class Robot extends RobotModel{
 		setPosition(new robot.Position(0, 0, dirForw.opposite().toAngle()),
 				getField().getTileAt(
 						dirForw.opposite().getPositionInDirection(ctile.getPosition())));
+		incr = 0;
 	}
 	
 	public void wrongObjectAction() {
