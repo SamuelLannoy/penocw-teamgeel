@@ -54,7 +54,7 @@ public class Pathfinder {
 			for (Direction dir : toAdd.keySet()) {
 				Tile tile = toAdd.get(dir);
 				//ignore seesaw
-				if (robot.getField().getTileAt(current.getPos()).hasBarcocde()) {
+				if (robot.getField().getTileAt(current.getPos()).hasBarcode()) {
 					int barcode = robot.getField().getTileAt(current.getPos()).getBarcode().getDecimal();
 					if (ignoredSeesaws.contains(barcode) && robot.getField().hasSeesawBorder(tile)) {
 						continue;

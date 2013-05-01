@@ -42,7 +42,7 @@ public class Tile {
 		this.barcode = barcode;
 	}
 	
-	public boolean hasBarcocde() {
+	public boolean hasBarcode() {
 		return getBarcode() != null;
 	}
 	

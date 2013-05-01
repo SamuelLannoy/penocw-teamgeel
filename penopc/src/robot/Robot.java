@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.border.Border;
 
 import communication.CommandEncoder;
 import communication.SeesawStatus;
@@ -18,6 +19,7 @@ import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
+import simulator.lightsensor.LightSensor;
 import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
 import team.communication.ILobbyViewer;
@@ -26,6 +28,7 @@ import exception.CommunicationException;
 import field.Barcode;
 import field.Direction;
 import field.PanelBorder;
+import field.SolidBorder;
 import field.Tile;
 import field.TilePosition;
 import field.UnsureBorder;
@@ -180,7 +183,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnLeft(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
+		if (!isSim() && getCurrTile().hasBarcode() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnLeft(angle);
@@ -188,7 +191,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void turnRight(double angle) {
-		if (!isSim() && getCurrTile().hasBarcocde() && angle >= 90) {
+		if (!isSim() && getCurrTile().hasBarcode() && angle >= 90) {
 			CommandEncoder.getInstance().turnOnBarcode();
 		} else {
 			robotConn.turnRight(angle);
@@ -341,6 +344,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void travelFromTileToTile(Tile start, Tile finish, Tile prev) {
+		
 		int diffx = finish.getPosition().getX() - start.getPosition().getX();
 		int diffy = finish.getPosition().getY() - start.getPosition().getY();
 		int diffxprev = start.getPosition().getX() - prev.getPosition().getX();
@@ -354,6 +358,7 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
+		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
@@ -382,24 +387,78 @@ public class Robot extends RobotModel{
 		//DebugBuffer.addInfo("traveling from "+ start.getPosition() + " to " + finish.getPosition());
 	}
 	
-	public int incr = 0;
-	public int turns = 0;
+	public void ultimateCenter(boolean b){
+		CommandEncoder.getInstance().ultimateCenter(b);
+	}
+	
+	private int incr = 0;
+	public static boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
 //			orientOnWhiteLine(false);
 //			moveForward(230);
-			if(incr%3 == 0){
-				orientOnWhiteLine(false);
-				moveForward(230);
-			} 
-//			else if(get){
-//				
-//			}
+		System.out.println("incr "+incr);
+		if(incr%3==0){
+			if(!isSim()){
+				Direction cur = getDirection();
+				Direction left = null;
+				Direction right = null;
+				if (cur==Direction.BOTTOM){
+					left = Direction.RIGHT;
+					right = Direction.LEFT;
+				} else if (cur==Direction.LEFT){
+					left = Direction.BOTTOM;
+					right = Direction.TOP;
+				} else if (cur==Direction.RIGHT){
+					left = Direction.TOP;
+					right = Direction.BOTTOM;
+				} else if (cur==Direction.TOP){
+					left = Direction.LEFT;
+					right = Direction.RIGHT;
+				} 
+				field.Border leftB = getField().getBorderInDirection(getCurrTile(), left);
+				field.Border rightB  = getField().getBorderInDirection(getCurrTile(), right);
+				System.out.println("BorderL "+leftB);
+				System.out.println("BorderR "+rightB);
+				ultimateCenter(true);
+				if(leftB instanceof SolidBorder){
+					turnLeft(20);
+					moveBackward(20);
+					turnLeft(70);
+					moveForward(300);
+//					moveBackward(85);
+					if(!hasBall())
+						moveBackward(120);
+					else
+						moveBackward(85);
+					turnRight(90);
+				} else if(rightB instanceof SolidBorder){
+					turnRight(20);
+					moveBackward(20);
+					turnRight(70);
+					moveForward(300);
+//					moveBackward(85);
+					if(!hasBall())
+						moveBackward(120); //TODO check waarde!
+					else
+						moveBackward(85);
+					turnLeft(90);
+				}
+				ultimateCenter(false);
+				waitTillStandby(2500);
+			}
+			
+			orientOnWhiteLine(false);
+			moveForward(200);
+			incr++;
+			
+		}
 			else{
 				moveForward(400);
+				incr++;
 			}
-			incr++;
+			
 		/*} else {
 			moveForward(430);
 			counter = (counter + 1) % 2;
@@ -565,14 +624,14 @@ public class Robot extends RobotModel{
 				boolean interference = false;
 				if (i == 1) { // left
 					dir = dir.left();
-//					interference = fieldSimulation.isRobotLeft();
+					interference = fieldSimulation.isRobotLeft();
 				} else if (i == 2) { // back
 					dir = dir.opposite();
 				} else if (i == 3) { // right
 					dir = dir.right();
-//					interference = fieldSimulation.isRobotRight();
+					interference = fieldSimulation.isRobotRight();
 				} else { // front
-//					interference = fieldSimulation.isRobotInFront();
+					interference = fieldSimulation.isRobotInFront();
 				}
 				int distance = SensorBuffer.getDistances().get(distances.size() - 4 + i);
 				if (distance != -1) {
@@ -738,6 +797,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void pauseLightSensor() {
+		System.out.println("pause lightsensor");
 		robotConn.pauseLightSensor();
 	}
 	
@@ -766,7 +826,7 @@ public class Robot extends RobotModel{
 			moveForward(800);
 			waitTillStandby(2500);
 			moveForward(400);
-			waitTillStandby(400);
+			waitTillStandby(380);
 			//this.orientOnWhiteLine(false);
 			
 			// flush barcode values before moving
@@ -778,10 +838,14 @@ public class Robot extends RobotModel{
 			waitTillStandby(400);
 			setCurrentAction("centering on tile after seesaw");
 			CommandEncoder.getInstance().setOnCenterTileAfterSeesaw(getLeftFlag());
-			waitTillStandby(400);
-			while(Status.isCentering());
-			
+			waitTillStandby(4000);
+			while(Status.isCentering()){
+				System.out.println("is centering");
+			}
+			System.out.println("is no longer centering");
 			resumeLightSensor();
+			waitTillStandby(4000);
+			System.out.println("lightsensor resumed");
 		} else {
 			moveForward(1200);
 			waitTillStandby(400);
@@ -890,7 +954,7 @@ public class Robot extends RobotModel{
 
 				if (getField().pathRunsThroughSeesaw(getAStarTileList()) &&
 						getField().isExplored(getCurrTile().getPosition()) &&
-						(getCurrTile().hasBarcocde() &&
+						(getCurrTile().hasBarcode() &&
 								getCurrTile().getBarcode().isSeesaw())) {
 					// travel across seesaw if necessary
 					// boolean for A*
@@ -908,7 +972,7 @@ public class Robot extends RobotModel{
 
 				if (getField().isExplored(getCurrTile().getPosition())){
 					// is the tile I moved on a seesaw barcode tile?
-					if (getCurrTile().hasBarcocde() && getCurrTile().getBarcode().isSeesaw()) {
+					if (getCurrTile().hasBarcode() && getCurrTile().getBarcode().isSeesaw()) {
 						// boolean for A*
 						boolean ignore = seesawAction();
 						// don't cross seesaw in A* if we couldn't cross it
@@ -926,16 +990,46 @@ public class Robot extends RobotModel{
 		} catch (IllegalArgumentException e) {
 			// no we can't
 			e.printStackTrace();
+			randomWalkUntilChoosingPointPassed();
 		}
 		return false;
 	}
 	
 	// Used for robot detection
 	private boolean checkIfSafe() {
-		return true;
-		//return getFieldSimulation().checkIfSafe();
+		if(getTeamMate() != null && getTeamMate().getCurrTile() != null && fieldRepresentation.isMerged()) {
+			TilePosition teamMatePos = getTeamMate().getCurrTile().getPosition();
+			return getFieldSimulation().checkIfSafe(teamMatePos.getX(), teamMatePos.getY(), getPlayerNr());
+		} else
+			return getFieldSimulation().checkIfSafe();
 	}
 	
+	public void randomWalkUntilChoosingPointPassed() {
+		System.out.println("RANDOM WALK TRALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
+		boolean choosingPointPassed = false;
+		
+		while(!choosingPointPassed) {
+			List<Direction> possibleDirs = new ArrayList<Direction>();
+			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder) &&
+				!fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().opposite());
+			} else if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder) &&
+				!fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().left());
+			} else if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder) &&
+				!fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject()) {
+				possibleDirs.add(getDirection().right());
+			}
+			
+			if(possibleDirs.size() > 1) {
+				choosingPointPassed = true;
+			}
+			
+			Direction chosenDir = possibleDirs.get((int)(Math.random() * possibleDirs.size() - 1));
+			goToTile(chosenDir.getPositionInDirection(getCurrTile().getPosition())); //TODO
+		}
+	}
+
 	/**
 	 * 
 	 * @return returns tilepositions that need to be explored
@@ -1252,7 +1346,12 @@ public class Robot extends RobotModel{
 
 		setCurrentAction("Waiting for teammate tiles");
 		// wait till teammate has sent tiles
-		while (!receivedTeamTiles()) { }
+		Explorer.explore(this, new EndingCondition() {
+			@Override
+			public boolean isLastTile(Robot robot) {
+				return receivedTeamTiles();
+			}
+		});
 		setCurrentAction("Merging tiles");
 
 		try {

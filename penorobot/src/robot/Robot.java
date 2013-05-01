@@ -141,6 +141,46 @@ public class Robot {
 			return isCentering;
 		}
 		
+		public void ultimateCentering(boolean bool){
+			if(bool){
+				Motor.A.rotate(100);
+				PilotController.stopStream();
+			}
+			else{
+//			double left = UltrasonicSensor.getInstance().readValue()+4;
+//			Button.waitForAnyPress(100);
+//			Motor.A.rotate(200);
+//			double right = UltrasonicSensor.getInstance().readValue()-4;
+//			Button.waitForAnyPress(100);
+//			if(left<=20 || right<=20){
+//				if(left<right){
+//					rotateLeft(20, false);
+//					travel(-20, false);
+//					rotateLeft(70,false);
+//					travel(300,false);
+//					if(hasBall)
+//						travel(-100,false);
+//					else
+//					Robot.getInstance().travel(-120, false);
+//					rotateRight(90, false);
+//				}
+//				else{
+//					rotateRight(20, false);
+//					travel(-20, false);
+//					rotateRight(70,false);
+//					travel(300,false);
+//					if(hasBall)
+//						travel(-100,false);
+//					else
+//					Robot.getInstance().travel(-120, false);
+//					rotateLeft(90, false);
+//				}
+//			}
+				Motor.A.rotate(-100);
+				PilotController.startStream();
+			}
+		}
+		
 		public void orientOnWhiteLine(boolean scan) {
 			LightSensorVigilante.pause();
 			setNoLines(true);
@@ -309,16 +349,16 @@ public class Robot {
 				double min = Math.min(v1, v2);
 				distances[i] = max * .7 + min * .3;
 				if(i!=3){
-					if(i<2)
-					Motor.A.rotate(-100);
-//					rotateLeft(90, false);
+//					if(i<2)
+//					Motor.A.rotate(-100);
+					rotateLeft(90, false);
 				}
-				if(i==2)
-					Motor.A.rotate(300);
-				else if(i==3)
-					Motor.A.rotate(-100);
+//				if(i==2)
+//					Motor.A.rotate(300);
+//				else if(i==3)
+//					Motor.A.rotate(-100);
 			}
-//			rotateLeft(90, false);
+			rotateLeft(90, false);
 			for (int i = 0; i < 4; i++) {
 				Buffer.addDistance((int)distances[i]);
 			}
@@ -343,29 +383,37 @@ public class Robot {
 		 */
 		public void setOnCenterTileAfterSeesaw(boolean leftFlag) {
 			PilotController.setStopWhiteLineStream(true);
+			Buffer.addDebug("post stopwhitelinestream");
 			PilotController.stopStream();
+			Buffer.addDebug("post stopstream");
 			LightSensorVigilante.pause();
+			Buffer.addDebug("post vigilantepauze");
 			PILOT.reset();
+			Buffer.addDebug("post reset");
 			Button.waitForAnyPress(100);
 			Motor.A.rotate(-100);
-			double left = UltrasonicSensor.getInstance().readValue();
+			double left = UltrasonicSensor.getInstance().readValue()+4;
 			Button.waitForAnyPress(100);
 			/*Motor.A.rotate(100);
 			double front = UltrasonicSensor.getInstance().readValue();
 			Button.waitForAnyPress(100);*/
 			Motor.A.rotate(200);
-			double right = UltrasonicSensor.getInstance().readValue();
+			double right = UltrasonicSensor.getInstance().readValue()-4;
 			Button.waitForAnyPress(100);
 			Buffer.addDebug("values l: " + left + " r: " + right);
 
 			Robot.getInstance().setCentering(true);
+			Buffer.addDebug("centering set to true");
 			if (left >= right){
 				Buffer.addDebug("right wall");
 				Robot.getInstance().rotateRight(30, false);
 				Robot.getInstance().travel(-30, false);
 				Robot.getInstance().rotateRight(60, false);
 				Robot.getInstance().travel(400, false);
-				Robot.getInstance().travel(-130, false);
+				if(hasBall)
+					travel(-100,false);
+				else
+				Robot.getInstance().travel(-120, false);
 				Robot.getInstance().rotateLeft(90, false);
 			} else if (right > left){
 				Buffer.addDebug("left wall");
@@ -373,7 +421,10 @@ public class Robot {
 				Robot.getInstance().travel(-30, false);
 				Robot.getInstance().rotateLeft(60, false);
 				Robot.getInstance().travel(400, false);
-				Robot.getInstance().travel(-130, false);
+				if(hasBall)
+					travel(-100,false);
+				else
+				Robot.getInstance().travel(-120, false);
 				Robot.getInstance().rotateRight(90, false);
 			} else {
 				/*Buffer.addDebug("no walls");
@@ -404,13 +455,18 @@ public class Robot {
 			Motor.A.rotate(-100);
 			isCentering = false;
 			Robot.getInstance().setCentering(false);
+			Buffer.addDebug("post set centering false");
 			Robot.getInstance().orientOnWhiteLine(false);
+			Buffer.addDebug("post orient on white line");
 			PilotController.stopStream();
 			Robot.getInstance().travel(200, false);
 			PILOT.reset();
 			PilotController.startStream();
 			PilotController.setStopWhiteLineStream(false);
+
+			Buffer.addDebug("post whitelinestream");
 			LightSensorVigilante.resume();
+			Buffer.addDebug("post lightsensorresume" + LightSensorVigilante.getPaused());
 		}
 		
 		public void setOnCenterTile(){

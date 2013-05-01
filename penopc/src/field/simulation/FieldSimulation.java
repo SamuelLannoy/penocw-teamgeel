@@ -438,8 +438,66 @@ public class FieldSimulation extends Field {
 	
 	/**
 	 * USE: robot detection
-	 * 
-	 * TODO: teammate bij naar elkaar toegaan
+	 */
+	public boolean checkIfSafe(int xPosTeamMate, int yPosTeamMate, int playerNumber) {
+		boolean frontSafe = true;
+		boolean rightSafe = true;
+		boolean leftSafe = true;
+		
+		Tile tile = getCurrentTile();
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation());
+		
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			int [] teamMatePos = convertRelativeToAbsolutePosition(xPosTeamMate, yPosTeamMate, playerNumber);
+			
+			// Check if there is no wall just in front of the robot. 
+			// This would make all other detection useless.
+			if(!(getBorderInDirection(tile, dir) instanceof PanelBorder)) {
+	
+				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+					
+				// Check if the robot is on the next tile
+				if (nextTilePos.equals(modelTilePos) &&
+					nextTilePos.getX() != teamMatePos[0] && nextTilePos.getY() != teamMatePos[1])
+					return true;
+				
+				// Check if the robot is on the forward-front tile
+				if(!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
+					TilePosition frontTilePos = dir.getPositionInDirection(nextTilePos);
+					
+					if (frontTilePos.equals(modelTilePos) && 
+						dir.opposite() == Direction.fromAngle(model.getPosition().getRotation()) &&
+						frontTilePos.getX() != teamMatePos[0] && frontTilePos.getY() != teamMatePos[1])
+						frontSafe = false;
+				}
+				
+				// Check if the robot is on the forward-left tile
+				if(!(getBorderInDirection(nextTilePos, dir.left()) instanceof PanelBorder)) {
+					TilePosition leftTilePos = dir.left().getPositionInDirection(nextTilePos);
+					if (leftTilePos.equals(modelTilePos) && 
+						dir.left().opposite() == Direction.fromAngle(model.getPosition().getRotation()) &&
+						leftTilePos.getX() != teamMatePos[0] && leftTilePos.getY() != teamMatePos[1]) 
+						leftSafe = false;
+				}
+				
+				// Check if the robot is on the forward-right tile
+				if(!(getBorderInDirection(nextTilePos, dir.right()) instanceof PanelBorder)) {
+					TilePosition rightTilePos = dir.right().getPositionInDirection(nextTilePos);
+					if (rightTilePos.equals(modelTilePos) &&
+						dir.right().opposite() == Direction.fromAngle(model.getPosition().getRotation()) &&
+						rightTilePos.getX() != teamMatePos[0] && rightTilePos.getY() != teamMatePos[1]) 
+						rightSafe = false;
+				}
+				
+			}
+		}
+		
+		return !isRobotInFront() && frontSafe && rightSafe && leftSafe; 
+	}
+	
+	/**
+	 * USE: robot detection
 	 */
 	public boolean checkIfSafe() {
 		boolean frontSafe = true;
@@ -461,8 +519,9 @@ public class FieldSimulation extends Field {
 				// Check if the robot is on the forward-front tile
 				if(!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
 					TilePosition frontTilePos = dir.getPositionInDirection(nextTilePos);
+					
 					if (frontTilePos.equals(modelTilePos) && 
-						dir.opposite() == Direction.fromAngle(model.getPosition().getRotation())) 
+						dir.opposite() == Direction.fromAngle(model.getPosition().getRotation()))
 						frontSafe = false;
 				}
 				
@@ -488,7 +547,26 @@ public class FieldSimulation extends Field {
 		return !isRobotInFront() && frontSafe && rightSafe && leftSafe; 
 	}
 	
-	
+	public int[] convertRelativeToAbsolutePosition(int x, int y, int playerNumber) {
+		int[] newpos = new int[] {x,y};
+		switch(getStartDir(playerNumber)) {
+			case BOTTOM:
+				newpos = new int[] {-(int)x,-(int)y};
+				break;
+			case LEFT:
+				newpos = new int[] {-(int)y,(int)x};
+				break;
+			case RIGHT:
+				newpos = new int[] {(int)y,-(int)x};
+				break;
+			case TOP:
+				break;
+			default:
+				break;
+			
+		}
+		return newpos;
+	}
 	
 	/*
 	 * Starting position / direction
