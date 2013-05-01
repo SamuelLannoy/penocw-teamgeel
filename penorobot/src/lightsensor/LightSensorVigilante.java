@@ -69,6 +69,7 @@ public class LightSensorVigilante extends Thread {
 	 * onlyLines) and updates the buffer to what the lightsensor scanned.
 	 */
 	public void run() {
+		Buffer.addDebug("Pause in effect: "+pause);
 		while (true) {
 			Button.waitForAnyPress(5);
 			if (pause && !pauseTemp) {
