@@ -291,7 +291,7 @@ public class VirtualRobotConnector implements ISimulator, IMovementManager {
 	
 	@Override
 	public void orientOnWhiteLine(boolean b) {
-		moveForward(170);
+		moveForward(200);
 	}
 	
 	public void orientOnWhiteLineExec(boolean b) {
