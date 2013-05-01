@@ -500,12 +500,20 @@ public class FieldSimulation extends Field {
 	 * USE: robot detection
 	 */
 	public boolean checkIfSafe() {
+		return checkIfSafe(0);
+	}
+	
+	/**
+	 * USE: robot detection
+	 */
+	public boolean checkIfSafe(int offset) {
+		
 		boolean frontSafe = true;
 		boolean rightSafe = true;
 		boolean leftSafe = true;
 		
 		Tile tile = getCurrentTile();
-		Direction dir = Direction.fromAngle(localSimulator.getTRotation());
+		Direction dir = Direction.fromAngle(localSimulator.getTRotation()+offset);
 		
 		for (RobotModel model : robotPool.getOtherRobots()) {
 			TilePosition modelTilePos = model.getCurrTile().getPosition();

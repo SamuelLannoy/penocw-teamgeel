@@ -160,6 +160,7 @@ public abstract class Field{
 	public SeesawBorder getSeesawBorder(Tile tile) {
 		for (Direction dir : Direction.values()) {
 			Border border = getBorderInDirection(tile, dir);
+			System.out.println("border " + border.toString());
 			if (border instanceof SeesawBorder) {
 				return (SeesawBorder)border;
 			}

@@ -84,6 +84,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void teamConnected(String partnerId) {
 		robot.setTeamMateID(partnerId);
+		robot.sendPosition();
 	}
 
 	@Override

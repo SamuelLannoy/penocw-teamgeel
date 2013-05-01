@@ -1014,7 +1014,10 @@ public class Robot extends RobotModel{
 			
 		} catch (IllegalArgumentException e) {
 			// no we can't
-			e.printStackTrace();
+			//e.printStackTrace();
+			if(!getField().isExplored(getCurrTile().getPosition())) {
+				exploreTile();
+			}
 			randomWalkUntilChoosingPointPassed();
 		}
 		return false;
@@ -1030,9 +1033,9 @@ public class Robot extends RobotModel{
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
-		System.out.println("RANDOM WALK TRALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
+		System.out.println("RANDOM WALK TRALALALALALALALLALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
 		
-		int randomWait1 = (int)((Math.random() * 10) + 5) * 1000;
+		int randomWait1 = (int)((Math.random() * 5) + 1) * 1000;
 		try {
 			Thread.sleep(randomWait1);
 		} catch (InterruptedException e) {
@@ -1042,44 +1045,42 @@ public class Robot extends RobotModel{
 		boolean choosingPointPassed = false;
 		TilePosition lastPos = null;
 		
+		ArrayList<TilePosition> visited = new ArrayList<TilePosition>();
+		
 		while(!choosingPointPassed) {
 			System.out.println("NIEUWE WHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIILE");
 			List<Direction> possibleDirs = new ArrayList<Direction>();
 			
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
-					if(fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
-						if(!fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
-							possibleDirs.add(getDirection());
-					} else possibleDirs.add(getDirection());
+						&& !visited.contains(getDirection().getPositionInDirection(getCurrTile().getPosition()))
+						&& !fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+						&& fieldSimulation.checkIfSafe(0)) {
+					possibleDirs.add(getDirection());
 				}
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
-					if(fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
-						if(!fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
-							possibleDirs.add(getDirection().opposite());
-					} else possibleDirs.add(getDirection().opposite());
+						&& !visited.contains(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
+					 	&& fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+					 	&& fieldSimulation.checkIfSafe(-180)) {
+					possibleDirs.add(getDirection().opposite());
 				}
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().left().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
-					if(fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
-						if(!fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
-							possibleDirs.add(getDirection().left());
-					} else possibleDirs.add(getDirection().left());
+						&& !visited.contains(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
+						&& fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+						&& fieldSimulation.checkIfSafe(-90)) {
+					possibleDirs.add(getDirection().left());
 				}
 			} 
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().right().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
-					if(fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
-						if(!fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
-							possibleDirs.add(getDirection().right());
-					} else possibleDirs.add(getDirection().right());
+						&& !visited.contains(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
+						&& fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+						&& fieldSimulation.checkIfSafe(90)) {
+					possibleDirs.add(getDirection().right());
 				}
 			}
 			
@@ -1087,12 +1088,17 @@ public class Robot extends RobotModel{
 				choosingPointPassed = true;
 			}
 			
-			Direction chosenDir = possibleDirs.get((int)(Math.random() * (possibleDirs.size() - 1)));
-			lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
-			goToTile(lastPos);
+			if(possibleDirs.size() > 0) {
+				Direction chosenDir = possibleDirs.get((int)(Math.random() * (possibleDirs.size() - 1)));
+				lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
+				goToTile(lastPos);
+				visited.add(lastPos);
+			} else {
+				break;
+			}
 		}
 		
-		int randomWait2 = (int)((Math.random() * 10) + 5) * 1000;
+		int randomWait2 = (int)((Math.random() * 5) + 5) * 1000;
 		try {
 			Thread.sleep(randomWait2);
 		} catch (InterruptedException e) {

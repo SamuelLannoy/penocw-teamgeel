@@ -291,10 +291,14 @@ public class FieldRepresentation extends Field {
 	@Override
 	public FieldRepresentation clone() {
 		FieldRepresentation retF = new FieldRepresentation();
-		for (Tile tile : tileMap) {
+		
+		ObjectMap<TilePosition,Tile> tileMapClone = new ObjectMap<TilePosition,Tile>(tileMap);
+		for (Tile tile : tileMapClone) {
 			retF.addTile(tile);
 		}
-		for (Border border : borderMap) {
+		
+		ObjectMap<BorderPosition,Border> borderMapClone = new ObjectMap<BorderPosition,Border>(borderMap);
+		for (Border border : borderMapClone) {
 			retF.addBorder(border);
 		}
 		return retF;

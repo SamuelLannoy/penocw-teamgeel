@@ -241,7 +241,7 @@ public class SimulatedPhysicalRobot implements ISimulator {
 
 	@Override
 	public double getTRotation() {
-		return robot.getPosition().getRotation();
+		return robot.getPosition().getRotation() + world.getStartDir(robot.getPlayerNr()).toAngle();
 	}
 
 	@Override

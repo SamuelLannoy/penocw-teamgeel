@@ -699,7 +699,7 @@ public class Main extends JFrame {
 				
 		robotPool = new RobotPool(robot, playerId);
 		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
-//		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
+//		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/Dropbox/PenOVerslagen/demo2.txt");
 		canvas.setField(world);
 		canvas2.setWorld(world);
 		canvas2.setRobotPool(robotPool);

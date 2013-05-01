@@ -23,11 +23,18 @@ public class PositionDisplay extends JFrame {
 	private Timer posTimer;
 	
 	private Thread posthread = new Thread(new Runnable() {
+		private int incr = 0;
+		
 		public void run() {
 			posTimer = new Timer(100, new ActionListener() { // TODO timer 1 voor sim
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robot != null) {
 						robot.updatePosition();
+						incr++;
+						if(incr > 10) {
+							robot.sendPosition();
+							incr = 0;
+						}
 						movement_window.append(robot.getPosition() + "\n");
 			    	}
 			    }    
