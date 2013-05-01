@@ -358,7 +358,6 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
-		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
