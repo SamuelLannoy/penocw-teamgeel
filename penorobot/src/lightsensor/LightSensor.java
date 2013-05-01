@@ -117,21 +117,26 @@ public class LightSensor {
 						buffer = 0;
 						if(temp == Color.BLACK){
 							counterBlack++;
-							if(counterBlack == 2 && !alreadyBarcode && !onlyLines){
-								System.out.println("isScanningBarcode");
+							Buffer.addDebug("CounterBlack: "+counterBlack);
+							if(counterBlack == 5 && !alreadyBarcode && !onlyLines && !LightSensorVigilante.getPaused()){
+								Buffer.addDebug("isScanningBarcode before moving backwards");
 								Robot.getInstance().setScanning(true);
 								Robot.getInstance().stop();
 								int buff = 0;
 								Robot.getInstance().backward();
+								Buffer.addDebug("Black detected, moving backwards");
 								Color tem;
+								Buffer.addDebug("Buffer backw: "+buff);
 								while (buff<10){
 									tem = Color.getColor(readValue());
 									if(tem == Color.BROWN)
 										buff++;
 									else
 										buff=0;
+									Buffer.addDebug("Buffer backw: "+buff);
 								}
 								Robot.getInstance().stop();
+								Buffer.addDebug("Before barcode");
 								list.clear();
 								counterBlack = 0;
 								buffer = 0;

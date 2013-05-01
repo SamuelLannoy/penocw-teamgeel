@@ -198,7 +198,7 @@ public class CommandEncoder implements AbstractRobotConnector {
 
 	@Override
 	public void resumeLightSensor() {
-		Bluetooth.getInstance().send(Encoding.PAUSELIGHTSENSOR.ordinal(),0,0,false);
+		Bluetooth.getInstance().send(Encoding.RESUMELIGHTSENSOR.ordinal(),0,0,false);
 	}
 	
 	public void setOnCenterTileAfterSeesaw(boolean leftFlag) {

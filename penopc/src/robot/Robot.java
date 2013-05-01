@@ -444,7 +444,7 @@ public class Robot extends RobotModel{
 					turnLeft(90);
 				}
 				ultimateCenter(false);
-				waitTillStandby(2500);
+				waitTillStandby(3000);
 			}
 			
 			orientOnWhiteLine(false);
@@ -795,11 +795,14 @@ public class Robot extends RobotModel{
 	}
 	
 	public void pauseLightSensor() {
-		System.out.println("pause lightsensor");
+		DebugBuffer.addInfo("Pause lightsensor");
+		System.out.println("Pause lightsensor");
 		robotConn.pauseLightSensor();
 	}
 	
 	public void resumeLightSensor() {
+		DebugBuffer.addInfo("Resuming lightsensor");
+		System.out.println("Resuming lightsensor");
 		robotConn.resumeLightSensor();
 	}
 	
