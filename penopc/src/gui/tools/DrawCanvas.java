@@ -58,17 +58,18 @@ public class DrawCanvas extends FieldCanvas{
 	public void paint(Graphics g){ 
 		createBufferStrategy(2);
 		if (robotPool != null && robotPool.getMainRobot().isConnectedToGame()) {
-			//if (robotPool.getMainRobot().getClient().isPlaying()) {
-			paintTitle(g);
-			rescale(robotPool.getMainRobot().getField());
-			paintTiles(g);
-			paintBorders(g);
-			paintPos(g);
-			paintObjects(g);
-			shortestPath(g);
-			/*} else {
-				drawLobby(g);
-			}*/
+			try{
+				//if (robotPool.getMainRobot().getClient().isPlaying()) {
+				paintTitle(g);
+				rescale(robotPool.getMainRobot().getField());
+				paintTiles(g);
+				paintBorders(g);
+				paintPos(g);
+				paintObjects(g);
+				shortestPath(g);
+			} catch (ConcurrentModificationException e) {
+
+			}
 		}
 	}
 	

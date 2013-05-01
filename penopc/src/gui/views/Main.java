@@ -222,15 +222,22 @@ public class Main extends JFrame {
 						int pl = 0;
 						for (String playerId : robot.getLobbyViewer().getPlayerData()) {
 			    			lobbyData[pl][0] = playerId;
-			    			lobbyData[pl][1] = "";
-			    			lobbyData[pl][2] = "";
-			    			lobbyData[pl][3] = "";
+			    			if (robotPool.isMainRobot(playerId)) {
+				    			lobbyData[pl][1] = robotPool.getMainRobot().getTeamMateID() == null?
+				    					"" : robotPool.getMainRobot().getTeamMateID();
+				    			lobbyData[pl][2] = robotPool.getMainRobot().getPlayerNr();
+				    			lobbyData[pl][3] = robotPool.getMainRobot().getObjectNr();
+			    			} else {
+				    			lobbyData[pl][1] = "";
+				    			lobbyData[pl][2] = "";
+				    			lobbyData[pl][3] = "";
+			    			}
 			    			lobbyData[pl][4] = robotPool.getRobot(playerId).isReady();
 			    			lobbyData[pl][5] = robotPool.getRobot(playerId).hasBall();
 			    			pl++;
 			    		}
 						if (!createdLobbyTable && pl > 0) {
-							String[] columns = {"player name","team","objectNR","playerNR","ready","object found"};
+							String[] columns = {"player","team","objectNR","playerNR","ready","object found"};
 							lobbyTable = new MyTableModel(columns,lobbyData);
 							tableLobby = new JTable(lobbyTable);
 							tableLobby.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));

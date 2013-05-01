@@ -675,7 +675,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public FieldRepresentation getTeamMateField() {
-		return teamMateField;
+		return getTeamMate().getField();
 	}
 	
 	private Robot teamMate;

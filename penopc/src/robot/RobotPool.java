@@ -21,11 +21,14 @@ public class RobotPool implements Iterable<RobotModel>{
 	private Map<String, RobotModel> robotPool;
 	
 	private String ownId;
-	
 	public RobotPool(Robot mainRobot, String ownId){
 		robotPool = new HashMap<String, RobotModel>();
 		robotPool.put("main", mainRobot);
 		this.ownId = ownId;
+	}
+	
+	public boolean isMainRobot(String id) {
+		return ownId.equals(id);
 	}
 	
 	public Collection<RobotModel> getRobots(){
