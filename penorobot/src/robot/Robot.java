@@ -239,7 +239,7 @@ public class Robot {
 			}
 
 			Robot.getInstance().stop();
-			Robot.getInstance().travel(-35, false);
+			Robot.getInstance().travel(-45, false);
 			buffer = 0;
 			PilotController.stopStream();
 			
