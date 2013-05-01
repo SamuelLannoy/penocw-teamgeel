@@ -392,7 +392,6 @@ public class Robot extends RobotModel{
 	}
 	
 	private int incr = 0;
-	public static boolean turned = false;
 	
 	public void moveNext() {
 		//if (counter == 0){
@@ -400,7 +399,7 @@ public class Robot extends RobotModel{
 //			moveForward(230);
 		System.out.println("incr "+incr);
 		if(incr%3==0){
-			if(!isSim()){
+			if(!isSim() && !getCurrTile().hasBarcode()){
 				Direction cur = getDirection();
 				Direction left = null;
 				Direction right = null;
