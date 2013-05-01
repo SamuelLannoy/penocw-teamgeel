@@ -47,6 +47,8 @@ public abstract class TeamCommunicator {
 	
 	public abstract void updatePosition(double x, double y, double angle);
 	
+	public abstract void win();
+	
 	public abstract boolean isConnectedToGame();
 	
 	public abstract ILobbyViewer getLobbyViewer();
