@@ -705,9 +705,7 @@ public class Main extends JFrame {
 		canvas2.setRobotPool(robotPool);
 //		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		robot.initialize();
-		if (robot.isSim()) {
-			robot.setSimField(world);
-		}
+		robot.setSimField(world);
 		
 		if (robot.isSim()) {
 			robot.setSimLoc(0, 0, 0);
