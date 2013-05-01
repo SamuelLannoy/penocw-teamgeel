@@ -704,9 +704,7 @@ public class Main extends JFrame {
 		canvas2.setWorld(world);
 		canvas2.setRobotPool(robotPool);
 		robot.initialize();
-		if (robot.isSim()) {
-			robot.setSimField(world);
-		}
+		robot.setSimField(world);
 		
 		if (robot.isSim()) {
 			robot.setSimLoc(0, 0, 0);
