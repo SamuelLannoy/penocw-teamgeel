@@ -194,6 +194,20 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobb
 	}
 
 	@Override
+	public void win() {
+		checkConnected();
+		if (canSend()) {
+			try {
+				client.win();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
 	public void updatePosition(double x, double y, double angle) {
 		checkConnected();
 		if (canSend()) {
