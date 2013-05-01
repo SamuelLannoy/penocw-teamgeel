@@ -358,7 +358,6 @@ public class Robot extends RobotModel{
 		Direction to = Direction.fromDiffPos(diffx, diffy);
 		
 		int turn = from.turnTo(to);
-		Robot.turned = turn !=0;
 		//DebugBuffer.addInfo("turn "+ turn);
 		if (turn > 0)
 			turnRight(turn);
@@ -1039,8 +1038,8 @@ public class Robot extends RobotModel{
 				}
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder)) {
-				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+				if(fieldRepresentation.isExplored(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().left().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
 					if(fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
 						if(!fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
 							possibleDirs.add(getDirection().left());
@@ -1048,8 +1047,8 @@ public class Robot extends RobotModel{
 				}
 			} 
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder)) {
-				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
-						&& !getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
+				if(fieldRepresentation.isExplored(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
+						&& !getDirection().right().getPositionInDirection(getCurrTile().getPosition()).equals(lastPos)) {
 					if(fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()) {
 						if(!fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).getBarcode().isObject())
 							possibleDirs.add(getDirection().right());
