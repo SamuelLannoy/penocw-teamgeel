@@ -795,11 +795,14 @@ public class Robot extends RobotModel{
 	}
 	
 	public void pauseLightSensor() {
-		System.out.println("pause lightsensor");
+		DebugBuffer.addInfo("Pause lightsensor");
+		System.out.println("Pause lightsensor");
 		robotConn.pauseLightSensor();
 	}
 	
 	public void resumeLightSensor() {
+		DebugBuffer.addInfo("Resuming lightsensor");
+		System.out.println("Resuming lightsensor");
 		robotConn.resumeLightSensor();
 	}
 	

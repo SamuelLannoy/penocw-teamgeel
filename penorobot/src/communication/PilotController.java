@@ -126,12 +126,26 @@ public class PilotController {
 			}
 		});
 		
+		//TODO pauseLightSensor
+		Thread pauseSensor = new Thread(new Runnable() {
+			public void run() {
+				while(true){
+					try {
+						Thread.sleep(TIME_OUT);
+					} catch (InterruptedException e) {
+					}
+					Buffer.addDebug("Pause: "+LightSensorVigilante.getPaused());
+				}
+			}
+		});
+		
 		ultrasonicSensor.start();
 		read.start();
 		write.start();
 		lightSensorVigilante.start();
 		touchSensorVigilante.start();
 		infrared.start();
+		pauseSensor.start();
 	}
 	
 	public void writeData() {
