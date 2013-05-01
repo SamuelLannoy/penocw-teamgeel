@@ -23,6 +23,7 @@ public class LightSensorVigilante extends Thread {
 	 * The lightsensor is set inactive when the current scan has finished.
 	 */
 	public static void pause() {
+		Buffer.addDebug("pause received");
 		pause = true;
 	}
 	
@@ -30,6 +31,7 @@ public class LightSensorVigilante extends Thread {
 	 * Resume the lightsensor
 	 */
 	public static void resume() {
+		Buffer.addDebug("pause resume");
 		pause = false;
 	}
 	
