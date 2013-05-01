@@ -444,7 +444,7 @@ public class Robot extends RobotModel{
 					turnLeft(90);
 				}
 				ultimateCenter(false);
-				waitTillStandby(2500);
+				waitTillStandby(3000);
 			}
 			
 			orientOnWhiteLine(false);
