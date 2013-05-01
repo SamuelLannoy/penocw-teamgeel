@@ -32,6 +32,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	@Override
 	public void gameStarted() {
 		robot.sendPosition();
+		robot.explore();
 		DebugBuffer.addInfo("game started");
 	}
 

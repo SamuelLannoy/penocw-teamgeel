@@ -22,6 +22,7 @@ import simulator.VirtualRobotConnector;
 import simulator.lightsensor.LightSensor;
 import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
+import team.communication.ILobbyViewer;
 
 import exception.CommunicationException;
 import field.Barcode;
@@ -63,8 +64,16 @@ public class Robot extends RobotModel{
 		}
 	}
 	
+	public boolean isConnectedToGame() {
+		return comm.isConnectedToGame();
+	}
+	
 	public void setReady() {
 		comm.setReady(true);
+	}
+	
+	public ILobbyViewer getLobbyViewer() {
+		return comm.getLobbyViewer();
 	}
 	
 	/*public void setClient(PlayerClient client) {
@@ -725,7 +734,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public FieldRepresentation getTeamMateField() {
-		return teamMateField;
+		return getTeamMate().getField();
 	}
 	
 	private Robot teamMate;

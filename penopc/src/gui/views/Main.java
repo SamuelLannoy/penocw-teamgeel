@@ -1,10 +1,27 @@
 package gui.views;
 
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import java.awt.Canvas;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
+
+import java.awt.Label;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,18 +29,10 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
-import javax.swing.border.EmptyBorder;
 
 import com.rabbitmq.client.Connection;
 
@@ -48,14 +57,13 @@ import field.simulation.FieldSimulation;
 import gui.tools.BarCodeCanvas;
 import gui.tools.DrawCanvas;
 import gui.tools.PlotCanvas;
+import gui.tools.MyTableModel;
+import gui.tools.WorldCanvas;
+
+import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-	
-	private final static String BROADCAST_ID = "teamgeellob";
-	
-	private JPanel contentPane;
-	private JTextArea debugwindow;
 	
 	private Robot robot;
 	private RobotPool robotPool;
@@ -65,9 +73,17 @@ public class Main extends JFrame {
 	private Timer mapTimer;
 	private Timer debugTimer;
 	private Timer sensorTimer;
+	private Timer lobbyTimer;
 	private JFrame frame2;
 	private JPanel contentPane2;
 	private FieldSimulation world;
+	private List<Integer> plotList = new ArrayList<Integer>();
+	private DrawCanvas canvas;
+	private WorldCanvas canvas2;
+	private boolean sensorDispActive;
+	private Object[][] lobbyData = new Object[5][6];
+	private MyTableModel lobbyTable;
+	private JPanel lobbyPanel;
 	
 	private Thread simulatorthread = new Thread(new Runnable() {
 		public void run() {
@@ -75,7 +91,6 @@ public class Main extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
-						movement_window.append(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -89,7 +104,6 @@ public class Main extends JFrame {
 			    public void actionPerformed(ActionEvent evt) {
 			    	if (robotPool != null) {
 						robotPool.updatePosition();
-						movement_window.append(robot.getPosition() + "\n");
 			    	}
 			    }    
 			});
@@ -101,13 +115,12 @@ public class Main extends JFrame {
 		public void run() {
 			robotReceiveTimer = new Timer(100, new ActionListener() {
 			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+			    	if (canShowData()) {
 			    		try {
 			    			Bluetooth.getInstance().receive();
 			    		} catch (Exception e){
 			    			e.printStackTrace();
-			    			debugwindow.append("Verbinding verbroken.");
-			    			button_terminate.doClick();
+			    			btnTerminate.doClick();
 			    		}
 			    	}
 			    }    
@@ -116,32 +129,35 @@ public class Main extends JFrame {
 		}
 	});
 	
+	int counter = 0;
+	int updatecount = 2;
+	
 	private Thread mapthread = new Thread(new Runnable() {
 		public void run() {
 			mapTimer = new Timer(200, new ActionListener() {
-			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+				public void actionPerformed(ActionEvent evt) {
+			    	if (canShowData()) {
 						try {
-							//robot.updatePosition();
 							canvas.update(canvas.getGraphics());
-							if (robot.receivedTeamTiles()){
-								if(frame2 == null){
-									frame2 = new JFrame();
-									frame2.setBounds ( 0 , 0 , 500 ,500);
-									frame2.setVisible(true);
-									contentPane2 = new JPanel();
-									contentPane2.setBorder(new EmptyBorder(5, 5, 5, 5));
-									frame2.setContentPane(contentPane2);
-									canvas2 = new DrawCanvas(new RobotPool(robot.getTeamMate()));
-									canvas2.setBounds(0, 0, 500, 500);
-									canvas2.setBackground(new Color(160, 82, 45));
-									contentPane2.add(canvas2);
+							if (counter == 0) {
+								canvas2.update(canvas2.getGraphics());
+							}
+							counter = (counter + 1)%updatecount;
+							/*if (robot.receivedTeamTiles()){
+								if(canvas2.getTitle().equals("World view")){
+									canvas2.setRobotPool(new RobotPool(robot.getTeamMate(), ""));
+									canvas2.setTitle("Teammate's view");
 								} else{
 									canvas2.update(canvas2.getGraphics());
 								}
-							}
+							}*/
+							/**
+							 else { //back to world view after map merge
+							 	canvas2.setRobotPool(worldPool);
+								canvas2.setTitle("World view");
+							 }
+							 */
 						} catch (NullPointerException e) {
-							// nothing
 						}
 			    	}
 			    }    
@@ -149,95 +165,29 @@ public class Main extends JFrame {
 			mapTimer.start();
 		}
 	});
-			
-	private Thread debugthread = new Thread(new Runnable() {
-		public void run() {
-			debugTimer = new Timer(100, new ActionListener() {
-			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
-						robot_current_action.setText(robot.getCurrentAction());
-						try {
-							// update debug info.
-				    		synchronized(DebugBuffer.getDebuginfo()) {
-								for(String debuginfo : DebugBuffer.getDebuginfo()) {
-									debugwindow.append(""+debuginfo+"\n");
-								}
-								DebugBuffer.getDebuginfo().clear();
-				    		}
-							// update comm info.
-				    		synchronized(DebugBuffer.getComminfo()) {
-								for(String comminfo : DebugBuffer.getComminfo()) {
-									textArea_messages.append(""+comminfo+"\n");
-								}
-								DebugBuffer.getComminfo().clear();
-				    		}
-						}
-						catch (NullPointerException e) {
-							
-						}
-			    	}
-			    }    
-			});
-			debugTimer.start();
-		}
-	});
-	
-	/*private Thread messagethread = new Thread(new Runnable() {
-		public void run() {
-			try {
-				Messenger.connect();
-				Messenger.send("Iets random");
-				while(true) {
-					Messenger.receivePush("test.*");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	});*/
 	
 	private Thread sensorthread = new Thread(new Runnable() {
 		public void run() {
 			sensorTimer = new Timer(100, new ActionListener() {
-			    public void actionPerformed(ActionEvent evt) {
-			    	if (robot != null) {
+				public void actionPerformed(ActionEvent evt) {
+			    	if (canShowData()) {
 						// update light sensor data.
 			    		synchronized(SensorBuffer.getLightValues()) {
 							for(int val: SensorBuffer.getLightValues()) {
-								textArea_light.setText(""+val+"\n");
 								plotList.add(val);
 							}
 							SensorBuffer.getLightValues().clear();
 			    		}
-						// random values test.
-						/*for (int j = 0; j < 1; j++){
-							double randNumber = Math.random();
-							double d = randNumber * 100;
-							int randomInt = (int)d;
-							plotList.add(randomInt);
-						}*/
 						for (int i = plotList.size(); i > 100; i--){
 							plotList.remove(plotList.size() - i);
 						}
-						canvas_Light.setData(plotList);
-						canvas_Light.update(canvas_Light.getGraphics());
 	
 						// update ultrasonic sensor data.
 						synchronized(SensorBuffer.getDistances()) {
 							if (SensorBuffer.lastDist.size() >= 4){
-								textArea_ultrasonic_front.setText(""+SensorBuffer.lastDist.get(0)+"\n");
-								textArea_ultrasonic_left.setText(""+SensorBuffer.lastDist.get(1)+"\n");
-								textArea_ultrasonic_back.setText(""+SensorBuffer.lastDist.get(2)+"\n");
-								textArea_ultrasonic_right.setText(""+SensorBuffer.lastDist.get(3)+"\n");
-								SensorBuffer.lastDist.clear();
+								if (!sensorDispActive) SensorBuffer.lastDist.clear();
 							}
 						}
-	
-						// update pressure sensor data.
-						textArea_pressure.setText(""+SensorBuffer.getTouched()+"\n");
-						
-						//update infrared sensor data.
-						textArea_infrared.setText("Ahead: "+SensorBuffer.getInfrared());
 						
 						if (!SensorBuffer.getBarcodes().isEmpty()){
 							Barcode barcode = new Barcode(SensorBuffer.getBarcodes().get(0));
@@ -250,11 +200,7 @@ public class Main extends JFrame {
 						// update scanned data
 						synchronized(SensorBuffer.getDistancesAD()){
 							if (SensorBuffer.getDistancesAD().size() >= 10){
-								for (int i = 0; i < 10; i++){
-									//textArea_multiscan.append("scanned on position:" + "\n" + robot.getPosition() + "\n");
-									textArea_multiscan.append((36 * i) + " graden, " + SensorBuffer.getDistancesAD().get(i) + " mm" +"\n");
-								}
-								SensorBuffer.getDistancesAD().clear();
+								if (!sensorDispActive) SensorBuffer.getDistancesAD().clear();
 							}
 						}
 						
@@ -264,36 +210,101 @@ public class Main extends JFrame {
 			sensorTimer.start();
 		}
 	});
-
-	private JToggleButton toggle_robot;
-	private JToggleButton toggle_simulator;
-	private JButton button_terminate;
-	private JTextArea movement_window;
-	private JTextArea robot_current_action;
-	private JButton btnExplore;
-	private List<Integer> plotList = Collections.synchronizedList(new ArrayList<Integer>());
-	private PlotCanvas canvas_Light;
-	private JTextArea textArea_ultrasonic_left;
-	private JTextArea textArea_ultrasonic_right;
-	private JTextArea textArea_light;
-	private JTextArea textArea_pressure;
-	private JTextArea textArea_ultrasonic_back;
-	private JTextArea textArea_ultrasonic_front;
-	private DrawCanvas canvas;
-	private DrawCanvas canvas2;
-	private JMenuItem mntmAdvanced;
-	private BarCodeCanvas barcode_canvas;
-	private JButton btn_resume;
-	private JButton btn_pause;
-	private JTextArea textArea_multiscan;
-	private JLabel lblPosition;
-	private JTextArea textArea_messages;
-	private JButton btnSubmitBarcodes;
-	private JTextArea teamTextArea;
-	private JTextArea teamMateTextArea;
-	private JTextArea otherTeamTextArea1;
-	private JTextArea otherTeamTextArea2;
-	private JTextArea textArea_infrared;
+	
+	private boolean createdLobbyTable = false;
+	
+	// TODO update lobby data
+	private Thread lobbythread = new Thread(new Runnable() {
+		public void run() {
+			lobbyTimer = new Timer(100, new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					if (canShowData()) {
+						int pl = 0;
+						for (String playerId : robot.getLobbyViewer().getPlayerData()) {
+			    			lobbyData[pl][0] = playerId;
+			    			if (robotPool.isMainRobot(playerId)) {
+				    			lobbyData[pl][1] = robotPool.getMainRobot().getTeamMateID() == null?
+				    					"" : robotPool.getMainRobot().getTeamMateID();
+				    			lobbyData[pl][2] = robotPool.getMainRobot().getPlayerNr();
+				    			lobbyData[pl][3] = robotPool.getMainRobot().getObjectNr();
+			    			} else {
+				    			lobbyData[pl][1] = "";
+				    			lobbyData[pl][2] = "";
+				    			lobbyData[pl][3] = "";
+			    			}
+			    			lobbyData[pl][4] = robotPool.getRobot(playerId).isReady();
+			    			lobbyData[pl][5] = robotPool.getRobot(playerId).hasBall();
+			    			pl++;
+			    		}
+						if (!createdLobbyTable && pl > 0) {
+							String[] columns = {"player","team","objectNR","playerNR","ready","object found"};
+							lobbyTable = new MyTableModel(columns,lobbyData);
+							tableLobby = new JTable(lobbyTable);
+							tableLobby.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+							tableLobby.setBackground(Color.WHITE);
+							tableLobby.setForeground(Color.BLACK);
+							tableLobby.setBounds(0,0, 396, 153);
+							lobbyScroll = new JScrollPane(tableLobby);
+							lobbyScroll.setBounds(249, 16, 396, 153);
+							lobbyPanel.add(lobbyScroll);
+							createdLobbyTable = true;
+						}
+			    		/*for(int pl = 0; pl < robotPool.getRobotPoolSize(); pl++){
+			    			Robot currentRobot = robotPool.getRobots().get(pl);
+			    			lobbyData[0][pl] = currentRobot.getID();
+			    			lobbyData[1][pl] = currentRobot.getTeamNr();
+			    			lobbyData[2][pl] = currentRobot.getObjectNr();
+			    			lobbyData[3][pl] = currentRobot.getPlayerNr();
+			    			lobbyData[4][pl] = currentRobot.getReady();
+			    			lobbyData[5][pl] = currentRobot.getObjectFound();
+			    		}*/
+			    		for(int o = robot.getLobbyViewer().getPlayerData().size(); o < 4;o++){
+			    			for(int p = 0; p < lobbyData.length; p++){
+			    				lobbyData[o][p] = null;
+			    			}
+			    		}
+			    		for(int i = 0; i < lobbyData.length; i++){
+			    			for(int j = 0; j < lobbyData[0].length; j++){
+			    				lobbyTable.setValueAt(lobbyData[i][j],i,j);
+			    			}
+			    		}
+			    		tableLobby.revalidate();
+			    	}
+			    }    
+			});
+			lobbyTimer.start();
+		}
+	});
+	
+	protected List<Integer> getPlot(){
+		return plotList;
+	}
+	
+	protected void deactivateSensorDisp(){
+		sensorDispActive = false;
+	}
+	
+	private JPanel contentPane;
+	private JMenuItem debugWindow;
+	private JMenuItem positionDisp;
+	private JMenuItem debugDisp;
+	private JMenuItem sensorDisp;
+	private JMenuItem advanced;
+	private JTextField textFieldLobbyName;
+	private JTextField textFieldPlayerName;
+	private JTable tableLobby;
+	private JButton toggleRobot;
+	private JButton toggleSim;
+	private JButton btnTerminate;
+	private JButton btnStartGame;
+	private JButton btnPause;
+	private JButton btnResume;
+	private JButton btnJoinLobby;
+	private JButton btnLeaveLobby;
+	private JButton btnReady;
+	private JRadioButton rdbtnKuleuven;
+	private JRadioButton rdbtnLocal;
+	private JScrollPane lobbyScroll;
 
 	/**
 	 * Launch the application.
@@ -319,15 +330,16 @@ public class Main extends JFrame {
 		createEvents();
 		mapthread.start();
 		sensorthread.start();
-		debugthread.start();
-		//messagethread.start();
+		lobbythread.start();
 	}
-	
+
 	private void initComponents(){
-		this.setFocusable(true);
-		setTitle("Robot control centre");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 700);
+		setBounds(100, 10, 1010, 720);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -341,261 +353,191 @@ public class Main extends JFrame {
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				robot.terminate();
+				//robot.terminate();
 				dispose();
 			}
 		});
 		File.add(mntmExit);
 		
-		mntmAdvanced = new JMenuItem("Advanced");
+		JMenu views = new JMenu("Views");
+		menuBar.add(views);
+		
+		advanced = new JMenuItem("Advanced");
+		views.add(advanced);
+		
+		sensorDisp = new JMenuItem("SensorDisplay");
+		views.add(sensorDisp);
+		
+		debugDisp = new JMenuItem("DebugDisplay");
+		views.add(debugDisp);
+		
+		positionDisp = new JMenuItem("PositionDisplay");
+	
+		views.add(positionDisp);
+		
+		JPanel controlPanel = new JPanel();
+		controlPanel.setBorder(new TitledBorder(null, "Controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		controlPanel.setBounds(10, 10, 310, 180);
+		contentPane.add(controlPanel);
+		controlPanel.setLayout(null);
+		
+		toggleRobot = new JButton("robot");
 
-		File.add(mntmAdvanced);
+		toggleRobot.setBounds(10, 16, 89, 30);
+		controlPanel.add(toggleRobot);
 		
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		toggleSim = new JButton("simulator");
+		toggleSim.setBounds(109, 16, 89, 30);
+		controlPanel.add(toggleSim);
 		
-		JScrollPane scrollPane_debugwindow = new JScrollPane();
-		scrollPane_debugwindow.setBounds(10, 275, 460, 100);
+		btnTerminate = new JButton("terminate");
+		btnTerminate.setBounds(10, 57, 188, 30);
+		controlPanel.add(btnTerminate);
 		
-		robot_current_action = new JTextArea();
-		robot_current_action.setBounds(10, 480, 250, 23);
-
-		contentPane.setLayout(null);
+		btnStartGame = new JButton("Start Game");
+		btnStartGame.setBounds(10, 98, 188, 71);
+		controlPanel.add(btnStartGame);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 400, 250, 78);
-		contentPane.add(scrollPane);
+		btnResume = new JButton("Resume");
+		btnResume.setBounds(208, 139, 89, 30);
+		controlPanel.add(btnResume);
 		
-		movement_window = new JTextArea();
-		scrollPane.setViewportView(movement_window);
-		contentPane.add(scrollPane_debugwindow);
+		btnPause = new JButton("Pause");
+		btnPause.setBounds(208, 98, 89, 30);
+		controlPanel.add(btnPause);
 		
-		debugwindow = new JTextArea();
-		scrollPane_debugwindow.setViewportView(debugwindow);
-		debugwindow.append("Maak een keuze uit robot of simulator.\n");
-		contentPane.add(robot_current_action);
+		lobbyPanel = new JPanel();
+		lobbyPanel.setBorder(new TitledBorder(null, "Lobby", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		lobbyPanel.setBounds(329, 10, 655, 180);
+		contentPane.add(lobbyPanel);
+		lobbyPanel.setLayout(null);
 		
-		toggle_robot = new JToggleButton("robot");
-		toggle_robot.setBounds(10, 7, 67, 23);
-		contentPane.add(toggle_robot);
+		btnJoinLobby = new JButton("Join lobby");
+		btnJoinLobby.setBounds(10, 75, 109, 30);
+		lobbyPanel.add(btnJoinLobby);
 		
-		toggle_simulator = new JToggleButton("simulator");
-		toggle_simulator.setBounds(87, 7, 90, 23);
-		contentPane.add(toggle_simulator);
+		btnLeaveLobby = new JButton("Leave lobby");
+		btnLeaveLobby.setBounds(10, 115, 109, 30);
+		lobbyPanel.add(btnLeaveLobby);
 		
-		button_terminate = new JButton("terminate");
-		button_terminate.setBounds(10, 41, 167, 23);
-		contentPane.add(button_terminate);
-				
-		btnExplore = new JButton("Explore");
-		btnExplore.setBounds(10, 75, 167, 43);
-		contentPane.add(btnExplore);
+		rdbtnLocal = new JRadioButton("local");
+		rdbtnLocal.setBounds(10, 16, 109, 23);
+		lobbyPanel.add(rdbtnLocal);
 		
-		canvas_Light = new PlotCanvas(plotList);
-		canvas_Light.setBounds(474, 513, 500, 128);
-		canvas_Light.setBackground(Color.black);
-		contentPane.add(canvas_Light);
+		rdbtnKuleuven = new JRadioButton("kuleuven");
+		rdbtnKuleuven.setBounds(10, 40, 109, 23);
+		lobbyPanel.add(rdbtnKuleuven);
 		
-		textArea_pressure = new JTextArea();
-		textArea_pressure.setBounds(10, 536, 128, 30);
-		contentPane.add(textArea_pressure);
+		JLabel lblLobbyName = new JLabel("Lobby name");
+		lblLobbyName.setBounds(129, 16, 109, 14);
+		lobbyPanel.add(lblLobbyName);
 		
-		textArea_ultrasonic_left = new JTextArea();
-		textArea_ultrasonic_left.setText("");
-		textArea_ultrasonic_left.setBounds(148, 600, 128, 30);
-		contentPane.add(textArea_ultrasonic_left);
+		textFieldLobbyName = new JTextField();
+		textFieldLobbyName.setBounds(129, 41, 109, 20);
+		lobbyPanel.add(textFieldLobbyName);
+		textFieldLobbyName.setColumns(10);
 		
-		Label label_left = new Label("left");
-		label_left.setBounds(148, 572, 62, 22);
-		contentPane.add(label_left);
+		JLabel lblPlayerName = new JLabel("Player name");
+		lblPlayerName.setBounds(129, 72, 109, 14);
+		lobbyPanel.add(lblPlayerName);
 		
-		textArea_ultrasonic_right = new JTextArea();
-		textArea_ultrasonic_right.setText("");
-		textArea_ultrasonic_right.setBounds(286, 600, 128, 30);
-		contentPane.add(textArea_ultrasonic_right);
+		textFieldPlayerName = new JTextField();
+		textFieldPlayerName.setBounds(129, 95, 109, 20);
+		lobbyPanel.add(textFieldPlayerName);
+		textFieldPlayerName.setColumns(10);
 		
-		textArea_ultrasonic_front = new JTextArea();
-		textArea_ultrasonic_front.setText("");
-		textArea_ultrasonic_front.setBounds(148, 536, 128, 30);
-		contentPane.add(textArea_ultrasonic_front);
+		btnReady = new JButton();
+		btnReady.setBounds(129,126,109,30);
+		btnReady.setText("Ready");
+		lobbyPanel.add(btnReady);
 		
-		textArea_ultrasonic_back = new JTextArea();
-		textArea_ultrasonic_back.setText("");
-		textArea_ultrasonic_back.setBounds(283, 536, 128, 30);
-		contentPane.add(textArea_ultrasonic_back);
-		
-		Label label_right = new Label("right");
-		label_right.setBounds(286, 572, 62, 22);
-		contentPane.add(label_right);
-		
-		Label label_front = new Label("front");
-		label_front.setBounds(148, 508, 62, 22);
-		contentPane.add(label_front);
-		
-		Label label_back = new Label("back");
-		label_back.setBounds(286, 508, 62, 22);
-		contentPane.add(label_back);
-		
-		Label label_pressure = new Label("pressure");
-		label_pressure.setBounds(10, 508, 62, 22);
-		contentPane.add(label_pressure);
-		
-		Label label_light = new Label("light");
-		label_light.setBounds(10, 572, 62, 22);
-		contentPane.add(label_light);
-		
-		textArea_light = new JTextArea();
-		textArea_light.setText("");
-		textArea_light.setBounds(10, 600, 128, 30);
-		contentPane.add(textArea_light);
-		
-		canvas = new DrawCanvas(robotPool);
-		canvas.setBounds(474, 7, 500, 500);
-		canvas.setBackground(new Color(160, 82, 45));
+		canvas = new DrawCanvas(robotPool,"Player's view");
+		canvas.setBackground(new Color(139, 69, 19));
+		canvas.setBounds(10, 196, 480, 480);
 		contentPane.add(canvas);
 		
-		btn_pause = new JButton("Pause");
-
-		btn_pause.setBounds(187, 61, 89, 23);
-		contentPane.add(btn_pause);
+		canvas2 = new WorldCanvas();
+		canvas2.setBackground(new Color(139, 69, 19));
+		canvas2.setBounds(500, 196, 480, 480);
+		contentPane.add(canvas2);
 		
-		btn_resume = new JButton("Resume");
-
-		btn_resume.setBounds(187, 95, 89, 23);
-		contentPane.add(btn_resume);
+		enableButtons(false);
 		
-		JScrollPane scrollPane_multiscan = new JScrollPane();
-		scrollPane_multiscan.setBounds(266, 400, 202, 49);
-		contentPane.add(scrollPane_multiscan);
+	}
+	
+	private void enableButtons(Boolean bool){
+		btnStartGame.setEnabled(bool);
+		btnTerminate.setEnabled(bool);
+		btnPause.setEnabled(bool);
+		btnResume.setEnabled(bool);
 		
-		textArea_multiscan = new JTextArea();
-		scrollPane_multiscan.setViewportView(textArea_multiscan);
-		
-		JLabel lblMultiscanValues = new JLabel("multiscan values");
-		lblMultiscanValues.setBounds(266, 380, 104, 14);
-		contentPane.add(lblMultiscanValues);
-		
-		lblPosition = new JLabel("position");
-		lblPosition.setBounds(10, 380, 54, 14);
-		contentPane.add(lblPosition);
-		
-		JLabel lblTeam = new JLabel("Own barcode");
-		lblTeam.setBounds(286, 7, 90, 14);
-		contentPane.add(lblTeam);
-		
-		JLabel lblTeammate = new JLabel("Login naam");
-		lblTeammate.setBounds(286, 45, 140, 14);
-		contentPane.add(lblTeammate);
-		
-		teamTextArea = new JTextArea();
-		teamTextArea.setBounds(286, 20, 90, 24);
-		contentPane.add(teamTextArea);
-		
-		teamMateTextArea = new JTextArea();
-		teamMateTextArea.setBounds(286, 60, 90, 24);
-		contentPane.add(teamMateTextArea);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 150, 460, 100);
-		contentPane.add(scrollPane_1);
-		
-		textArea_messages = new JTextArea();
-		scrollPane_1.setViewportView(textArea_messages);
-		
-		JLabel lblMessages = new JLabel("messages");
-		lblMessages.setBounds(10, 129, 67, 14);
-		contentPane.add(lblMessages);
-		
-		JLabel lblDebugwindow = new JLabel("debugwindow");
-		lblDebugwindow.setBounds(10, 255, 67, 14);
-		contentPane.add(lblDebugwindow);
-		
-		btnSubmitBarcodes = new JButton("Submit barcodes");
-		btnSubmitBarcodes.setBounds(300, 125, 150, 23);
-		contentPane.add(btnSubmitBarcodes);
-		
-		JLabel lblOtherTeamBarcode = new JLabel("Start positie");
-		lblOtherTeamBarcode.setBounds(286, 85, 140, 14);
-		contentPane.add(lblOtherTeamBarcode);
-		
-		otherTeamTextArea1 = new JTextArea();
-		otherTeamTextArea1.setBounds(286, 100, 90, 24);
-		contentPane.add(otherTeamTextArea1);
-		
-		otherTeamTextArea2 = new JTextArea();
-		otherTeamTextArea2.setBounds(380, 100, 90, 24);
-		contentPane.add(otherTeamTextArea2);
-		
-		textArea_infrared = new JTextArea();
-		textArea_infrared.setText("");
-		textArea_infrared.setBounds(270, 480, 200, 30);
-		contentPane.add(textArea_infrared);
-		
-		Label label = new Label("infrared");
-		label.setBounds(286, 456, 62, 22);
-		contentPane.add(label);
-		
+		btnJoinLobby.setEnabled(bool);
+		btnLeaveLobby.setEnabled(bool);
+		rdbtnLocal.setEnabled(bool);
+		rdbtnKuleuven.setEnabled(bool);
 	}
 	
 	private void createEvents(){
 		
 		// simulator gekozen.
-		toggle_simulator.addActionListener(new ActionListener() {
+		toggleSim.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					toggle_simulator.setSelected(true);
-					toggle_simulator.setEnabled(false);
-					toggle_robot.setEnabled(false);
-					debugwindow.append("U heeft gekozen voor de simulator.\n");
-					debugwindow.append("Maak een keuze uit de opdracht en.\n");
+					toggleSim.setSelected(true);
+					toggleSim.setEnabled(false);
+					toggleRobot.setEnabled(false);
+					btnStartGame.setEnabled(true);
+					rdbtnLocal.setEnabled(true);
+					rdbtnKuleuven.setEnabled(true);
 					robot = new Robot(1);
-					init();
+					//init();
 					simulatorthread.start();
 				} catch (Exception a) {
 					a.printStackTrace();
-					debugwindow.append("Kan de simulator niet initialiseren.\n");
 				}
 			}
 		});
 		
 		// robot gekozen.
-		toggle_robot.addActionListener(new ActionListener() {
+		toggleRobot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					toggle_robot.setSelected(true);
-					toggle_robot.setEnabled(false);
-					toggle_simulator.setEnabled(false);
-					debugwindow.append("U heeft gekozen voor de robot.\n");
-					debugwindow.append("Maak een keuze uit de opdrachten.\n");
+					toggleRobot.setSelected(true);
+					toggleRobot.setEnabled(false);
+					toggleSim.setEnabled(false);
+					btnStartGame.setEnabled(true);
+					rdbtnLocal.setEnabled(true);
+					rdbtnKuleuven.setEnabled(true);
 					robot = new Robot(2);
-					try {
+					/*try {
 						init();
 					} catch (IOException e1) {
 						e1.printStackTrace();
-					}
+					}*/
 					robotguithread.start();
 					robotreceivethread.start();
 					
 				} catch (CommunicationException norobot){
-					toggle_robot.setSelected(false);
-					toggle_robot.setEnabled(true);
-					toggle_simulator.setEnabled(true);
+					toggleRobot.setSelected(false);
+					toggleRobot.setEnabled(true);
+					toggleSim.setEnabled(true);
+					btnStartGame.setEnabled(false);
+					rdbtnLocal.setEnabled(false);
+					rdbtnKuleuven.setEnabled(false);
 					norobot.printStackTrace();
-					debugwindow.append("Er kan geen verbinding gemaakt worden met de robot.\n");
 				}
 				
 			}
 		});
 		
 		// keuze robot/simulator ongedaan.
-		button_terminate.addActionListener(new ActionListener() {
+		btnTerminate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				toggle_robot.setSelected(false);
-				toggle_simulator.setSelected(false);
-				toggle_robot.setEnabled(true);
-				toggle_simulator.setEnabled(true);
-				debugwindow.append("Maak een keuze uit robot of simulator.\n");
+				toggleRobot.setSelected(false);
+				toggleSim.setSelected(false);
+				toggleRobot.setEnabled(true);
+				toggleSim.setEnabled(true);
+				enableButtons(false);
 				if(robot.isSim()) {
 					simulatorTimer.stop();
 				} else {
@@ -610,98 +552,176 @@ public class Main extends JFrame {
 			}
 		});
 		
-		mntmAdvanced.addActionListener(new ActionListener() {
+		// Join lobby
+		btnJoinLobby.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (robot != null){
+				btnJoinLobby.setEnabled(false);
+				btnLeaveLobby.setEnabled(true);
+				rdbtnLocal.setEnabled(false);
+				rdbtnKuleuven.setEnabled(false);
+				btnStartGame.setEnabled(false);
+				if (rdbtnLocal.isSelected()){
+					RabbitMQ.setConnectionType("local");
+				}
+				if (rdbtnKuleuven.isSelected()){
+					RabbitMQ.setConnectionType("kul");
+				}
+				try {
+					init();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		// Leave lobby
+		btnLeaveLobby.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnLeaveLobby.setEnabled(false);
+				btnStartGame.setEnabled(true);
+				rdbtnKuleuven.setEnabled(true);
+				rdbtnLocal.setEnabled(true);
+				rdbtnKuleuven.setSelected(false);
+				rdbtnLocal.setSelected(false);
+				// TODO disconnect from lobby
+				if (rdbtnLocal.isSelected()){
+				}
+				if (rdbtnKuleuven.isSelected()){
+				}
+			}
+		});
+		
+		// Select local lobby
+		rdbtnLocal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rdbtnKuleuven.setSelected(false);
+				btnJoinLobby.setEnabled(true);
+			}
+		});
+		
+		// Select remote lobby
+		rdbtnKuleuven.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rdbtnLocal.setSelected(false);
+				btnJoinLobby.setEnabled(true);
+			}
+		});
+		
+		// Open advanced view
+		advanced.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (canShowData()){
 					Advanced advanced = new Advanced(robotPool, Main.this);
 				}
 			}
 		});
 		
-		btnExplore.addActionListener(new ActionListener() {
+		// Open sensor view
+		sensorDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (canShowData()){
+					SensorDisplay sensorDisplay = new SensorDisplay(robot, Main.this);
+					sensorDispActive = true;
+				}
+			}
+		});
+		
+		// Open debug view
+		debugDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (canShowData()){
+					DebugDisplay debugDisplay = new DebugDisplay(robot, Main.this);
+				}
+			}
+		});
+		
+		// Open position view
+		positionDisp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (canShowData()){
+					PositionDisplay positionDisplay = new PositionDisplay(robot, Main.this);
+				}
+			}
+		});
+		
+		// Start the game
+		btnStartGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				btnStartGame.setEnabled(false);
+				btnPause.setEnabled(true);
+				btnJoinLobby.setEnabled(false);
+				rdbtnKuleuven.setSelected(false);
+				rdbtnLocal.setSelected(false);
+				rdbtnLocal.setEnabled(false);
+				rdbtnKuleuven.setEnabled(false);
+				// TODO possible ready btn when connected to lobby
 				robot.explore();
 				resetCanvas();
 			}
 		});
 		
-		btn_pause.addActionListener(new ActionListener() {
+		// Pause the game
+		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnPause.setEnabled(false);
+				btnResume.setEnabled(true);
+				btnTerminate.setEnabled(true);
 				robot.pauseExplore();
 			}
 		});
 		
-		btn_resume.addActionListener(new ActionListener() {
+		// Resume the game
+		btnResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnPause.setEnabled(true);
+				btnResume.setEnabled(false);
+				btnTerminate.setEnabled(false);
 				robot.resumeExplore();
-			}
-		});
-		
-		btnSubmitBarcodes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int nr = Integer.parseInt(teamTextArea.getText());
-				if (nr < 4){
-					if(robot!=null){
-						robot.setObjectNr(nr);
-						System.out.println("OK, nr = "+nr);
-					}
-				}
-//				if (teamMateTextArea.getText().length() == 6){
-//				for (int i = 0; i < teamMateTextArea.getText().length(); i++) {
-//					code[i] = Integer.parseInt(teamMateTextArea.getText().substring(i, i+1));
-//				}
-//				Barcode teamBarcode = new Barcode(code);
-//				robot.setTeamMateBarcode(teamBarcode);
-//				}
-//				if (otherTeamTextArea1.getText().length() == 6){
-//				for (int i = 0; i < otherTeamTextArea1.getText().length(); i++) {
-//					code[i] = Integer.parseInt(otherTeamTextArea1.getText().substring(i, i+1));
-//				}
-//				Barcode otherTeamBarcode = new Barcode(code);
-//				robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
-//				if (otherTeamTextArea2.getText().length() == 6){
-//					for (int i = 0; i < otherTeamTextArea2.getText().length(); i++) {
-//						code[i] = Integer.parseInt(otherTeamTextArea2.getText().substring(i, i+1));
-//					}
-//					Barcode otherTeamBarcode = new Barcode(code);
-//					robot.addOtherTeamBarcode(otherTeamBarcode);
-//				}
-			}
-		});
-		
-	}
 
+			}
+		});
+
+		
+		// ready
+		btnReady.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					robot.setReady();
+				} catch (Exception a) {
+					a.printStackTrace();
+				}
+			}
+		});
+	}
 	
 	public void init() throws IOException {
-		String playerID = teamMateTextArea.getText();
-		
-		
-		robotPool = new RobotPool(robot);
+		String playerId = textFieldPlayerName.getText();
+				
+		robotPool = new RobotPool(robot, playerId);
 		world = new FieldSimulation(robotPool, "C:\\demo2.txt");
 		canvas.setField(world);
-//		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/Dropbox/PenOVerslagen/demo2.txt");
+		canvas2.setWorld(world);
+		canvas2.setRobotPool(robotPool);
+//		world = new FieldSimulation(robotPool, "/Users/elinetje2/Documents/2012-2013/Semester 2/P&O/demo2.txt");
 		robot.initialize();
-		robot.setSimField(world);
-		double x = 0;
-		double y = 0;
-		try {
-			x = Integer.parseInt(otherTeamTextArea1.getText());
-			y = Integer.parseInt(otherTeamTextArea2.getText());
-		} catch( Exception e ) {
-			
+		if (robot.isSim()) {
+			robot.setSimField(world);
 		}
 		
 		if (robot.isSim()) {
-			robot.setSimLoc(x, y, 0);
+			robot.setSimLoc(0, 0, 0);
 		}
 		canvas.setRobotPool(robotPool);
 		
-		world.connectToGame(BROADCAST_ID, playerID);
+		world.connectToGame(textFieldLobbyName.getText(), playerId);
 		
-		robot.connectToGame(playerID, BROADCAST_ID);
+		robot.connectToGame(playerId, textFieldLobbyName.getText());
 
 
+	}
+	
+	public boolean canShowData() {
+		return robot != null && robot.isConnectedToGame();
 	}
 	
 	public void resetCanvas() {

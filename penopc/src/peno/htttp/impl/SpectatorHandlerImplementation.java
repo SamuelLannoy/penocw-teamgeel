@@ -55,11 +55,13 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void playerDisconnected(String playerID, DisconnectReason reason) {
-
+		
 	}
 
 	@Override
 	public void playerReady(String playerID, boolean isReady) {
+		robotPool.getRobot(getPoolID(playerID)).setReady(isReady);
+		DebugBuffer.addInfo("player " + playerID + " found object");
 	}
 
 	@Override
@@ -78,14 +80,35 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 				.getStartDir(playerNumber).opposite().toAngle(), new TilePosition((int)x, (int)y), new TilePosition(0, 0));
 		DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);*/
 		//DebugBuffer.addInfo("pos= " + newpos[0] + " " + newpos[1]);
-		int[] newpos = field.convertRelativeToAbsolutePosition((int)x, (int)y, playerNumber);
+		int[] newpos = convertRelativeToAbsolutePosition((int)x, (int)y, field, playerNumber);
 		robotPool.updateRobot(getPoolID(playerID.getPlayerID()),
-				newpos[0] + field.getStartPos(playerNumber).getX(),
-				newpos[1] + field.getStartPos(playerNumber).getY(),
+				newpos[0],
+				newpos[1],
 				angle + field.getStartDir(playerNumber).toAngle());
 	}
 	
-
+	private int[] convertRelativeToAbsolutePosition(int x, int y, FieldSimulation field, int playerNumber) {
+		int[] newpos = new int[] {x,y};
+		switch(field.getStartDir(playerNumber)) {
+			case BOTTOM:
+				newpos = new int[] {-(int)x,-(int)y};
+				break;
+			case LEFT:
+				newpos = new int[] {-(int)y,(int)x};
+				break;
+			case RIGHT:
+				newpos = new int[] {(int)y,-(int)x};
+				break;
+			case TOP:
+				break;
+			default:
+				break;
+			
+		}
+		newpos[0] += field.getStartPos(playerNumber).getX();
+		newpos[1] += field.getStartPos(playerNumber).getY();
+		return newpos;
+	}
 	
 	private String getPoolID(String playerID) {
 		if (playerID.equals(ownId)) {

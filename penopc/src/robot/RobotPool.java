@@ -20,9 +20,15 @@ public class RobotPool implements Iterable<RobotModel>{
 	
 	private Map<String, RobotModel> robotPool;
 	
-	public RobotPool(Robot mainRobot){
+	private String ownId;
+	public RobotPool(Robot mainRobot, String ownId){
 		robotPool = new HashMap<String, RobotModel>();
 		robotPool.put("main", mainRobot);
+		this.ownId = ownId;
+	}
+	
+	public boolean isMainRobot(String id) {
+		return ownId.equals(id);
 	}
 	
 	public Collection<RobotModel> getRobots(){
@@ -53,6 +59,9 @@ public class RobotPool implements Iterable<RobotModel>{
 	
 	public RobotModel getRobot(String id) {
 		if (!robotPool.containsKey(id)) {
+			if (id.equals(ownId)) {
+				return getMainRobot();
+			}
 			RobotModel newModel = new RobotModel();
 			newModel.setCurrTile(new Tile(0, 0));
 			addRobot(newModel, id);
