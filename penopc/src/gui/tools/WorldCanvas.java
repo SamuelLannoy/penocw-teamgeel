@@ -29,15 +29,13 @@ public class WorldCanvas extends FieldCanvas {
 	public void setRobotPool(RobotPool robotPool) {
 		this.robotPool = robotPool;
 	}
-	
-	private boolean rescaleteammate = false;
 
 	@Override
 	public void paint(Graphics g) {
 		createBufferStrategy(2);
 		if (world != null) {
 			try{
-				if (!robotPool.getMainRobot().getField().isMerged()) {
+				if (!robotPool.getMainRobot().receivedTeamTiles()) {
 					//if (robotPool.getMainRobot().getClient().isPlaying()) {
 					paintTitle(g);
 					fieldDrawer.drawTiles(g, world, this);
@@ -45,10 +43,7 @@ public class WorldCanvas extends FieldCanvas {
 					paintRobots(g);
 					fieldDrawer.drawObjects(g, world, this);
 				} else {
-					if (!rescaleteammate){
-						rescale(robotPool.getMainRobot().getTeamMateField());
-						rescaleteammate = true;
-					}
+					rescale(robotPool.getMainRobot().getTeamMateField());
 					fieldDrawer.drawTiles(g, robotPool.getMainRobot().getTeamMateField(), this);
 					fieldDrawer.drawBorders(g, robotPool.getMainRobot().getTeamMateField(), this);
 					fieldDrawer.drawObjects(g, robotPool.getMainRobot().getTeamMateField(), this);

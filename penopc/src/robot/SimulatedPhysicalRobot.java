@@ -209,16 +209,22 @@ public class SimulatedPhysicalRobot implements ISimulator {
 	@Override
 	public double getTDistanceX() {
 		updateStartPos();
-		return robot.getCurrTile().getPosition().getX() * 40
-				+ robot.getPosition().getPosX()
+		int[] pos = world.convertRelativeToAbsolutePosition(robot.getCurrTile().getPosition().getX(),
+				robot.getCurrTile().getPosition().getY(), robot.getPlayerNr());
+		double xx = pos[0] * 40 + startx;
+		System.out.println("x " + xx);
+		return pos[0] * 40
 				+ startx;
 	}
 
 	@Override
 	public double getTDistanceY() {
 		updateStartPos();
-		return robot.getCurrTile().getPosition().getY() * 40
-				+ robot.getPosition().getPosY()
+		int[] pos = world.convertRelativeToAbsolutePosition(robot.getCurrTile().getPosition().getX(),
+				robot.getCurrTile().getPosition().getY(), robot.getPlayerNr());
+		double yy = pos[1] * 40 + starty;
+		System.out.println("y " + yy);
+		return pos[1] * 40
 				+ starty;
 	}
 	

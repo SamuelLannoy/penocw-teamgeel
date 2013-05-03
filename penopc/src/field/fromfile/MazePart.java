@@ -9,164 +9,168 @@ import field.*;
 public enum MazePart {
 	STRAIGHT {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			orientation = orientation.toLowerCase();
 			List<Border> map = new ArrayList<Border>();
 			if (orientation.equals("s") || orientation.equals("n")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			}
 			return map;
 		}
 	}, CORNER {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			orientation = orientation.toLowerCase();
 			List<Border> map = new ArrayList<Border>();
 			if (orientation.equals("n")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("s")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("e")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("w")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			}
 			return map;
 		}
 	}, T {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			orientation = orientation.toLowerCase();
 			List<Border> map = new ArrayList<Border>();
 			if (orientation.equals("n")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("s")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("e")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("w")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
 				map.add(new WhiteBorder(tile, Direction.BOTTOM));
 			}
 			return map;
 		}
 	}, DEADEND {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			orientation = orientation.toLowerCase();
 			List<Border> map = new ArrayList<Border>();
 			if (orientation.equals("n")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("s")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("e")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("w")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			}
 			return map;
 		}
 	}, CROSS {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			List<Border> map = new ArrayList<Border>();
-			map.add(new WhiteBorder(tile, Direction.LEFT));
-			map.add(new WhiteBorder(tile, Direction.RIGHT));
-			map.add(new WhiteBorder(tile, Direction.TOP));
-			map.add(new WhiteBorder(tile, Direction.BOTTOM));
+			map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+			map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+			map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+			map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			return map;
 		}
 	}, CLOSED {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			List<Border> map = new ArrayList<Border>();
-			map.add(new PanelBorder(tile, Direction.LEFT));
-			map.add(new PanelBorder(tile, Direction.RIGHT));
-			map.add(new PanelBorder(tile, Direction.TOP));
-			map.add(new PanelBorder(tile, Direction.BOTTOM));
+			map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+			map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+			map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+			map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			return map;
 		}
 	}, SEESAW {
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			orientation = orientation.toLowerCase();
 			List<Border> map = new ArrayList<Border>();
 			if (orientation.equals("n")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new SeesawBorder(tile, Direction.TOP));
-				map.add(new WhiteBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new SeesawBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("s")) {
-				map.add(new PanelBorder(tile, Direction.LEFT));
-				map.add(new PanelBorder(tile, Direction.RIGHT));
-				map.add(new WhiteBorder(tile, Direction.TOP));
-				map.add(new SeesawBorder(tile, Direction.BOTTOM));
+				map.add(new PanelBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new SeesawBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("e")) {
-				map.add(new WhiteBorder(tile, Direction.LEFT));
-				map.add(new SeesawBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new WhiteBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new SeesawBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			} else if (orientation.equals("w")) {
-				map.add(new SeesawBorder(tile, Direction.LEFT));
-				map.add(new WhiteBorder(tile, Direction.RIGHT));
-				map.add(new PanelBorder(tile, Direction.TOP));
-				map.add(new PanelBorder(tile, Direction.BOTTOM));
+				map.add(new SeesawBorder(tile, Direction.LEFT.offset(rotation)));
+				map.add(new WhiteBorder(tile, Direction.RIGHT.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.TOP.offset(rotation)));
+				map.add(new PanelBorder(tile, Direction.BOTTOM.offset(rotation)));
 			}
 			return map;
 		}
 	}, UNKNOWN {
 
 		@Override
-		public List<Border> getBorders(String orientation, Tile tile) {
+		public List<Border> getBorders(String orientation, Tile tile, double rotation) {
 			return new ArrayList<Border>();
 		}
 		
 	};
+
+	public abstract List< Border> getBorders(String orientation, Tile tile, double rotation);
 	
-	public abstract List< Border> getBorders(String orientation, Tile tile);
+	public List< Border> getBorders(String orientation, Tile tile) {
+		return getBorders(orientation, tile, 0);
+	}
 	
 	public static MazePart getPartFromString(String string) {
 		//System.out.println("converting: " + string);

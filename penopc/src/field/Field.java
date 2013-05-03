@@ -79,6 +79,10 @@ public abstract class Field{
 		return getBorderInDirection(tile.getPosition(), dir);
 	}
 	
+	public boolean hasBorderInDirection(Tile tile, Direction dir) {
+		return borderMap.hasId(dir.getBorderPositionInDirection(tile.getPosition()));
+	}
+	
 	public Border getTopBorderOfTile(Tile tile)
 			throws IllegalArgumentException {
 		BorderPosition pos = new BorderPosition(tile.getPosition(), tile.getPosition().getNorthPosition());

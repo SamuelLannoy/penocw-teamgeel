@@ -254,6 +254,10 @@ public enum Direction {
 		throw new RuntimeException();
 	}
 	
+	public Direction offset(double rotation) {
+		return fromAngle(toAngle() + rotation);
+	}
+	
 	public static Direction fromDiffPos(int dx, int dy) {
 		if (dx == 0 && dy == -1) {
 			return BOTTOM;

@@ -26,6 +26,11 @@ public class Explorer {
 			public boolean isLastTile(Robot robot) {
 				return false;
 			}
+
+			@Override
+			public boolean checkEveryTile() {
+				return false;
+			}
 			
 		});
 	}
@@ -36,6 +41,11 @@ public class Explorer {
 			@Override
 			public boolean isLastTile(Robot robot) {
 				return robot.hasBall();
+			}
+
+			@Override
+			public boolean checkEveryTile() {
+				return false;
 			}
 			
 		});
@@ -150,7 +160,7 @@ public class Explorer {
 			//DebugBuffer.addInfo("explore " + current.getTile().getPosition());
 			
 			
-			robot.goToTile(current);
+			robot.goToTile(current, endCond);
 			
 			Collection<TilePosition> toAdd = robot.exploreTile();
 			

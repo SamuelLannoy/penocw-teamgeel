@@ -49,8 +49,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void gameRolled(int playerNumber, int objectNr) {
-		//robot.setObjectNr(objectNr);
-		robot.setObjectNr(3);
+		robot.setObjectNr(objectNr);
 		//playerNumber += 1;
 		DebugBuffer.addInfo("player number: " + playerNumber + " object nr " + objectNr);
 		robot.setPlayerNr(playerNumber);
@@ -94,7 +93,8 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 			robot.getTeamMate().setField(teamMateField);			
 			robot.setReceivedTeamTiles(true);
 		} else {
-			((PenoHtttpFieldRepresentation)robot.getTeamMate().getField()).addTilesFromTeammate(tiles);
+			((PenoHtttpFieldRepresentation)robot.getTeamMate().getField())
+				.addTilesFromTeammate(tiles, robot.getField().getRotation());
 		}
 	}
 	

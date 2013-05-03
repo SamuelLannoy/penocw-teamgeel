@@ -13,14 +13,18 @@ public class PenoHtttpFieldRepresentation extends FieldRepresentation {
 	
 	public PenoHtttpFieldRepresentation(Collection<peno.htttp.Tile> tileList) {
 		super();
-		addFromComm(tileList);
+		addFromComm(tileList, 0);
 	}
 	
 	public void addTilesFromTeammate(Collection<peno.htttp.Tile> tileList) {
-		addFromComm(tileList);
+		addFromComm(tileList, 0);
+	}
+
+	public void addTilesFromTeammate(Collection<peno.htttp.Tile> tileList, double rotation) {
+		addFromComm(tileList, rotation);
 	}
 	
-	private void addFromComm(Collection<peno.htttp.Tile> tileList) {
+	private void addFromComm(Collection<peno.htttp.Tile> tileList, double rotation) {
 		for (peno.htttp.Tile tileMsg : tileList) {
 			String[] split = tileMsg.getToken().split("\\.");
 			MazePart part = MazePart.getPartFromString(split[0]);
@@ -39,7 +43,7 @@ public class PenoHtttpFieldRepresentation extends FieldRepresentation {
 				added.setBarcode(new Barcode(nr));
 			}
 			
-			Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added);
+			Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added, rotation);
 
 			for (Border border : borders) {
 				if (border instanceof SeesawBorder) {

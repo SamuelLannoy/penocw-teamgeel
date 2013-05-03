@@ -936,8 +936,11 @@ public class Robot extends RobotModel{
 			// TODO check win
 		}
 	}
-	
+
 	public void goToTile(TilePosition tilePos) {
+		goToTile(tilePos, EndingCondition.NULL_CONDITION);
+	}
+	public void goToTile(TilePosition tilePos, EndingCondition endingCondition) {
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
@@ -945,7 +948,11 @@ public class Robot extends RobotModel{
 			decreaseSpottedRobotTiles();
 			tilePos = Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
 			setCurrentAction("Moving to tile " + tilePos);
-			reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
+			if (endingCondition.checkEveryTile()) {
+				reachedDestination = goToTileLoop(tilePos, ignoredSeesaws) || endingCondition.isLastTile(this);
+			} else {
+				reachedDestination = goToTileLoop(tilePos, ignoredSeesaws);
+			}
 		}
 	}
 	
@@ -1115,82 +1122,50 @@ public class Robot extends RobotModel{
 	public Collection<TilePosition> exploreTile() {
 		Collection<TilePosition> toExplore = new ArrayList<TilePosition>(4);
 		// ask if barcode was read
-		boolean correct = hasCorrectBarcode();
-		boolean wrong = hasWrongBarcode();
 
-		System.out.println("correct: " + correct + " wrong: " + wrong + " is scanning: " + isScanning());
+		System.out.println("barcode " + getCurrTile().hasBarcode());
 		// barcode has been detected
 		//if (correct || wrong || isScanning()) {
 		if (getCurrTile().hasBarcode()) {
 			getField().registerBarcode(getCurrTile().getPosition(), getDirection());
-			
-			// is not scanning anymore
-			if (!isScanning()) {
-				if (correct) {
-					// has received correct => wait till it appears on tile
-					while (getCurrTile().getBarcode() == null);
-				} else {
-					// if wrong barcode wait 5s
-					waitTillStandby(5000);
-				}
-			} else { // still scanning
-				DebugBuffer.addInfo("still scanning!");
-				waitTillStandby(5000);
-
-				// reupdate correct / wrong
-				correct = hasCorrectBarcode();
-				wrong = hasWrongBarcode();
-			}
 
 			//DebugBuffer.addInfo("correct barcode");
 
 			// get barcode of current tile
 			Barcode code = getCurrTile().getBarcode();
 
-			//DebugBuffer.addInfo("test: " + code.getType());
+			System.out.println("barcode type: " + code.getType());
 
 			// do action based on the barcode type
-			switch (code.getType()) {
-				case OBJECT:
-					System.out.println("Teamnr: "+getTeamNr());
-					System.out.println("Gevonden: "+hasFoundOwnBarcode());
-	
-					// keep current tile of robot as reference
-					Tile tile = getCurrTile();
-					getField().registerBall(tile.getPosition(), getDirection());
-	
-					//if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
-					System.out.println("bc: " + getCurrTile().getBarcode().getObjectNr() + " mine " + getObjectNr());
-					if (getCurrTile().getBarcode().getObjectNr() == getObjectNr() && !hasFoundOwnBarcode()) {
-						pickUpObjectAction();
-					} else {
-						wrongObjectAction();
-					}
-	
-					System.out.println("tile: " + getCurrTile().getPosition());
-					break;
-				case CHECKPOINT:
-					TilePosition afterBarcodePos = getDirection().getPositionInDirection(getCurrTile().getPosition());
-					toExplore.add(afterBarcodePos);
-					break;
-				case ILLEGAL:
-					break;
-				case OTHERPLAYERBARCODE:
-					break;
-				case PICKUP:
-					break;
-				case SEESAW:
-					// keep current tile as reference
-					Tile ctile = getCurrTile();
-					getField().registerSeesaw(ctile.getPosition(), getDirection());
-	
-					//seesawAction();
-	
-					TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
-					toExplore.add(afterWipPos);
-					break;
-				default:
-					break;
+			if (code.isObject()) {
+				System.out.println("Teamnr: "+getTeamNr());
+				System.out.println("Gevonden: "+hasFoundOwnBarcode());
+
+				// keep current tile of robot as reference
+				Tile tile = getCurrTile();
+				getField().registerBall(tile.getPosition(), getDirection());
+
+				//if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
+				System.out.println("bc: " + getCurrTile().getBarcode().getObjectNr() + " mine " + getObjectNr());
+				if (getCurrTile().getBarcode().getObjectNr() == getObjectNr() && !hasFoundOwnBarcode()) {
+					pickUpObjectAction();
+				} else {
+					wrongObjectAction();
+				}
+
+				System.out.println("tile: " + getCurrTile().getPosition());
+			} else if (code.isCheckPoint()) {
+				TilePosition afterBarcodePos = getDirection().getPositionInDirection(getCurrTile().getPosition());
+				toExplore.add(afterBarcodePos);
+			} else if (code.isSeesaw()) {
+				// keep current tile as reference
+				Tile ctile = getCurrTile();
+				getField().registerSeesaw(ctile.getPosition(), getDirection());
+
+				//seesawAction();
+
+				TilePosition afterWipPos = getTilePositionAfterSeesaw(ctile);
+				toExplore.add(afterWipPos);
 			}
 		} else {
 			TilePosition current = getCurrTile().getPosition();
@@ -1423,6 +1398,11 @@ public class Robot extends RobotModel{
 			public boolean isLastTile(Robot robot) {
 				return robot.hasTeamMate();
 			}
+
+			@Override
+			public boolean checkEveryTile() {
+				return true;
+			}
 		});
 		
 		// wait till my teammate is here
@@ -1441,7 +1421,13 @@ public class Robot extends RobotModel{
 			public boolean isLastTile(Robot robot) {
 				return receivedTeamTiles();
 			}
+
+			@Override
+			public boolean checkEveryTile() {
+				return true;
+			}
 		});
+		while (!receivedTeamTiles());
 		setCurrentAction("Merging tiles");
 
 		try {
@@ -1462,6 +1448,11 @@ public class Robot extends RobotModel{
 						DebugBuffer.addInfo("could not merge fields");
 						return false;
 					}
+				}
+
+				@Override
+				public boolean checkEveryTile() {
+					return true;
 				}
 			});
 		}

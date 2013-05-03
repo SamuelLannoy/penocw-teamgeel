@@ -205,6 +205,7 @@ public class FieldSimulation extends Field {
 	public Tile getTileOfPos(double xpos, double ypos)
 			throws IllegalArgumentException {
 		TilePosition tilePos = convertToTilePosition(xpos, ypos);
+		//System.out.println("x " + xpos + " y " + ypos);
 		return tileMap.getObjectAtId(tilePos);
 	}
 	
