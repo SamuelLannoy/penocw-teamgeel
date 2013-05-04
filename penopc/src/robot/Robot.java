@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.border.Border;
-
 import communication.CommandEncoder;
 import communication.SeesawStatus;
 import communication.Status;
@@ -19,7 +17,6 @@ import robot.brain.Explorer;
 import robot.brain.Pathfinder;
 import simulator.ISimulator;
 import simulator.VirtualRobotConnector;
-import simulator.lightsensor.LightSensor;
 import team.communication.PenoHtttpTeamCommunicator;
 import team.communication.TeamCommunicator;
 import team.communication.ILobbyViewer;
@@ -963,6 +960,7 @@ public class Robot extends RobotModel{
 	public void goToTile(TilePosition tilePos) {
 		goToTile(tilePos, EndingCondition.NULL_CONDITION);
 	}
+	
 	public void goToTile(TilePosition tilePos, EndingCondition endingCondition) {
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
@@ -1001,7 +999,6 @@ public class Robot extends RobotModel{
 				// before moving flush barcode values
 				hasWrongBarcode();
 				hasCorrectBarcode();
-				
 
 				if (getField().pathRunsThroughSeesaw(getAStarTileList()) &&
 						getField().isExplored(getCurrTile().getPosition()) &&
@@ -1045,16 +1042,30 @@ public class Robot extends RobotModel{
 			// no we can't
 			e.printStackTrace();
 			if(!getField().isExplored(getCurrTile().getPosition())) {
-				exploreTile();
+				newTileScan();
 			}
 			Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
+			
+			waitRandomTime();
+			
 			if (!Explorer.isOtherReachable()) {
 				Explorer.clear(this);
 				randomWalkUntilChoosingPointPassed();
 				Explorer.setExploreTiles(this);
 			}
+			
+			waitRandomTime();
 		}
 		return false;
+	}
+	
+	private void waitRandomTime() {
+		int randomWait = (int)((Math.random() * 5) + 5) * 1000;
+		try {
+			Thread.sleep(randomWait);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// Used for robot detection
@@ -1067,14 +1078,7 @@ public class Robot extends RobotModel{
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
-		System.out.println("RANDOM WALK TRALALALALALALALLALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
-		
-		int randomWait1 = (int)((Math.random() * 5) + 1) * 1000;
-		try {
-			Thread.sleep(randomWait1);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		System.out.println("RANDOM WALK");
 		
 		boolean choosingPointPassed = false;
 		TilePosition lastPos = null;
@@ -1082,7 +1086,7 @@ public class Robot extends RobotModel{
 		ArrayList<TilePosition> visited = new ArrayList<TilePosition>();
 		
 		while(!choosingPointPassed) {
-			System.out.println("NIEUWE WHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIILE");
+			System.out.println("NIEUWE WHILE");
 			List<Direction> possibleDirs = new ArrayList<Direction>();
 			
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection()) instanceof PanelBorder)) {
@@ -1092,30 +1096,34 @@ public class Robot extends RobotModel{
 						&& fieldSimulation.checkIfSafe(0)) {
 					possibleDirs.add(getDirection());
 				}
+				System.out.println("POSSIBLE: " + getDirection());
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
 						&& !visited.contains(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
-					 	&& fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+					 	&& !fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 					 	&& fieldSimulation.checkIfSafe(-180)) {
 					possibleDirs.add(getDirection().opposite());
 				}
+				System.out.println("POSSIBLE: " + getDirection().opposite());
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
 						&& !visited.contains(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
-						&& fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+						&& !fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 						&& fieldSimulation.checkIfSafe(-90)) {
 					possibleDirs.add(getDirection().left());
 				}
+				System.out.println("POSSIBLE: " + getDirection().left());
 			} 
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
 						&& !visited.contains(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
-						&& fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
+						&& !fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 						&& fieldSimulation.checkIfSafe(90)) {
 					possibleDirs.add(getDirection().right());
 				}
+				System.out.println("POSSIBLE: " + getDirection().right());
 			}
 			
 			if(possibleDirs.size() > 2) {
@@ -1125,6 +1133,7 @@ public class Robot extends RobotModel{
 			if(possibleDirs.size() > 0) {
 				Direction chosenDir = possibleDirs.get((int)(Math.random() * (possibleDirs.size() - 1)));
 				lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
+				System.out.println("CHOSEN:" + chosenDir);
 				goToTile(lastPos);
 				visited.add(lastPos);
 			} else {
@@ -1132,14 +1141,7 @@ public class Robot extends RobotModel{
 			}
 		}
 		
-		int randomWait2 = (int)((Math.random() * 5) + 5) * 1000;
-		try {
-			Thread.sleep(randomWait2);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("END THIS WALK IN THE PARK");
+		System.out.println("END RANDOM WALK");
 	}
 
 	/**

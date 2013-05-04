@@ -553,7 +553,19 @@ public class FieldSimulation extends Field {
 			}
 		}
 		
-		return !isRobotInFront() && frontSafe && rightSafe && leftSafe; 
+		boolean isRobotInFront = false;
+		
+		for (RobotModel model : robotPool.getOtherRobots()) {
+			TilePosition modelTilePos = model.getCurrTile().getPosition();
+			
+			// Check if the robot is on the next tile
+			if(!(getBorderInDirection(tile, dir) instanceof PanelBorder)) {
+				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+				if (nextTilePos.equals(modelTilePos)) isRobotInFront = true;
+			}
+		}
+		
+		return !isRobotInFront && frontSafe && rightSafe && leftSafe; 
 	}
 	
 	public int[] convertRelativeToAbsolutePosition(int x, int y, int playerNumber) {
