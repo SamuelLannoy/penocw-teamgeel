@@ -314,11 +314,11 @@ public class Robot extends RobotModel{
 		}
 	}
 	
-	public void travelToNextTile(Tile tile) {
-		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) > 1)
-			throw new IllegalArgumentException("tile is not next to current tile " + tile.getPosition());
+	public void travelToNextTile(TilePosition tile) {
+		if (tile.manhattanDistance(getCurrTile().getPosition()) > 1)
+			throw new IllegalArgumentException("tile is not next to current tile " + tile);
 		sendPosition();
-		if (tile.getPosition().manhattanDistance(getCurrTile().getPosition()) == 0)
+		if (tile.manhattanDistance(getCurrTile().getPosition()) == 0)
 			return;
 		//turnToTile(tile.getPosition());
 		moveNext();
@@ -492,7 +492,7 @@ public class Robot extends RobotModel{
 			@Override
 			public void run() {
 				for (Tile tile : list) {
-					travelToNextTile(tile);
+					travelToNextTile(tile.getPosition());
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -1025,7 +1025,7 @@ public class Robot extends RobotModel{
 					// travel to second tile, because first one is always our own tile
 					//DebugBuffer.addInfo("moving to " + tileList.get(1).getPosition());
 					System.out.println("start travel");
-					travelToNextTile(tileList.get(1));
+					travelToNextTile(tileList.get(1).getPosition());
 					waitTillStandby(750);
 					waitTillStandby(250);
 					System.out.println("end travel");
@@ -1107,6 +1107,7 @@ public class Robot extends RobotModel{
 		while(!choosingPointPassed) {
 			System.out.println("NIEUWE WHILE");
 			List<Direction> possibleDirs = new ArrayList<Direction>();
+			possibleDirs.clear();
 			
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().getPositionInDirection(getCurrTile().getPosition()))
@@ -1114,8 +1115,8 @@ public class Robot extends RobotModel{
 						&& !fieldRepresentation.getTileAt(getDirection().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 						&& fieldSimulation.checkIfSafe(0)) {
 					possibleDirs.add(getDirection());
+					System.out.println("POSSIBLE: " + getDirection());
 				}
-				System.out.println("POSSIBLE: " + getDirection());
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().opposite()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition()))
@@ -1123,8 +1124,8 @@ public class Robot extends RobotModel{
 					 	&& !fieldRepresentation.getTileAt(getDirection().opposite().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 					 	&& fieldSimulation.checkIfSafe(-180)) {
 					possibleDirs.add(getDirection().opposite());
+					System.out.println("POSSIBLE: " + getDirection().opposite());
 				}
-				System.out.println("POSSIBLE: " + getDirection().opposite());
 			}
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().left()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().left().getPositionInDirection(getCurrTile().getPosition()))
@@ -1132,8 +1133,8 @@ public class Robot extends RobotModel{
 						&& !fieldRepresentation.getTileAt(getDirection().left().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 						&& fieldSimulation.checkIfSafe(-90)) {
 					possibleDirs.add(getDirection().left());
-				}
-				System.out.println("POSSIBLE: " + getDirection().left());
+					System.out.println("POSSIBLE: " + getDirection().left());
+				}				
 			} 
 			if(!(fieldRepresentation.getBorderInDirection(getCurrTile(), getDirection().right()) instanceof PanelBorder)) {
 				if(fieldRepresentation.isExplored(getDirection().right().getPositionInDirection(getCurrTile().getPosition()))
@@ -1141,8 +1142,8 @@ public class Robot extends RobotModel{
 						&& !fieldRepresentation.getTileAt(getDirection().right().getPositionInDirection(getCurrTile().getPosition())).hasBarcode()
 						&& fieldSimulation.checkIfSafe(90)) {
 					possibleDirs.add(getDirection().right());
+					System.out.println("POSSIBLE: " + getDirection().right());
 				}
-				System.out.println("POSSIBLE: " + getDirection().right());
 			}
 			
 			if(possibleDirs.size() > 2) {
@@ -1153,7 +1154,8 @@ public class Robot extends RobotModel{
 				Direction chosenDir = possibleDirs.get((int)(Math.random() * (possibleDirs.size() - 1)));
 				lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
 				System.out.println("CHOSEN:" + chosenDir);
-				goToTile(lastPos);
+				turnToTile(lastPos);
+				travelToNextTile(lastPos);
 				visited.add(lastPos);
 			} else {
 				break;
