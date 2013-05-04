@@ -381,7 +381,7 @@ public class FieldSimulation extends Field {
 	}
 	
 	/**
-	 * USE: ultrasonic sensor & robot detection
+	 * USE: ultrasonic sensor
 	 */
 	public boolean isRobotInFront() {
 		Tile tile = getCurrentTile();
@@ -441,6 +441,7 @@ public class FieldSimulation extends Field {
 	 * USE: robot detection
 	 */
 	public boolean checkIfSafe(int xPosTeamMate, int yPosTeamMate, int playerNumber) {
+		boolean isRobotInFront = false;
 		boolean frontSafe = true;
 		boolean rightSafe = true;
 		boolean leftSafe = true;
@@ -457,12 +458,12 @@ public class FieldSimulation extends Field {
 			if(!(getBorderInDirection(tile, dir) instanceof PanelBorder)) {
 	
 				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
-					
+									
 				// Check if the robot is on the next tile
 				if (nextTilePos.equals(modelTilePos) &&
-					nextTilePos.getX() != teamMatePos[0] && nextTilePos.getY() != teamMatePos[1])
-					return true;
-				
+						nextTilePos.getX() != teamMatePos[0] && nextTilePos.getY() != teamMatePos[1]) 
+						isRobotInFront = true;
+					
 				// Check if the robot is on the forward-front tile
 				if(!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
 					TilePosition frontTilePos = dir.getPositionInDirection(nextTilePos);
@@ -494,7 +495,7 @@ public class FieldSimulation extends Field {
 			}
 		}
 		
-		return !isRobotInFront() && frontSafe && rightSafe && leftSafe; 
+		return !isRobotInFront && frontSafe && rightSafe && leftSafe; 
 	}
 	
 	/**
@@ -508,7 +509,7 @@ public class FieldSimulation extends Field {
 	 * USE: robot detection
 	 */
 	public boolean checkIfSafe(int offset) {
-		
+		boolean isRobotInFront = false;
 		boolean frontSafe = true;
 		boolean rightSafe = true;
 		boolean leftSafe = true;
@@ -524,6 +525,10 @@ public class FieldSimulation extends Field {
 			if(!(getBorderInDirection(tile, dir) instanceof PanelBorder)) {
 	
 				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
+				
+				// Check if the robot is on the next tile
+				if (nextTilePos.equals(modelTilePos)) 
+					isRobotInFront = true;
 				
 				// Check if the robot is on the forward-front tile
 				if(!(getBorderInDirection(nextTilePos, dir) instanceof PanelBorder)) {
@@ -550,18 +555,6 @@ public class FieldSimulation extends Field {
 						rightSafe = false;
 				}
 				
-			}
-		}
-		
-		boolean isRobotInFront = false;
-		
-		for (RobotModel model : robotPool.getOtherRobots()) {
-			TilePosition modelTilePos = model.getCurrTile().getPosition();
-			
-			// Check if the robot is on the next tile
-			if(!(getBorderInDirection(tile, dir) instanceof PanelBorder)) {
-				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
-				if (nextTilePos.equals(modelTilePos)) isRobotInFront = true;
 			}
 		}
 		
