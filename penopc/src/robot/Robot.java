@@ -162,11 +162,10 @@ public class Robot extends RobotModel{
 		updatePosition();
 	}
 	
+	private boolean stoppedGame = false;
+	
 	public void stopGame() {
-		while (true) {
-			robotConn.stopMoving();
-			waitTillStandby(1000);
-		}
+		stoppedGame = true;
 	}
 	
 	public void moveForward(double distance) {
@@ -856,6 +855,7 @@ public class Robot extends RobotModel{
 			pauseLightSensor();
 			moveForward(800);
 			waitTillStandby(2500);
+			while (!checkIfSafe());
 			moveForward(400);
 			waitTillStandby(380);
 			//this.orientOnWhiteLine(false);
@@ -868,6 +868,7 @@ public class Robot extends RobotModel{
 			//moveForward(190);
 			waitTillStandby(400);
 			setCurrentAction("centering on tile after seesaw");
+			while (!checkIfSafe());
 			CommandEncoder.getInstance().setOnCenterTileAfterSeesaw(getLeftFlag());
 			waitTillStandby(4000);
 			while(Status.isCentering()){
@@ -878,7 +879,10 @@ public class Robot extends RobotModel{
 			waitTillStandby(4000);
 			System.out.println("lightsensor resumed");
 		} else {
-			moveForward(1200);
+			moveForward(800);
+			waitTillStandby(400);
+			while (!checkIfSafe());
+			moveForward(400);
 			waitTillStandby(400);
 			// flush barcode values before moving
 			hasCorrectBarcode();
@@ -936,6 +940,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void goToTeamMate() {
+		if (stoppedGame)
+			return;
 		// TODO never go to teammate on seesaw?
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
@@ -964,6 +970,8 @@ public class Robot extends RobotModel{
 		goToTile(tilePos, EndingCondition.NULL_CONDITION);
 	}
 	public void goToTile(TilePosition tilePos, EndingCondition endingCondition) {
+		if (stoppedGame)
+			return;
 		Collection<Integer> ignoredSeesaws = new ArrayList<Integer>(6);
 		boolean reachedDestination = false;
 		// redo this till we have found our destination
@@ -980,6 +988,8 @@ public class Robot extends RobotModel{
 	}
 	
 	private boolean goToTileLoop(TilePosition tilePos, Collection<Integer> ignoredSeesaws) {
+		if (stoppedGame)
+			return true;
 		// can we find a path to the tile ?
 		try {
 			// yes we can
@@ -1048,7 +1058,7 @@ public class Robot extends RobotModel{
 				exploreTile();
 			}
 			Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
-			if (!Explorer.isOtherReachable()) {
+			if (getField().isMerged() || !Explorer.isOtherReachable()) {
 				Explorer.clear(this);
 				randomWalkUntilChoosingPointPassed();
 				Explorer.setExploreTiles(this);
@@ -1067,6 +1077,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void randomWalkUntilChoosingPointPassed() {
+		if (stoppedGame)
+			return;
 		System.out.println("RANDOM WALK TRALALALALALALALLALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALALA");
 		
 		int randomWait1 = (int)((Math.random() * 5) + 1) * 1000;
@@ -1147,6 +1159,8 @@ public class Robot extends RobotModel{
 	 * @return returns tilepositions that need to be explored
 	 */
 	public Collection<TilePosition> exploreTile() {
+		if (stoppedGame)
+			return new ArrayList<TilePosition>();
 		Collection<TilePosition> toExplore = new ArrayList<TilePosition>(4);
 		// ask if barcode was read
 
@@ -1270,6 +1284,8 @@ public class Robot extends RobotModel{
 	 * @return true if crossed seesaw, false if we didn't cross it
 	 */
 	public boolean seesawAction() {
+		if (stoppedGame)
+			return false;
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
@@ -1311,6 +1327,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void pickUpObjectAction() {
+		if (stoppedGame)
+			return;
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
@@ -1365,7 +1383,10 @@ public class Robot extends RobotModel{
 		turnLeft(180);
 		pauseLightSensor();
 		waitTillStandby(1500);
-		moveForward(800);
+		moveForward(400);
+		waitTillStandby(500);
+		while (!checkIfSafe());
+		moveForward(400);
 		waitTillStandby(500);
 		resumeLightSensor();
 		setHasBall(true);
@@ -1387,6 +1408,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void wrongObjectAction() {
+		if (stoppedGame)
+			return;
 		// keep current tile and orientation as reference
 		Tile ctile = getCurrTile();
 		Direction dirForw = getDirection();
@@ -1407,7 +1430,10 @@ public class Robot extends RobotModel{
 			waitTillStandby(250);
 			turnLeft(180);
 			waitTillStandby(250);
-			moveForward(750);
+			moveForward(350);
+			waitTillStandby(250);
+			while (!checkIfSafe());
+			moveForward(400);
 			waitTillStandby(250);
 			//DebugBuffer.addInfo("RESUME");
 			scanOnlyLines(false);
@@ -1423,6 +1449,8 @@ public class Robot extends RobotModel{
 	}
 	
 	public void teamComm() {
+		if (stoppedGame)
+			return;
 		setCurrentAction("Looking for friend");
 		waitTillStandby(2000);
 		// wait till teammate is set, meanwhile go explore
@@ -1496,6 +1524,11 @@ public class Robot extends RobotModel{
 		waitTillStandby(2000);
 		
 		Explorer.clear(this);
+		
+		while (!hasValidTeamMatePosition()) {
+			sendPosition();
+			waitTillStandby(500);
+		}
 		
 		goToTeamMate();
 	}
@@ -1574,5 +1607,16 @@ public class Robot extends RobotModel{
 	public int getTeamNr() {
 		return teamNr;
 	}
+	
+	private boolean hasValidTeamMatePosition = false;
+
+	public boolean hasValidTeamMatePosition() {
+		return hasValidTeamMatePosition;
+	}
+
+	public void setHasValidTeamMatePosition(boolean hasValidTeamMatePosition) {
+		this.hasValidTeamMatePosition = hasValidTeamMatePosition;
+	}
+	
 	
 }
