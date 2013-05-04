@@ -149,6 +149,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 				), new field.Tile(new TilePosition(teamx, teamy)));
 		robot.getTeamMate()
 			.setCurrTile(new field.Tile(new TilePosition(teamx, teamy)));
+		robot.setHasValidTeamMatePosition(true);
 
 		
 		/*robot.getTeamMate().setPosition(new Position(
