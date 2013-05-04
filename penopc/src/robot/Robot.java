@@ -1057,12 +1057,15 @@ public class Robot extends RobotModel{
 			Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
 		
 			waitRandomTime();
+			if (checkIfSafe()) {
+				return false;
+			}
 			if (getField().isMerged() || !Explorer.isOtherReachable()) {
 				Explorer.clear(this);
 				randomWalkUntilChoosingPointPassed();
 				Explorer.setExploreTiles(this);
 			}
-			
+
 			waitRandomTime();
 		}
 		return false;
@@ -1070,10 +1073,13 @@ public class Robot extends RobotModel{
 	
 	private void waitRandomTime() {
 		int randomWait = (int)((Math.random() * 5) + 5) * 1000;
-		try {
-			Thread.sleep(randomWait);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (!checkIfSafe() && randomWait >= 0) {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			randomWait--;
 		}
 	}
 	
