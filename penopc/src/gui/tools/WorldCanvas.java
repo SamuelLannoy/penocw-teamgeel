@@ -35,22 +35,60 @@ public class WorldCanvas extends FieldCanvas {
 		createBufferStrategy(2);
 		if (world != null) {
 			try{
-				if (!robotPool.getMainRobot().receivedTeamTiles()) {
-					//if (robotPool.getMainRobot().getClient().isPlaying()) {
-					paintTitle(g);
-					fieldDrawer.drawTiles(g, world, this);
-					fieldDrawer.drawBorders(g, world, this);
-					paintRobots(g);
-					fieldDrawer.drawObjects(g, world, this);
+				if (world.getWinFlag() == -1) {
+					if (!robotPool.getMainRobot().receivedTeamTiles()) {
+						rescale(world);
+						//if (robotPool.getMainRobot().getClient().isPlaying()) {
+						paintTitle(g, "World View");
+						fieldDrawer.drawTiles(g, world, this);
+						fieldDrawer.drawBorders(g, world, this);
+						if (robotPool.getMainRobot().getLobbyViewer().isPlaying()) {
+							paintRobots(g);
+						} else {
+							paintStartPositions(g);
+						}
+						fieldDrawer.drawObjects(g, world, this);
+					} else {
+						paintTitle(g, "Teammate Field");
+						rescale(robotPool.getMainRobot().getTeamMateField());
+						fieldDrawer.drawTiles(g, robotPool.getMainRobot().getTeamMateField(), this);
+						fieldDrawer.drawBorders(g, robotPool.getMainRobot().getTeamMateField(), this);
+						fieldDrawer.drawObjects(g, robotPool.getMainRobot().getTeamMateField(), this);
+					}
 				} else {
-					rescale(robotPool.getMainRobot().getTeamMateField());
-					fieldDrawer.drawTiles(g, robotPool.getMainRobot().getTeamMateField(), this);
-					fieldDrawer.drawBorders(g, robotPool.getMainRobot().getTeamMateField(), this);
-					fieldDrawer.drawObjects(g, robotPool.getMainRobot().getTeamMateField(), this);
+					paintWin(g);
 				}
 			} catch (ConcurrentModificationException e) {
 
 			}
+		}
+	}
+	
+	public void paintWin(Graphics g) {
+		if (world.getWinFlag() == robotPool.getMainRobot().getTeamNr()) {
+			g.setColor(Color.GREEN);
+		} else {
+			g.setColor(Color.RED);
+		}
+		g.drawString("VICTORY FOR TEAM " + world.getWinFlag(), 50, 50);	
+	}
+	
+	public Color[] pcolors = new Color[] { Color.CYAN, Color.RED, Color.GREEN, Color.YELLOW };
+	
+	public void paintStartPositions(Graphics g) {
+		for (int i = 1; i <= world.getPlayerNo(); i++) {
+			int x = world.getStartPos(i).getX() * 40;
+			int y = world.getStartPos(i).getY() * 40;
+			double r = (world.getStartDir(i).toAngle() * Math.PI / 180) + (Math.PI/2);
+			g.setColor(pcolors[i-1]);
+			g.drawLine((int) ((x * getScale()) + getStartX()), (int) (getStartY() - (y * getScale())), (int) ((getScale() * x) + getStartX() - (getBorderWidth() * Math.cos(r))), (int) (getStartY() - (getScale() * y) - (getBorderWidth() * Math.sin(r))));
+			g.fillOval((int) ((x * getScale()) + (getStartX() - getHalfBorderWidth())), (int) ((getStartY() - getHalfBorderWidth()) - (y * getScale())), getBorderWidth(), getBorderWidth());
+			/*x+=10;
+			y+=10;*/
+			//System.out.println("x " + (getStartX()  + x * getTileSize()) + 
+				//	" y " + (getStartY() - y * getTileSize()));
+			//g.drawString("P"+i, (getStartX())  + (x * (getTileSize())),(getStartY()) - (y * (getTileSize())));
+			g.drawString("P"+i, 100+20*i,25);
 		}
 	}
 	
@@ -69,7 +107,8 @@ public class WorldCanvas extends FieldCanvas {
 			}
 			Polygon robotSurface = new Polygon(drawXs, drawYs, 4);
 			g.setColor(Color.BLUE);
-			g.fillPolygon(robotSurface);		if (currentRobot.hasBall()){
+			g.fillPolygon(robotSurface);
+			if (currentRobot.hasBall()){
 				g.setColor(Color.YELLOW);
 				g.fillOval((int)(getStartX() + x * getScale()), (int)(getStartY() - y * getScale()), getBorderWidth(), getBorderWidth());
 			}

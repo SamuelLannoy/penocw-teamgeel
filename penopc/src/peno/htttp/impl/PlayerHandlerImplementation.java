@@ -102,6 +102,7 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void gameWon(int teamNumber) {
+		robot.stopGame();
 		DebugBuffer.addInfo("victory for " + teamNumber);
 	}
 	

@@ -162,6 +162,13 @@ public class Robot extends RobotModel{
 		updatePosition();
 	}
 	
+	public void stopGame() {
+		while (true) {
+			robotConn.stopMoving();
+			waitTillStandby(1000);
+		}
+	}
+	
 	public void moveForward(double distance) {
 		robotConn.moveForward(distance);
 	}
@@ -233,6 +240,7 @@ public class Robot extends RobotModel{
 	}
 
 
+	Thread r = null;
 	
 	public void explore() {
 		/*pauseLightSensor();
@@ -242,7 +250,7 @@ public class Robot extends RobotModel{
 		while(Status.isCentering());
 		setCurrentAction("done!");
 		resumeLightSensor();*/
-		Thread r = new Thread(new Runnable() {
+		r = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -515,10 +523,17 @@ public class Robot extends RobotModel{
 		travelListOfTiles(Pathfinder.findShortestPath(this, tile));
 	}
 	
+	private int counter;
 	
 	public void updatePosition() {		
 		getPosition().updatePosition(robotConn.getDistanceMoved());
 		getPosition().updateRotation(robotConn.getRotationTurned());
+		
+		counter++;
+		if (counter >= (isSim()? 2000 : 20)) {
+			sendPosition();
+			counter = 0;
+		}
 		
 		if (robotConn.hasBall() && !hasBall()) {
 			setHasBall(true);
@@ -736,10 +751,6 @@ public class Robot extends RobotModel{
 		robotConn.setObjectNr(nr);
 	}
 	
-	public int getTeamNr() {
-		return robotConn.getTeam();
-	}
-	
 	public boolean hasTeamMate() {
 		return getTeamMateID() != null && !getTeamMateID().equals("");
 	}
@@ -932,9 +943,21 @@ public class Robot extends RobotModel{
 		while (!reachedDestination) {
 			setCurrentAction("Moving to teammate at " + getTeamMate().getCurrTile().getPosition());
 			decreaseSpottedRobotTiles();
+			while (!getField().hasTileAt(getTeamMate().getCurrTile().getPosition()));
 			reachedDestination = goToTileLoop(getTeamMate().getCurrTile().getPosition(), ignoredSeesaws);
-			// TODO check win
+			if (isNextToTeamMate()) {
+				stopMoving();
+				comm.win();
+			}
 		}
+	}
+	
+	private boolean isNextToTeamMate() {
+		if (getCurrTile().getPosition().manhattanDistance(getTeamMate().getCurrTile().getPosition()) > 1)
+			return false;
+		if (getCurrTile().getPosition().manhattanDistance(getTeamMate().getCurrTile().getPosition()) == 0)
+			return true;
+		return getField().getBorderBetweenTiles(getCurrTile(), getTeamMate().getCurrTile()).isPassable();
 	}
 
 	public void goToTile(TilePosition tilePos) {
@@ -997,7 +1020,6 @@ public class Robot extends RobotModel{
 					System.out.println("start travel");
 					travelToNextTile(tileList.get(1));
 					waitTillStandby(750);
-					waitTillStandby(500);
 					waitTillStandby(250);
 					System.out.println("end travel");
 				}
@@ -1021,11 +1043,16 @@ public class Robot extends RobotModel{
 			
 		} catch (IllegalArgumentException e) {
 			// no we can't
-			//e.printStackTrace();
+			e.printStackTrace();
 			if(!getField().isExplored(getCurrTile().getPosition())) {
 				exploreTile();
 			}
-			randomWalkUntilChoosingPointPassed();
+			Explorer.recalcExplore(this, tilePos, ignoredSeesaws);
+			if (!Explorer.isOtherReachable()) {
+				Explorer.clear(this);
+				randomWalkUntilChoosingPointPassed();
+				Explorer.setExploreTiles(this);
+			}
 		}
 		return false;
 	}
@@ -1148,6 +1175,7 @@ public class Robot extends RobotModel{
 				//if (getTeamNr() != -1 && !hasFoundOwnBarcode()) {
 				System.out.println("bc: " + getCurrTile().getBarcode().getObjectNr() + " mine " + getObjectNr());
 				if (getCurrTile().getBarcode().getObjectNr() == getObjectNr() && !hasFoundOwnBarcode()) {
+					setTeamNr(code.getTeamNr());
 					pickUpObjectAction();
 				} else {
 					wrongObjectAction();
@@ -1201,10 +1229,15 @@ public class Robot extends RobotModel{
 						checkScan();
 						waitTillStandby(900);
 						if (counter >= 2 && fieldRepresentation.getBorderInDirection(current, dir) instanceof UnsureBorder) {
-							moveForward(55);
-							waitTillStandby(1000);
-							checkScan();
-							waitTillStandby(900);
+							if (!isSim()) {
+								moveForward(55);
+								waitTillStandby(1000);
+								checkScan();
+								waitTillStandby(900);
+							} else {
+								checkScan();
+								waitTillStandby(200);
+							}
 						}
 						counter++;
 					}
@@ -1462,6 +1495,8 @@ public class Robot extends RobotModel{
 	
 		waitTillStandby(2000);
 		
+		Explorer.clear(this);
+		
 		goToTeamMate();
 	}
 	
@@ -1529,4 +1564,15 @@ public class Robot extends RobotModel{
 	public void setFieldSimulation(FieldSimulation fieldSimulation) {
 		this.fieldSimulation = fieldSimulation;
 	}
+	
+	private int teamNr = -1;
+
+	public void setTeamNr(int teamNr) {
+		this.teamNr = teamNr;
+	}
+	
+	public int getTeamNr() {
+		return teamNr;
+	}
+	
 }

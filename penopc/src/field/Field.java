@@ -56,6 +56,12 @@ public abstract class Field{
 		return borderMap.getObjectAtId(borderPosition);
 	}
 	
+	public Border getBorderBetweenTiles(Tile tile1, Tile tile2) {
+		if (tile1.getPosition().manhattanDistance(tile2.getPosition()) != 1)
+			throw new IllegalArgumentException("tiles are not next to each other");
+		return borderMap.getObjectAtId(new BorderPosition(tile1.getPosition(), tile2.getPosition()));
+	}
+	
 	protected void addBorder(Border border) {
 		if (!hasBorderAt(border.getBorderPos()))
 			borderMap.addObject(border.getBorderPos(), border);

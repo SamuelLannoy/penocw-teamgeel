@@ -119,7 +119,7 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void gameWon(int teamNumber) {
-		
+		field.setWinFlag(teamNumber);
 	}
 
 	@Override

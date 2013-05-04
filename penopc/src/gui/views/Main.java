@@ -223,8 +223,7 @@ public class Main extends JFrame {
 						for (String playerId : robot.getLobbyViewer().getPlayerData()) {
 			    			lobbyData[pl][0] = playerId;
 			    			if (robotPool.isMainRobot(playerId)) {
-				    			lobbyData[pl][1] = robotPool.getMainRobot().getTeamMateID() == null?
-				    					"" : robotPool.getMainRobot().getTeamMateID();
+				    			lobbyData[pl][1] = robotPool.getMainRobot().getTeamNr();
 				    			lobbyData[pl][2] = robotPool.getMainRobot().getObjectNr();
 				    			lobbyData[pl][3] = robotPool.getMainRobot().getPlayerNr();
 			    			} else {

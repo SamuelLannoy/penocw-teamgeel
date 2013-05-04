@@ -155,7 +155,9 @@ public class FieldRepresentation extends Field {
 			addBorder(newBorder);
 		}
 		if (teamMateMode) {
-			comm.sendNewTiles(this, tilePosition);
+			if (isSure(tilePosition)) {
+				comm.sendNewTiles(this, tilePosition);
+			}
 		}
 	}
 	

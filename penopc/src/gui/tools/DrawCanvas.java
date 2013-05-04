@@ -218,14 +218,14 @@ public class DrawCanvas extends FieldCanvas{
 			}
 
 			//ghost
-			if (robotPool.getMainRobot().isSim()){
+			/*if (robotPool.getMainRobot().isSim()){
 				x = (int) robotPool.getMainRobot().getSimX() - (int) robotPool.getMainRobot().getStartx();
 				y = (int) robotPool.getMainRobot().getSimY() - (int) robotPool.getMainRobot().getStarty();
 				double r = robotPool.getMainRobot().getSimAngle() + (Math.PI/2);
 				g.setColor(Color.CYAN);
 				g.drawLine((int) ((x * getScale()) + getStartX()), (int) (getStartY() - (y * getScale())), (int) ((getScale() * x) + getStartX() - (getBorderWidth() * Math.cos(r))), (int) (getStartY() - (getScale() * y) - (getBorderWidth() * Math.sin(r))));
 				g.fillOval((int) ((x * getScale()) + (getStartX() - getHalfBorderWidth())), (int) ((getStartY() - getHalfBorderWidth()) - (y * getScale())), getBorderWidth(), getBorderWidth());
-			}
+			}*/
 		}
 
 	

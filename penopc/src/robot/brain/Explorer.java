@@ -59,8 +59,12 @@ public class Explorer {
 	}
 	
 	private static TilePosition current;
+
+
+	private static boolean otherReachable = false;
 	
 	public static TilePosition recalcExplore(Robot robot, TilePosition current, Collection<Integer> ignoredSeesaws) {
+		setOtherReachable(false);
 		toExplore.add(current);
 		robot.getToExplore().add(current);
 		
@@ -88,6 +92,7 @@ public class Explorer {
 							ignoredSeesaws, robot.getRobotSpottedTiles());
 					t1 = Pathfinder.getLastT();
 					mh1 = list1.size();
+					Explorer.setOtherReachable(true);
 				} catch (IllegalArgumentException e) {
 					mh1 = Integer.MAX_VALUE;
 				}
@@ -96,6 +101,7 @@ public class Explorer {
 							ignoredSeesaws, robot.getRobotSpottedTiles());
 					t2 = Pathfinder.getLastT();
 					mh2 = list2.size();
+					Explorer.setOtherReachable(true);
 				} catch (IllegalArgumentException e) {
 					mh2 = Integer.MAX_VALUE;
 				}
@@ -111,18 +117,12 @@ public class Explorer {
 		});
 	}
 	
-	public static void explore(Robot robot, EndingCondition endCond) {
-		
-		FieldRepresentation field = robot.getField();
-		// list of nodes that need to be explored
-		toExplore = new LinkedList<TilePosition>();
-		// list of tiles that are explored
-		HashSet<TilePosition> explored = new HashSet<TilePosition>();
-		// first explore tile defined
-		TilePosition init = robot.getCurrTile().getPosition();
-		// add to toexplore list
-		toExplore.add(init);
-		
+	public static void clear(Robot robot) {
+		toExplore.clear();
+		robot.getToExplore().clear();
+	}
+	
+	public static void setExploreTiles(Robot robot) {
 		// add all tiles that have gray borders or that need to be explored
 		Iterator<Tile> it = robot.getField().tileIterator();
 		while (it.hasNext()) {
@@ -134,6 +134,21 @@ public class Explorer {
 				robot.getToExplore().add(node);
 			}
 		}
+	}
+	
+	public static void explore(Robot robot, EndingCondition endCond) {
+		
+		FieldRepresentation field = robot.getField();
+		// list of nodes that need to be explored
+		toExplore = new LinkedList<TilePosition>();
+		// list of tiles that are explored
+		HashSet<TilePosition> explored = new HashSet<TilePosition>();
+		// first explore tile defined
+		TilePosition init = robot.getCurrTile().getPosition();
+		// add to toexplore list
+		toExplore.add(init);
+
+		setExploreTiles(robot);
 		
 		// main loop : stop when explore list or last tile has been met due to ending condition
 		while (!toExplore.isEmpty() && !endCond.isLastTile(robot)) {
@@ -199,6 +214,14 @@ public class Explorer {
 	
 	public static void resume() {
 		pause = false;
+	}
+
+	public static boolean isOtherReachable() {
+		return otherReachable;
+	}
+
+	public static void setOtherReachable(boolean otherReachable) {
+		Explorer.otherReachable = otherReachable;
 	}
 
 }

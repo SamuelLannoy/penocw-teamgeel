@@ -1,6 +1,7 @@
 package gui.tools;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Graphics;
 
 import field.Field;
@@ -168,22 +169,27 @@ public abstract class FieldCanvas extends Canvas  {
 		int xDiff = maxX + Math.abs(minX);
 		int yDiff = maxY + Math.abs(minY);
 		int size = Math.max(xDiff, yDiff) + 1;
-		boardSize = Math.min(getWidth(),getHeight()) - 10;
-		halfBoardSize = (int) (boardSize /2);
-		tileSize = (int) (boardSize / (size + 1));
-		borderWidth = (int) (tileSize * (.1));
-		halfTileSize = (int) (tileSize / 2);
-		halfArrow = (int) (halfTileSize / 2);
-		halfBorderWidth = (int) (borderWidth / 2);
-		scale = (double)tileSize / 40.0;
-		startX = 5 + (tileSize * (Math.abs(minX) +1));
-		startY = (boardSize - 5) - (tileSize * (Math.abs(minY) + 1));
-		bar = (int) (scale * 3.0);
-		barStart = (int) (scale * 8.0);
-		barEnd = barStart + (7 * bar);
+		setBoardSize(Math.min(getWidth(),getHeight()) - 10);
+		setHalfBoardSize((int) (boardSize /2));
+		setTileSize((int) (boardSize / (size + 1)));
+		setBorderWidth((int) (tileSize * (.1)));
+		setHalfTileSize((int) (tileSize / 2));
+		setHalfArrow((int) (getHalfTileSize() / 2));
+		setHalfBorderWidth((int) (borderWidth / 2));
+		setScale((double)tileSize / 40.0);
+		setStartX(5 + (tileSize * (Math.abs(minX) +1)));
+		setStartY((boardSize - 5) - (tileSize * (Math.abs(minY) + 1)));
+		setBar((int) (getScale() * 3.0));
+		setBarStart((int) (getScale() * 8.0));
+		setBarEnd(getBarStart() + (7 * getBar()));
 	}
 	
 	protected void paintTitle(Graphics g) {
-		g.drawString(getTitle(), 20, 20);	
+		paintTitle(g, getTitle());
+	}
+	
+	protected void paintTitle(Graphics g, String title) {
+		g.setColor(Color.WHITE);
+		g.drawString(title, 20, 20);	
 	}
 }

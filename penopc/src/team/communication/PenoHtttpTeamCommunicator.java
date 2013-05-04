@@ -282,6 +282,11 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobb
 		return client.getPlayers();
 	}
 	
+	@Override
+	public boolean isPlaying() {
+		return client.isPlaying();
+	}
+	
 	public ILobbyViewer getLobbyViewer() {
 		return this;
 	}

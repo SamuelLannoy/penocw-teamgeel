@@ -581,6 +581,10 @@ public class FieldSimulation extends Field {
 	 * Starting position / direction
 	 */
 	
+	public int getPlayerNo() {
+		return startPos.size();
+	}
+	
 	private Map<Integer, TilePosition> startPos = new HashMap<Integer, TilePosition>();
 	private Map<Integer, Direction> startDir = new HashMap<Integer, Direction>();
 	
@@ -624,6 +628,16 @@ public class FieldSimulation extends Field {
 		SeesawBorder secondBorder = getSeesawBorder(getTileAt(otherBtilePos));
 		firstBorder.setUp();
 		secondBorder.setDown();
+	}
+
+	private int winFlag = -1;
+
+	public int getWinFlag() {
+		return winFlag;
+	}
+
+	public void setWinFlag(int winFlag) {
+		this.winFlag = winFlag;
 	}
 	
 }

@@ -43,6 +43,8 @@ public class PenoHtttpFieldRepresentation extends FieldRepresentation {
 				added.setBarcode(new Barcode(nr));
 			}
 			
+			System.out.println("r" + rotation);
+			
 			Collection<Border> borders = part.getBorders(split.length >= 2 ? split[1] : "", added, rotation);
 
 			for (Border border : borders) {
