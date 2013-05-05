@@ -707,6 +707,15 @@ public class Main extends JFrame {
 		
 		if (robot.isSim()) {
 			robot.setSimLoc(0, 0, 0);
+			if (textFieldLobbyName.getText().contains("1")) {
+				robot.simSpeed(1);
+			}
+			else if (textFieldLobbyName.getText().contains("2")) {
+				robot.simSpeed(2);
+			}
+			else if (textFieldLobbyName.getText().contains("9")) {
+				robot.simSpeed(9);
+			}
 		}
 		canvas.setRobotPool(robotPool);
 		

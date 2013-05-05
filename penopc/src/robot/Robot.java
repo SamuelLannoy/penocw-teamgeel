@@ -83,6 +83,21 @@ public class Robot extends RobotModel{
 		}
 	}
 	
+	public void simSpeed(int demoNo) {
+		if (isSim()) {
+			if (demoNo == 1) {
+				((ISimulator)robotConn).setMoveSpeed(.1);
+				((ISimulator)robotConn).setTurnSpeed(1);
+			} else if (demoNo == 2) {
+				((ISimulator)robotConn).setMoveSpeed(.005);
+				((ISimulator)robotConn).setTurnSpeed(.05);
+			} else if (demoNo == 9) {
+				((ISimulator)robotConn).setMoveSpeed(.00005);
+				((ISimulator)robotConn).setTurnSpeed(.0005);
+			}
+		}
+	}
+	
 	public void drivePolygon(double length, int corners) throws IllegalArgumentException {
 		if(corners==0 || length == 0){
 			throw new IllegalArgumentException();
@@ -1155,6 +1170,7 @@ public class Robot extends RobotModel{
 				lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
 				System.out.println("CHOSEN:" + chosenDir);
 				turnToTile(lastPos);
+				while(!checkIfSafe());
 				travelToNextTile(lastPos);
 				visited.add(lastPos);
 			} else {
