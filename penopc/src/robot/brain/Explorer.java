@@ -156,6 +156,10 @@ public class Explorer {
 			current = toExplore.removeFirst();
 			robot.getToExplore().remove(current);
 			
+
+			clear(robot);
+			setExploreTiles(robot);
+			
 			
 			boolean quit = false;
 			// TODO: do not remove if straight tile
