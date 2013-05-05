@@ -1087,7 +1087,7 @@ public class Robot extends RobotModel{
 	private boolean checkIfSafe() {
 		if(getTeamMate() != null && getTeamMate().getCurrTile() != null && fieldRepresentation.isMerged()) {
 			TilePosition teamMatePos = getTeamMate().getCurrTile().getPosition();
-			return getFieldSimulation().checkIfSafe(teamMatePos.getX(), teamMatePos.getY(), getPlayerNr());
+			return getFieldSimulation().checkIfSafe(teamMatePos.getX(), teamMatePos.getY(), getTeamMate().getPlayerNr());
 		} else
 			return getFieldSimulation().checkIfSafe();
 	}

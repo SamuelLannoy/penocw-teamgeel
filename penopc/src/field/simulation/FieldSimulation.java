@@ -460,8 +460,7 @@ public class FieldSimulation extends Field {
 				TilePosition nextTilePos = dir.getPositionInDirection(tile.getPosition());
 									
 				// Check if the robot is on the next tile
-				if (nextTilePos.equals(modelTilePos) &&
-						nextTilePos.getX() != teamMatePos[0] && nextTilePos.getY() != teamMatePos[1]) 
+				if (nextTilePos.equals(modelTilePos))
 						isRobotInFront = true;
 					
 				// Check if the robot is on the forward-front tile
