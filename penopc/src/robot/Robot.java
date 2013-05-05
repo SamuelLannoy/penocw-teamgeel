@@ -899,6 +899,7 @@ public class Robot extends RobotModel{
 			// flush barcode values before moving
 			hasCorrectBarcode();
 			hasWrongBarcode();
+			while (!checkIfSafe());
 			moveForward(400);
 			waitTillStandby(400);
 		}
@@ -1170,8 +1171,10 @@ public class Robot extends RobotModel{
 				lastPos = chosenDir.getPositionInDirection(getCurrTile().getPosition());
 				System.out.println("CHOSEN:" + chosenDir);
 				turnToTile(lastPos);
+				waitTillStandby(500);
 				while(!checkIfSafe());
 				travelToNextTile(lastPos);
+				waitTillStandby(500);
 				visited.add(lastPos);
 			} else {
 				break;
