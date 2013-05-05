@@ -1497,7 +1497,13 @@ public class Robot extends RobotModel{
 		});
 		
 		// wait till my teammate is here
-		while (!hasTeamMate());
+		while (!hasTeamMate()) {
+			if(!fieldSimulation.checkIfSafe(0) &&
+					!fieldSimulation.checkIfSafe(90) &&
+					!fieldSimulation.checkIfSafe(-90) &&
+					!fieldSimulation.checkIfSafe(180))
+			randomWalkUntilChoosingPointPassed();
+		}
 		
 		getField().foundTeamMate(comm);
 
@@ -1518,7 +1524,13 @@ public class Robot extends RobotModel{
 				return true;
 			}
 		});
-		while (!receivedTeamTiles());
+		while (!receivedTeamTiles()) {
+			if(!fieldSimulation.checkIfSafe(0) &&
+					!fieldSimulation.checkIfSafe(90) &&
+					!fieldSimulation.checkIfSafe(-90) &&
+					!fieldSimulation.checkIfSafe(180))
+			randomWalkUntilChoosingPointPassed();
+		}
 		setCurrentAction("Merging tiles");
 
 		try {
