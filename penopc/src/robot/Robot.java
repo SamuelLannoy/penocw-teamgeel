@@ -570,10 +570,14 @@ public class Robot extends RobotModel{
 	
 	public void sendPosition() {
 		if (comm != null) { 
+			int[] sendPos = TilePosition.rotate(270, getCurrTile().getPosition(),
+					TilePosition.POSITION_ZERO);
+			int sendX = sendPos[0];
+			int sendY = sendPos[1];
 			comm.updatePosition(
-					getCurrTile().getPosition().getX(),
-					getCurrTile().getPosition().getY(),
-					(-getPosition().getRotation()) + 90);
+					sendX,
+					sendY,
+					(-getPosition().getRotation()));
 		}
 	}
 	

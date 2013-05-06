@@ -73,8 +73,16 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	@Override
 	public void playerUpdate(PlayerDetails playerID, int playerNumber, long x,
 			long y, double angle, boolean foundObject) {
-		angle -= 90;
+		//System.out.println("x " + x + " y " + y + " a " + angle);
+
+
+		int[] sendPos = TilePosition.rotate(90,
+				new TilePosition((int)x, (int)y),
+				TilePosition.POSITION_ZERO);
+		x = sendPos[0];
+		y = sendPos[1];
 		angle *= -1;
+		//System.out.println("x " + x + " y " + y + " a " + angle);
 		//playerNumber = playerNumber+1;
 		/*int[] newpos = TilePosition.rotate((int)field
 				.getStartDir(playerNumber).opposite().toAngle(), new TilePosition((int)x, (int)y), new TilePosition(0, 0));
