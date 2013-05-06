@@ -260,6 +260,7 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobb
 			borders.put(Direction.RIGHT, fieldRepresentation.getRightBorderOfTile(tile));
 
 			String sentToken = MazePart.getToken(borders, tile);
+			if (sentToken.startsWith("unknown"));
 			System.out.println("sent: " + sentToken);
 			if (sentToken.equals(""))
 				return null;
@@ -270,10 +271,10 @@ public class PenoHtttpTeamCommunicator extends TeamCommunicator implements ILobb
 
 		} catch (IllegalArgumentException e) {
 
-
-			return new peno.htttp.Tile(tile.getPosition().getX(),
+			return null;
+			/*return new peno.htttp.Tile(tile.getPosition().getX(),
 					tile.getPosition().getY(),
-					"unknown");
+					"unknown");*/
 		}
 	}
 
