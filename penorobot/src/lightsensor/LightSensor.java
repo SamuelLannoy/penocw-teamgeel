@@ -34,15 +34,23 @@ public class LightSensor {
 	}
 	
 	public void calibrateLightSensor(){
-//		System.out.println("calibratewhite");
-//		Button.waitForAnyPress();
-//		sensor.calibrateHigh();
-//		System.out.println("calibrateblack");
-//		Button.waitForAnyPress();
-//		sensor.calibrateLow();
-//		Buffer.addDebug("high:"+sensor.getHigh() + " low:"+sensor.getLow());
-		sensor.setHigh(487);
-		sensor.setLow(303);
+		Button.waitForAnyPress();
+		if(Button.LEFT.isDown()){
+			System.out.println("calibratewhite");
+			Button.waitForAnyPress();
+			sensor.calibrateHigh();
+			System.out.println("calibrateblack");
+			Button.waitForAnyPress();
+			sensor.calibrateLow();
+			Buffer.addDebug("high:"+sensor.getHigh() + " low:"+sensor.getLow());
+		}
+		else if(Button.RIGHT.isDown()){
+			sensor.setHigh(487);
+			sensor.setLow(303);
+		}
+		
+		
+		
 	}
 	
 	public int readValue() {
