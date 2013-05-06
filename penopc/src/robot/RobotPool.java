@@ -63,6 +63,7 @@ public class RobotPool implements Iterable<RobotModel>{
 				return getMainRobot();
 			}
 			RobotModel newModel = new RobotModel();
+			newModel.setName(id);
 			newModel.setCurrTile(new Tile(0, 0));
 			addRobot(newModel, id);
 		}

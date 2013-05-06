@@ -117,6 +117,8 @@ public class WorldCanvas extends FieldCanvas {
 					(int) (getStartY() - (y * getScale())),
 					(int) ((getScale() * x) + getStartX() - (getBorderWidth() * Math.cos(r))),
 					(int) (getStartY() - (getScale() * y) - (getBorderWidth() * Math.sin(r))));
+			g.setColor(Color.RED);
+			g.drawString(currentRobot.getName(), (int) ((x * getScale()) + getStartX()), (int) (getStartY() - (y * getScale())));
 		}
 		Robot currentRobot = robotPool.getMainRobot();
 		int[] newpos = convertRelativeToAbsolutePosition(currentRobot.getCurrTile().getPosition().getX(),
