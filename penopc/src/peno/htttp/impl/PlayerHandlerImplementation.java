@@ -42,12 +42,6 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 	}
 
 	@Override
-	public void gamePaused() {
-		DebugBuffer.addInfo("game paused");
-		
-	}
-
-	@Override
 	public void gameRolled(int playerNumber, int objectNr) {
 		robot.setObjectNr(objectNr);
 		//playerNumber += 1;
@@ -162,6 +156,11 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 		robot.getTeamMate()
 			.setCurrTile(new field.Tile(new TilePosition((int)x, (int)y)));*/
 		
+	}
+
+	@Override
+	public void teamDisconnected(String partnerID) {
+		DebugBuffer.addInfo(partnerID + " disconnected");
 	}
 
 

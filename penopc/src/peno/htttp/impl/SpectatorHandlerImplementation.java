@@ -1,11 +1,6 @@
 package peno.htttp.impl;
 
-import java.io.IOException;
-
-import field.Field;
-import field.Direction;
 import field.TilePosition;
-import field.fromfile.FieldFactory;
 import field.simulation.FieldSimulation;
 import peno.htttp.DisconnectReason;
 import peno.htttp.PlayerDetails;
@@ -39,11 +34,6 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 	}
 
 	@Override
-	public void gamePaused() {
-
-	}
-
-	@Override
 	public void playerJoining(String playerID) {
 
 	}
@@ -55,7 +45,7 @@ public class SpectatorHandlerImplementation implements SpectatorHandler {
 
 	@Override
 	public void playerDisconnected(String playerID, DisconnectReason reason) {
-		
+		robotPool.removeRobot(playerID);
 	}
 
 	@Override

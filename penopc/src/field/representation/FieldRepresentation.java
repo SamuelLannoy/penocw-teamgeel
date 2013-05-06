@@ -25,6 +25,7 @@ public class FieldRepresentation extends Field {
 	private boolean teamMateMode = false;
 	
 	private TeamCommunicator comm;
+	private FieldRepresentation oldField;
 	
 	public void foundTeamMate(TeamCommunicator comm) {
 		teamMateMode = true;
@@ -349,6 +350,7 @@ public class FieldRepresentation extends Field {
 	}
 
 	public void mergeFields(FieldRepresentation otherField) {
+		oldField = this.clone();
 		FieldRepresentation otherFieldClone = otherField.clone();
 		List<BarcodeNode> bc1 = getBarcodes();
 		List<BarcodeNode> bc2 = otherField.getBarcodes();
