@@ -109,7 +109,11 @@ public class PlayerHandlerImplementation implements PlayerHandler {
 
 	@Override
 	public void teamPosition(long x, long y, double angle) {
-		angle -= 90;
+		int[] sendPos = TilePosition.rotate(90,
+				new TilePosition((int)x, (int)y),
+				TilePosition.POSITION_ZERO);
+		x = sendPos[0];
+		y = sendPos[1];
 		angle *= -1;
 		
 		//DebugBuffer.addInfo("teammate orig: " + x + " " + y);
