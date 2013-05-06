@@ -1667,4 +1667,18 @@ public class Robot extends RobotModel{
 	}
 	
 	
+	private TilePosition cachedTeamPosition = null;
+
+	public boolean hasCachedTeamPosition() {
+		return cachedTeamPosition != null;
+	}
+	
+	public TilePosition getCachedTeamPosition() {
+		return cachedTeamPosition;
+	}
+
+	public void setCachedTeamPosition(TilePosition cachedTeamPosition) {
+		this.cachedTeamPosition = cachedTeamPosition;
+	}
+	
 }
