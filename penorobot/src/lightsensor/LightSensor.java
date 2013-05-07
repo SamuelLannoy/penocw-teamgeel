@@ -44,7 +44,7 @@ public class LightSensor {
 			sensor.calibrateLow();
 			Buffer.addDebug("high:"+sensor.getHigh() + " low:"+sensor.getLow());
 		}
-		else if(Button.RIGHT.isDown()){
+		else {
 			sensor.setHigh(487);
 			sensor.setLow(303);
 		}

@@ -2,18 +2,20 @@ package infrared;
 
 import lejos.nxt.SensorPort;
 //import lejos.nxt.addon.IRSeeker;
+import lejos.nxt.addon.IRSeekerV2;
+import lejos.nxt.addon.IRSeekerV2.Mode;
 
 public class IRSeeker {
 	
 	private static final IRSeeker instance = new IRSeeker();
-	private static lejos.nxt.addon.IRSeeker seeker; 
+	private static IRSeekerV2 seeker; 
 	
 	/**
 	 * Creates a new touch sensor as a singleton object.
 	 */
 	private IRSeeker(){
-		seeker = new lejos.nxt.addon.IRSeeker(SensorPort.S4);
-		seeker.setAddress(0x10);
+		seeker = new lejos.nxt.addon.IRSeekerV2(SensorPort.S4, Mode.AC);
+		//seeker.setAddress(0x10);
 	}
 	
 	public static IRSeeker getInstance(){

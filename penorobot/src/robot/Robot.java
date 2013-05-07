@@ -301,7 +301,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 4");
-			while (buffer<10) {
+			while (buffer<4) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);

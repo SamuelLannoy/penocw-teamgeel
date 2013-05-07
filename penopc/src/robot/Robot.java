@@ -1335,7 +1335,7 @@ public class Robot extends RobotModel{
 			e.printStackTrace();
 		}
 		// is seesaw open?
-		if(SensorBuffer.getInfrared() < 10 ){
+		if(SensorBuffer.getInfrared() < 20 ){
 			setCurrentAction("Crossing seesaw at " + ctile.getPosition());
 			// yes, this means we have to cross it
 			// register open seesaw position
