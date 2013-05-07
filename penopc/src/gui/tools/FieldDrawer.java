@@ -54,6 +54,8 @@ public class FieldDrawer {
 							g.setColor(Color.WHITE);
 						}
 						g.fillRect(pixelX, pixelY + fieldCanvas.getBarStart() + ((i + 1) * fieldCanvas.getBar()), fieldCanvas.getTileSize(), fieldCanvas.getBar());
+						g.setColor(Color.RED);
+						g.drawString(currentTile.getBarcode().getDecimal()+"", fieldCanvas.getStartX() + (x * (fieldCanvas.getTileSize())), fieldCanvas.getStartY() - (y * (fieldCanvas.getTileSize())));
 						g.setColor(Color.BLACK);
 					}
 					
@@ -70,6 +72,8 @@ public class FieldDrawer {
 								g.setColor(Color.WHITE);
 							}
 							g.fillRect(pixelX + fieldCanvas.getBarStart() + ((i + 1) * fieldCanvas.getBar()), pixelY, fieldCanvas.getBar(), fieldCanvas.getTileSize());
+							g.setColor(Color.RED);
+							g.drawString(currentTile.getBarcode().getDecimal()+"", fieldCanvas.getStartX() + (x * (fieldCanvas.getTileSize())), fieldCanvas.getStartY() - (y * (fieldCanvas.getTileSize())));
 							g.setColor(Color.BLACK);
 						}
 					}
