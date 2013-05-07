@@ -196,7 +196,7 @@ public class Robot {
 			int buffer = 0;
 			
 			//Buffer.addDebug("Begin brown");
-			while (buffer<20) {
+			while (buffer<10) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
@@ -210,7 +210,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white");
-			while (buffer<10) {
+			while (buffer<5) {
 				Button.waitForAnyPress(5);
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
@@ -281,7 +281,7 @@ public class Robot {
 			buffer = 0;
 			
 			//Buffer.addDebug("Begin white 3");
-			while (buffer<10) {
+			while (buffer<5) {
 				Button.waitForAnyPress(5);
 				//Buffer.addDebug(lightSensor.getLastColor().toString());
 				//Buffer.addDebug("buffer size: "+buffer);
@@ -289,8 +289,8 @@ public class Robot {
 
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
-				else 
-					buffer = 0;
+				else if(buffer>0)
+					buffer--;
 			}
 			PILOT.stop();
 			double arc2 = PILOT.getAngleIncrement();
