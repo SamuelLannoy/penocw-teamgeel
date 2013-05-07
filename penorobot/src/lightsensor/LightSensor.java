@@ -118,7 +118,7 @@ public class LightSensor {
 						if(temp == Color.BLACK){
 							counterBlack++;
 							Buffer.addDebug("CounterBlack: "+counterBlack);
-							if(counterBlack == 5 && !alreadyBarcode && !onlyLines && !LightSensorVigilante.getPaused()){
+							if(counterBlack >= 5 && !alreadyBarcode && !onlyLines && !LightSensorVigilante.getPaused()){
 								Buffer.addDebug("isScanningBarcode before moving backwards");
 								Robot.getInstance().setScanning(true);
 								Robot.getInstance().stop();

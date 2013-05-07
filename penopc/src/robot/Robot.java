@@ -416,6 +416,9 @@ public class Robot extends RobotModel{
 //			orientOnWhiteLine(false);
 //			moveForward(230);
 		System.out.println("incr "+incr);
+		if (getCurrTile().hasBarcode()) {
+			incr = 0;
+		}
 		if(incr%3==0){
 			if(!isSim() && !getCurrTile().hasBarcode()){
 				Direction cur = getDirection();

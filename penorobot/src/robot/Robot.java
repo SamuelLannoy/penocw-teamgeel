@@ -215,7 +215,9 @@ public class Robot {
 				if (Color.getColor(lightSensor.readValue()) == Color.WHITE)
 						buffer++;
 				else if (Color.getColor(lightSensor.readValue()) == Color.BROWN){
-					buffer--;
+					if (buffer > 0) {
+						buffer--;
+					}
 //					buffer = 0;
 				}
 //				if(touchSensor.isPressed()){
