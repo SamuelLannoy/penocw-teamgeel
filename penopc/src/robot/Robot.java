@@ -1509,9 +1509,9 @@ public class Robot extends RobotModel{
 		
 		// wait till my teammate is here
 		while (!hasTeamMate()) {
-			if(!fieldSimulation.checkIfSafe(0) &&
-					!fieldSimulation.checkIfSafe(90) &&
-					!fieldSimulation.checkIfSafe(-90) &&
+			if(!fieldSimulation.checkIfSafe(0) ||
+					!fieldSimulation.checkIfSafe(90) ||
+					!fieldSimulation.checkIfSafe(-90) ||
 					!fieldSimulation.checkIfSafe(180))
 			randomWalkUntilChoosingPointPassed();
 		}
@@ -1536,9 +1536,9 @@ public class Robot extends RobotModel{
 			}
 		});
 		while (!receivedTeamTiles()) {
-			if(!fieldSimulation.checkIfSafe(0) &&
-					!fieldSimulation.checkIfSafe(90) &&
-					!fieldSimulation.checkIfSafe(-90) &&
+			if(!fieldSimulation.checkIfSafe(0) ||
+					!fieldSimulation.checkIfSafe(90) ||
+					!fieldSimulation.checkIfSafe(-90) ||
 					!fieldSimulation.checkIfSafe(180))
 			randomWalkUntilChoosingPointPassed();
 		}
