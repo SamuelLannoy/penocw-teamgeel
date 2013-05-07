@@ -100,25 +100,29 @@ public class FieldRepresentation extends Field {
 		SeesawBorder firstSeesawBorder = getSeesawBorder(getTileAt(barcodePosition));
 		TilePosition firstSeesawTilePos = directionOfSeesaw.getPositionInDirection(barcodePosition);
 		TilePosition secondSeesawTilePos = directionOfSeesaw.getPositionInDirection(firstSeesawTilePos);
-		SeesawBorder secondSeesawBorder = getSeesawBorder(getTileAt(secondSeesawTilePos));
-		if (bc.isSeesawDownCode()) {
-			if (standardPosition) {
-				firstSeesawBorder.setDown();
-				secondSeesawBorder.setUp();
-			} else {
-				firstSeesawBorder.setUp();
-				secondSeesawBorder.setDown();
+		try {
+			SeesawBorder secondSeesawBorder = getSeesawBorder(getTileAt(secondSeesawTilePos));
+			if (bc.isSeesawDownCode()) {
+				if (standardPosition) {
+					firstSeesawBorder.setDown();
+					secondSeesawBorder.setUp();
+				} else {
+					firstSeesawBorder.setUp();
+					secondSeesawBorder.setDown();
+				}
+			} else if (bc.isSeesawUpCode()) {
+				if (standardPosition) {
+					firstSeesawBorder.setUp();
+					secondSeesawBorder.setDown();
+				} else {
+					firstSeesawBorder.setDown();
+					secondSeesawBorder.setUp();
+				}
 			}
-		} else if (bc.isSeesawUpCode()) {
-			if (standardPosition) {
-				firstSeesawBorder.setUp();
-				secondSeesawBorder.setDown();
-			} else {
-				firstSeesawBorder.setDown();
-				secondSeesawBorder.setUp();
-			}
+		}catch (IllegalArgumentException e) {
+			// this means u tried to register seesaw position on wrong end
 		}
-		
+
 	}
 	
 	public void registerBall(TilePosition barcodePosition, Direction directionOfObject) {
