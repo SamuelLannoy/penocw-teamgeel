@@ -493,9 +493,11 @@ public class Robot extends RobotModel{
 			
 		}
 			else{
-				robotConn.setMoveSpeed(310);
+				if (!isSim())
+					robotConn.setMoveSpeed(310);
 				moveForward(400);
-				robotConn.setMoveSpeed(170);
+				if (!isSim())
+					robotConn.setMoveSpeed(170);
 				waitTillStandby(750);
 				incr++;
 			}

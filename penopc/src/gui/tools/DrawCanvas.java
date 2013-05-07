@@ -57,10 +57,10 @@ public class DrawCanvas extends FieldCanvas{
 	@Override
 	public void paint(Graphics g){ 
 		createBufferStrategy(2);
-		if (robotPool.getMainRobot().getField().isMerged()) {
-			setTitle("Player's View - Merged");
-		}
 		if (robotPool != null && robotPool.getMainRobot().isConnectedToGame()) {
+			if (robotPool.getMainRobot().getField().isMerged()) {
+				setTitle("Player's View - Merged");
+			}
 			try{
 				//if (robotPool.getMainRobot().getClient().isPlaying()) {
 				paintTitle(g);
