@@ -1,14 +1,14 @@
 penocw-teamgeel
 ===============
 
-## penopc
-project to run on pc
+### penopc
+Project that must run on pc.
 
-## penorobot
-project to run on robot
+### penorobot
+Project that must run on NXT robot.
 
-## libraries
-libraries needed to run the software
+### libraries
+Libraries needed to run the software.
 
-## verslagen 
-corresponding reports
+### verslagen
+Corresponding reports.
